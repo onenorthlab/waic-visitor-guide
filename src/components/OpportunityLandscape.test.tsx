@@ -45,6 +45,11 @@ describe("opportunity landscape", () => {
     expect(
       screen.getAllByRole("button", { name: /7月\d{2}日 \d{2}:\d{2}-\d{2}:\d{2}，\d+ 场活动/u }),
     ).toHaveLength(100);
+    expect(
+      screen.getByText(
+        "文字摘要：7月18日 15:00-15:30 为全程峰值，同时进行 34 场活动。颜色越深代表同一时段选择越多，每格仍标注具体场数。",
+      ),
+    ).toBeInTheDocument();
 
     await user.click(
       screen.getByRole("button", {

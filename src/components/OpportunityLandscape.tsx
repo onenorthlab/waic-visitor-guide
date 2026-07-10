@@ -44,6 +44,10 @@ export function ScheduleHeatmap({
   language = "zh",
 }: ScheduleHeatmapProps) {
   const maximum = Math.max(...cells.map((cell) => cell.count), 0);
+  const peak = cells.reduce<TimeHeatmapCell | null>(
+    (current, cell) => (!current || cell.count > current.count ? cell : current),
+    null,
+  );
   const activeWindowCount = cells.filter((cell) => cell.count > 0).length;
   const byDate = cells.reduce<Map<WaicDate, TimeHeatmapCell[]>>((groups, cell) => {
     const group = groups.get(cell.date) ?? [];
@@ -117,9 +121,13 @@ export function ScheduleHeatmap({
         ))}
       </div>
       <p className="chart-fallback">
-        {language === "zh"
-          ? "文字摘要：7月18日 09:30-10:00 为全程峰值，同时进行 30 场活动。颜色越深代表同一时段选择越多，每格仍标注具体场数。"
-          : "Text summary: Jul 18 at 09:30-10:00 is the overall peak with 30 concurrent events. Darker cells mean more choices, and every cell includes its count."}
+        {peak
+          ? language === "zh"
+            ? `文字摘要：${DATE_LABELS[peak.date].zh} ${peak.start}-${peak.end} 为全程峰值，同时进行 ${peak.count} 场活动。颜色越深代表同一时段选择越多，每格仍标注具体场数。`
+            : `Text summary: ${DATE_LABELS[peak.date].en} at ${peak.start}-${peak.end} is the overall peak with ${peak.count} concurrent events. Darker cells mean more choices, and every cell includes its count.`
+          : language === "zh"
+            ? "文字摘要：当前没有可显示的活动时段。"
+            : "Text summary: no event windows are available."}
       </p>
     </section>
   );
