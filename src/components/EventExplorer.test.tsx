@@ -50,9 +50,20 @@ describe("event explorer", () => {
       screen.getByRole("heading", { level: 2, name: "在 175 场活动里精确筛选" }),
     ).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: /查看活动：/u })).toHaveLength(24);
+    expect(screen.getByText("已显示 24/175 场")).toMatchObject({
+      tagName: "SMALL",
+    });
+    expect(screen.getByText("已显示 24/175 场")).toHaveAttribute(
+      "aria-live",
+      "polite",
+    );
 
     await user.click(screen.getByRole("button", { name: "显示更多活动" }));
     expect(screen.getAllByRole("button", { name: /查看活动：/u })).toHaveLength(48);
+    expect(screen.getByText("已显示 48/175 场")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Switch to English" }));
+    expect(screen.getByText("Showing 48/175 events")).toBeInTheDocument();
   });
 
   it("combines bilingual search with date, category, and venue filters", async () => {
@@ -140,11 +151,55 @@ describe("event explorer", () => {
     );
 
     await user.click(screen.getByRole("button", { name: "加入路线" }));
-    expect(screen.getByRole("button", { name: "移出路线" })).toBeInTheDocument();
+    const removeButton = screen.getByRole("button", { name: "移出路线" });
+    expect(removeButton).toHaveFocus();
     expect(screen.getByText("已手动加入 1 场")).toBeInTheDocument();
+
+    await user.click(removeButton);
+    expect(screen.getByRole("button", { name: "加入路线" })).toHaveFocus();
 
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     await waitFor(() => expect(trigger).toHaveFocus());
+    expect(screen.getByRole("checkbox", { name: "7月17日" })).toBeChecked();
+  });
+
+  it("wraps forward and reverse tab focus inside the detail dialog", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    const trigger = screen.getByRole("button", {
+      name: /查看活动：2026世界人工智能大会暨人工智能全球治理高级别会议主论坛/u,
+    });
+    await user.click(trigger);
+
+    const closeButton = screen.getByRole("button", { name: "关闭活动详情" });
+    const lastAction = screen.getByRole("link", { name: "在高德地图搜索" });
+    await waitFor(() => expect(closeButton).toHaveFocus());
+
+    lastAction.focus();
+    await user.tab();
+    expect(closeButton).toHaveFocus();
+
+    await user.tab({ shift: true });
+    expect(lastAction).toHaveFocus();
+
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(trigger).toHaveFocus());
+  });
+
+  it("makes the background inert only while the detail dialog is open", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    const trigger = screen.getByRole("button", {
+      name: /查看活动：2026世界人工智能大会暨人工智能全球治理高级别会议主论坛/u,
+    });
+    await user.click(trigger);
+
+    expect(trigger.closest("[inert]")).not.toBeNull();
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(trigger).toHaveFocus());
+    expect(trigger.closest("[inert]")).toBeNull();
   });
 });

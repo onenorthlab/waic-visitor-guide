@@ -10,6 +10,7 @@ import {
 } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "motion/react";
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -47,6 +48,7 @@ const copy = {
     allCategories: "全部类别",
     allVenues: "全部场馆",
     resultCount: (count: number) => `${count} 场活动符合当前筛选`,
+    pagination: (shown: number, total: number) => `已显示 ${shown}/${total} 场`,
     view: "查看活动",
     more: "显示更多活动",
     empty: "没有匹配的活动",
@@ -75,6 +77,8 @@ const copy = {
     allVenues: "All venues",
     resultCount: (count: number) =>
       `${count} ${count === 1 ? "event" : "events"} match the filters`,
+    pagination: (shown: number, total: number) =>
+      `Showing ${shown}/${total} ${total === 1 ? "event" : "events"}`,
     view: "View event",
     more: "Show more events",
     empty: "No matching events",
@@ -102,6 +106,59 @@ function categoryFor(event: WaicEvent, language: Language): string {
   );
 }
 
+const FOCUSABLE_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  '[tabindex]:not([tabindex="-1"])',
+].join(",");
+
+function focusableElements(container: HTMLElement): HTMLElement[] {
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+  ).filter(
+    (element) =>
+      !element.closest("[inert]") &&
+      element.getAttribute("aria-hidden") !== "true",
+  );
+}
+
+function makeBackgroundInert(dialogLayer: HTMLElement): () => void {
+  const changedElements: Array<{
+    element: HTMLElement;
+    hadInert: boolean;
+    ariaHidden: string | null;
+  }> = [];
+  let current: HTMLElement | null = dialogLayer;
+
+  while (current && current !== document.body) {
+    const parentElement: HTMLElement | null = current.parentElement;
+    if (!parentElement) break;
+
+    Array.from(parentElement.children).forEach((sibling) => {
+      if (sibling === current || !(sibling instanceof HTMLElement)) return;
+      changedElements.push({
+        element: sibling,
+        hadInert: sibling.hasAttribute("inert"),
+        ariaHidden: sibling.getAttribute("aria-hidden"),
+      });
+      sibling.setAttribute("inert", "");
+      sibling.setAttribute("aria-hidden", "true");
+    });
+    current = parentElement;
+  }
+
+  return () => {
+    changedElements.forEach(({ element, hadInert, ariaHidden }) => {
+      if (!hadInert) element.removeAttribute("inert");
+      if (ariaHidden === null) element.removeAttribute("aria-hidden");
+      else element.setAttribute("aria-hidden", ariaHidden);
+    });
+  };
+}
+
 interface EventDetailSheetProps {
   event: WaicEvent;
   selected: boolean;
@@ -119,17 +176,52 @@ export function EventDetailSheet({
 }: EventDetailSheetProps) {
   const content = copy[language];
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLElement>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const restoreBackground = backdropRef.current
+      ? makeBackgroundInert(backdropRef.current)
+      : () => undefined;
     closeButtonRef.current?.focus();
     const onKeyDown = (keyboardEvent: KeyboardEvent) => {
-      if (keyboardEvent.key === "Escape") onClose();
+      if (keyboardEvent.key === "Escape") {
+        keyboardEvent.preventDefault();
+        onClose();
+        return;
+      }
+      if (keyboardEvent.key !== "Tab" || !dialogRef.current) return;
+
+      const focusable = focusableElements(dialogRef.current);
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (!first || !last) {
+        keyboardEvent.preventDefault();
+        dialogRef.current.focus();
+        return;
+      }
+
+      const activeElement = document.activeElement;
+      if (
+        keyboardEvent.shiftKey &&
+        (activeElement === first || !dialogRef.current.contains(activeElement))
+      ) {
+        keyboardEvent.preventDefault();
+        last.focus();
+      } else if (
+        !keyboardEvent.shiftKey &&
+        (activeElement === last || !dialogRef.current.contains(activeElement))
+      ) {
+        keyboardEvent.preventDefault();
+        first.focus();
+      }
     };
     document.addEventListener("keydown", onKeyDown);
     return () => {
+      restoreBackground();
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", onKeyDown);
     };
@@ -146,12 +238,18 @@ export function EventDetailSheet({
   const mapUrl = `https://uri.amap.com/search?keyword=${encodeURIComponent(event.location.zh)}`;
 
   return (
-    <div className="detail-backdrop" onMouseDown={closeFromBackdrop}>
+    <div
+      className="detail-backdrop"
+      ref={backdropRef}
+      onMouseDown={closeFromBackdrop}
+    >
       <motion.section
         className="event-detail-sheet"
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="event-detail-title"
+        tabIndex={-1}
         initial={reducedMotion ? false : { opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         exit={reducedMotion ? undefined : { opacity: 0, y: 24 }}
@@ -314,15 +412,21 @@ export function EventExplorer({
     setActiveEvent(event);
   };
 
-  const closeDetail = () => {
+  const closeDetail = useCallback(() => {
     setActiveEvent(null);
     queueMicrotask(() => returnFocusRef.current?.focus());
-  };
+  }, []);
 
   const toggleSelectedEvent = (event: WaicEvent) => {
     const selected = plannerState.selectedEventIds.includes(event.id);
     onPlannerStateChange({
       ...plannerState,
+      dates:
+        selected || plannerState.dates.includes(event.date)
+          ? plannerState.dates
+          : WAIC_DATES.filter(
+              (date) => date === event.date || plannerState.dates.includes(date),
+            ),
       selectedEventIds: selected
         ? plannerState.selectedEventIds.filter((id) => id !== event.id)
         : [...plannerState.selectedEventIds, event.id],
@@ -409,8 +513,16 @@ export function EventExplorer({
         </label>
       </div>
 
-      <div className="explorer-result-bar" aria-live="polite">
-        <strong>{content.resultCount(filteredEvents.length)}</strong>
+      <div className="explorer-result-bar">
+        <span>
+          <strong>{content.resultCount(filteredEvents.length)}</strong>{" "}
+          <small aria-live="polite" aria-atomic="true">
+            {content.pagination(
+              Math.min(visibleCount, filteredEvents.length),
+              filteredEvents.length,
+            )}
+          </small>
+        </span>
         {filteredEvents.length > 0 &&
         (query || date || category || venue || eventIds !== null) ? (
           <button className="text-button" type="button" onClick={clearFilters}>
