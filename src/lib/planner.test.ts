@@ -376,6 +376,10 @@ describe("planRoute explanations", () => {
     });
     expect(result.items[0].reasons.map(({ type }) => type)).toContain("interest");
     expect(result.items[1].reasons.map(({ type }) => type)).toContain("goal");
+    expect(result.items[1].reasons).toContainEqual({
+      type: "goal",
+      label: "目标相关赛道：政策理解",
+    });
     expect(result.items[1].bufferFromPreviousMinutes).toBe(25);
   });
 

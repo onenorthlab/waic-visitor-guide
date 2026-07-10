@@ -71,6 +71,13 @@ const copy = {
     routeSummary: (count: number) => `路线包含 ${count} 场活动`,
     emptySummary: "规划结果：0 场可行活动",
     icsFailure: "ICS 生成失败，请重试",
+    eligibilityLabel: "入场资格提醒",
+    eligibility:
+      "路线推荐不等于入场资格。论坛活动仍需单场报名或邀请。",
+    officialRegistration: "前往 WAIC 官方注册",
+    excludeRecommendation: "移除并重算",
+    excludeRecommendationLabel: (title: string) =>
+      `从推荐路线移除并重算：${title}`,
   },
   en: {
     title: "Build your visit route in 30 seconds",
@@ -101,13 +108,20 @@ const copy = {
     routeSummary: (count: number) => `Route includes ${count} events`,
     emptySummary: "Planner result: no feasible events",
     icsFailure: "ICS creation failed. Try again.",
+    eligibilityLabel: "Admission reminder",
+    eligibility:
+      "A route recommendation does not grant admission. Forum sessions still require individual registration or an invitation.",
+    officialRegistration: "Open WAIC official registration",
+    excludeRecommendation: "Remove and recalculate",
+    excludeRecommendationLabel: (title: string) =>
+      `Remove and recalculate recommendation: ${title}`,
   },
 } as const;
 
 const REASON_LABELS_EN: Record<PlannerReason["type"], string> = {
   interest: "Direct topic interest",
   identity: "Fits your role",
-  goal: "Supports a visit goal",
+  goal: "Goal-related track",
   diversity: "Adds topic breadth",
   manual: "Manually kept in this route",
 };
@@ -155,7 +169,7 @@ export function AttentionBudget({
       ? [
           ["活动场数", `${result.metrics.eventCount} 场`],
           ["有效内容小时", formatHours(result.metrics.contentMinutes, language)],
-          ["目标覆盖", `${Math.round(result.metrics.goalCoverage * 100)}%`],
+          ["目标赛道覆盖", `${Math.round(result.metrics.goalCoverage * 100)}%`],
           ["主题数", `${result.metrics.distinctCategories} 类`],
           ["换馆次数", `${result.metrics.venueChanges} 次`],
           ["建议缓冲", `${result.metrics.transitionBufferMinutes} 分钟`],
@@ -163,7 +177,7 @@ export function AttentionBudget({
       : [
           ["Events", String(result.metrics.eventCount)],
           ["Content hours", formatHours(result.metrics.contentMinutes, language)],
-          ["Goal coverage", `${Math.round(result.metrics.goalCoverage * 100)}%`],
+          ["Goal-track coverage", `${Math.round(result.metrics.goalCoverage * 100)}%`],
           ["Topics", String(result.metrics.distinctCategories)],
           ["Venue changes", String(result.metrics.venueChanges)],
           ["Suggested buffer", `${result.metrics.transitionBufferMinutes} min`],
@@ -183,11 +197,19 @@ export function AttentionBudget({
 
 interface RouteTimelineProps {
   items: readonly PlannedEvent[];
+  fixedEventIds?: ReadonlySet<number>;
+  onExclude?: (event: WaicEvent) => void;
   language?: Language;
 }
 
-export function RouteTimeline({ items, language = "zh" }: RouteTimelineProps) {
+export function RouteTimeline({
+  items,
+  fixedEventIds = new Set<number>(),
+  onExclude,
+  language = "zh",
+}: RouteTimelineProps) {
   const reducedMotion = useReducedMotion();
+  const content = copy[language];
 
   return (
     <div className="route-timeline">
@@ -238,6 +260,19 @@ export function RouteTimeline({ items, language = "zh" }: RouteTimelineProps) {
                       : `Venue note: allow a suggested ${item.bufferFromPreviousMinutes}-minute buffer`}
                   </p>
                 ) : null}
+                {!fixedEventIds.has(item.event.id) && onExclude ? (
+                  <button
+                    className="route-exclude-button"
+                    type="button"
+                    aria-label={content.excludeRecommendationLabel(
+                      eventTitle(item.event, language),
+                    )}
+                    onClick={() => onExclude(item.event)}
+                  >
+                    <X aria-hidden="true" weight="bold" />
+                    {content.excludeRecommendation}
+                  </button>
+                ) : null}
               </div>
             </motion.article>
           </div>
@@ -262,8 +297,9 @@ export function RouteActions({
 
   const shareRoute = async () => {
     try {
-      const query = encodePlannerState(state);
-      const url = `${window.location.origin}${window.location.pathname}?${query}`;
+      const params = new URLSearchParams(encodePlannerState(state));
+      params.set("view", "route");
+      const url = `${window.location.origin}${window.location.pathname}?${params.toString()}#planner`;
       if (typeof navigator.share === "function") {
         await navigator.share({
           title: "WAIC 2026 Visitor Guide",
@@ -349,6 +385,8 @@ interface PlannerProps {
   events: readonly WaicEvent[];
   state: PlannerState;
   onStateChange: (state: PlannerState) => void;
+  routeGenerated?: boolean;
+  onRouteGeneratedChange?: (generated: boolean) => void;
   language?: Language;
 }
 
@@ -356,11 +394,14 @@ export function Planner({
   events,
   state,
   onStateChange,
+  routeGenerated,
+  onRouteGeneratedChange,
   language = "zh",
 }: PlannerProps) {
   const content = copy[language];
   const [result, setResult] = useState<PlannerResult | null>(null);
-  const [hasGenerated, setHasGenerated] = useState(false);
+  const [internalRouteGenerated, setInternalRouteGenerated] = useState(false);
+  const hasGenerated = routeGenerated ?? internalRouteGenerated;
   const [goalMessage, setGoalMessage] = useState("");
   const [error, setError] = useState("");
   const eventById = useMemo(
@@ -372,12 +413,21 @@ export function Planner({
       .map((id) => eventById.get(id))
       .filter((event): event is WaicEvent => Boolean(event)),
   );
+  const fixedEventIds = useMemo(
+    () => new Set(state.selectedEventIds),
+    [state.selectedEventIds],
+  );
+
+  const setRouteGenerated = (generated: boolean) => {
+    if (routeGenerated === undefined) setInternalRouteGenerated(generated);
+    onRouteGeneratedChange?.(generated);
+  };
 
   const update = (next: PlannerState, affectsRoute = true) => {
     onStateChange(next);
     if (affectsRoute) {
       setResult(null);
-      setHasGenerated(false);
+      setRouteGenerated(false);
       setError("");
     }
   };
@@ -407,7 +457,7 @@ export function Planner({
   };
 
   const generateRoute = () => {
-    setHasGenerated(true);
+    setRouteGenerated(true);
     setError("");
     try {
       setResult(planRoute(events, state));
@@ -451,6 +501,15 @@ export function Planner({
         setError(routeError instanceof Error ? routeError.message : String(routeError));
       }
     }
+  };
+
+  const excludeRecommendedEvent = (event: WaicEvent) => {
+    onStateChange({
+      ...state,
+      excludedEventIds: [
+        ...new Set([...state.excludedEventIds, event.id]),
+      ],
+    });
   };
 
   const actionEvents = result?.items.map((item) => item.event) ?? [];
@@ -670,8 +729,30 @@ export function Planner({
                 </div>
                 <RouteActions state={state} events={actionEvents} language={language} />
               </div>
+              <aside
+                className="route-eligibility-note"
+                role="note"
+                aria-label={content.eligibilityLabel}
+              >
+                <WarningCircle aria-hidden="true" weight="fill" />
+                <div>
+                  <p>{content.eligibility}</p>
+                  <a
+                    href="https://www.worldaic.com.cn/register"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {content.officialRegistration}
+                  </a>
+                </div>
+              </aside>
               <AttentionBudget result={result} language={language} />
-              <RouteTimeline items={result.items} language={language} />
+              <RouteTimeline
+                items={result.items}
+                fixedEventIds={fixedEventIds}
+                onExclude={excludeRecommendedEvent}
+                language={language}
+              />
               <section className="rejected-section">
                 <h3>{content.rejected}</h3>
                 {result.rejectedHighRelevance.length ? (

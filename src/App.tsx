@@ -24,17 +24,25 @@ function initialPlannerState(): PlannerState {
   return decodePlannerState(window.location.search, loadPlannerState());
 }
 
+function initialRouteGenerated(): boolean {
+  if (typeof window === "undefined") return false;
+  return new URLSearchParams(window.location.search).get("view") === "route";
+}
+
 function VisitorGuideApp() {
   const events = useMemo(() => normalizeEvents(rawRows), []);
   const [selection, setSelection] = useState<ExplorerSelection | null>(null);
   const [plannerState, setPlannerState] =
     useState<PlannerState>(initialPlannerState);
+  const [routeGenerated, setRouteGenerated] = useState(initialRouteGenerated);
 
   useEffect(() => {
     savePlannerState(plannerState);
     let nextSearch: string;
     try {
-      nextSearch = `?${encodePlannerState(plannerState)}`;
+      const params = new URLSearchParams(encodePlannerState(plannerState));
+      if (routeGenerated) params.set("view", "route");
+      nextSearch = `?${params.toString()}`;
     } catch {
       return;
     }
@@ -45,7 +53,7 @@ function VisitorGuideApp() {
         `${window.location.pathname}${nextSearch}${window.location.hash}`,
       );
     }
-  }, [plannerState]);
+  }, [plannerState, routeGenerated]);
 
   return (
     <AppShell>
@@ -61,6 +69,8 @@ function VisitorGuideApp() {
             events={events}
             state={plannerState}
             onStateChange={setPlannerState}
+            routeGenerated={routeGenerated}
+            onRouteGeneratedChange={setRouteGenerated}
             language={language}
           />
           <p className="landscape-filter-status" aria-live="polite">

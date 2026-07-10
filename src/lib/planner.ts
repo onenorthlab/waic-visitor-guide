@@ -267,7 +267,7 @@ function matchEvent(event: WaicEvent, context: MatchContext): EventMatch {
     });
   }
   goals.forEach((goal) => {
-    reasons.push({ type: "goal", label: `契合目标：${GOAL_LABELS[goal]}` });
+    reasons.push({ type: "goal", label: `目标相关赛道：${GOAL_LABELS[goal]}` });
   });
 
   return {

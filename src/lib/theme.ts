@@ -11,6 +11,19 @@ export const BUTTON_COLOR_TOKENS = {
   },
 } as const;
 
+export const SEMANTIC_TEXT_COLOR_TOKENS = {
+  light: {
+    orange: "#9C431D",
+    green: "#226F53",
+    backgrounds: ["#FFFFFF", "#F8F9FA", "#EFF3FF"],
+  },
+  dark: {
+    orange: "#EF9B63",
+    green: "#65C99B",
+    backgrounds: ["#111831", "#141B34", "#0B1021"],
+  },
+} as const;
+
 function channelToLinear(value: number): number {
   const channel = value / 255;
   return channel <= 0.04045

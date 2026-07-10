@@ -156,7 +156,7 @@ describe("30-second planner", () => {
     const budget = screen.getByRole("region", { name: "路线注意力预算" });
     expect(within(budget).getByText("活动场数")).toBeInTheDocument();
     expect(within(budget).getByText("有效内容小时")).toBeInTheDocument();
-    expect(within(budget).getByText("目标覆盖")).toBeInTheDocument();
+    expect(within(budget).getByText("目标赛道覆盖")).toBeInTheDocument();
     expect(within(budget).getByText("主题数")).toBeInTheDocument();
     expect(within(budget).getByText("换馆次数")).toBeInTheDocument();
     expect(within(budget).getByText("建议缓冲")).toBeInTheDocument();
@@ -166,6 +166,24 @@ describe("30-second planner", () => {
     ).toBeInTheDocument();
     expect(screen.getAllByText(/时间冲突|换馆缓冲不足|活动上限/u).length).toBeGreaterThan(0);
     expect(screen.queryByText(/总分/u)).not.toBeInTheDocument();
+
+    const eligibilityNote = screen.getByRole("note", { name: "入场资格提醒" });
+    expect(
+      within(eligibilityNote).getByText(
+        "路线推荐不等于入场资格。论坛活动仍需单场报名或邀请。",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(eligibilityNote).getByRole("link", { name: "前往 WAIC 官方注册" }),
+    ).toHaveAttribute("href", "https://www.worldaic.com.cn/register");
+
+    await user.click(screen.getByRole("button", { name: "Switch to English" }));
+    const englishNote = screen.getByRole("note", { name: "Admission reminder" });
+    expect(
+      within(englishNote).getByText(
+        "A route recommendation does not grant admission. Forum sessions still require individual registration or an invitation.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("keeps the inputs and suggests what to loosen when no route is possible", async () => {
@@ -221,6 +239,8 @@ describe("30-second planner", () => {
 
     await user.click(screen.getByRole("button", { name: "分享路线" }));
     expect(writeText).toHaveBeenCalledWith(expect.stringContaining("plan="));
+    expect(writeText).toHaveBeenCalledWith(expect.stringContaining("view=route"));
+    expect(writeText).toHaveBeenCalledWith(expect.stringMatching(/#planner$/u));
     expect(screen.getByText("链接已复制")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "生成我的路线" }));
@@ -305,6 +325,43 @@ describe("30-second planner", () => {
     await waitFor(() => expect(window.location.search).not.toBe(lastValidSearch));
   });
 
+  it("restores a generated route from its flagged URL on a fresh mount", async () => {
+    const user = userEvent.setup();
+    const firstMount = render(<App />);
+
+    await user.selectOptions(screen.getByLabelText("你的身份"), "executive");
+    await user.click(screen.getByRole("checkbox", { name: "综合论坛" }));
+    await user.click(screen.getByRole("checkbox", { name: "7月17日" }));
+    await user.click(screen.getByRole("checkbox", { name: "7月18日" }));
+    await user.click(screen.getByRole("checkbox", { name: "7月19日" }));
+    await user.click(screen.getByRole("checkbox", { name: "7月20日" }));
+    fireEvent.change(screen.getByLabelText("7月20日结束时间"), {
+      target: { value: "17:00" },
+    });
+    await user.click(screen.getByRole("button", { name: "生成我的路线" }));
+
+    const generatedSummary = await screen.findByText(/路线包含 \d+ 场活动/u);
+    const summaryText = generatedSummary.textContent ?? "";
+    expect(summaryText).toBe("路线包含 9 场活动");
+    await waitFor(() =>
+      expect(new URLSearchParams(window.location.search).get("view")).toBe("route"),
+    );
+
+    const sharedSearch = window.location.search;
+    firstMount.unmount();
+    window.history.replaceState(null, "", `/${sharedSearch}`);
+    render(<App />);
+
+    expect(await screen.findByText(summaryText)).toBeInTheDocument();
+    expect(screen.getByText("路线已生成")).toBeInTheDocument();
+
+    await user.selectOptions(screen.getByLabelText("你的身份"), "developer");
+    await waitFor(() =>
+      expect(new URLSearchParams(window.location.search).get("view")).toBeNull(),
+    );
+    expect(screen.queryByText(summaryText)).not.toBeInTheDocument();
+  });
+
   it("states that no rejected candidate exists instead of inventing one", async () => {
     const event = normalizeEvents(rawRows)[0];
     const state: PlannerState = {
@@ -359,6 +416,11 @@ describe("30-second planner", () => {
     expect(
       screen.queryByRole("button", { name: /从路线移除：测试活动1/u }),
     ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", {
+        name: /从推荐路线移除并重算：测试活动2/u,
+      }),
+    ).not.toBeInTheDocument();
 
     await user.click(
       screen.getByRole("button", { name: /从路线移除：测试活动2/u }),
@@ -370,6 +432,47 @@ describe("30-second planner", () => {
     expect(screen.getByText("测试活动1")).toBeInTheDocument();
     expect(screen.getByText("测试活动3")).toBeInTheDocument();
     expect(screen.queryByText("测试活动2")).not.toBeInTheDocument();
+  });
+
+  it("removes an automatic recommendation and recalculates the next-best route", async () => {
+    const events = [
+      plannerEvent(1, "09:00", "10:00"),
+      plannerEvent(2, "10:10", "11:10"),
+      plannerEvent(3, "11:20", "12:20"),
+    ];
+    const state: PlannerState = {
+      dates: ["2026-07-17"],
+      availability: {},
+      interests: ["大模型与AI基础"],
+      identity: null,
+      goals: [],
+      pace: "relaxed",
+      selectedEventIds: [],
+      excludedEventIds: [],
+    };
+    const user = userEvent.setup();
+    render(<StatefulPlanner events={events} initialState={state} />);
+
+    await user.click(screen.getByRole("button", { name: "生成我的路线" }));
+    expect(screen.getByText("路线包含 2 场活动")).toBeInTheDocument();
+    expect(screen.getByText("测试活动1")).toBeInTheDocument();
+    expect(screen.getByText("测试活动2")).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "从推荐路线移除并重算：测试活动1",
+      }),
+    );
+
+    await waitFor(() =>
+      expect(
+        JSON.parse(screen.getByLabelText("planner state").textContent ?? "{}"),
+      ).toMatchObject({ excludedEventIds: [1] }),
+    );
+    expect(screen.queryByText("测试活动1")).not.toBeInTheDocument();
+    expect(screen.getByText("测试活动2")).toBeInTheDocument();
+    expect(screen.getByText("测试活动3")).toBeInTheDocument();
+    expect(screen.getByText("路线包含 2 场活动")).toBeInTheDocument();
   });
 
   it("keeps a removed highest-match fixed event excluded after recomputing", async () => {
@@ -433,6 +536,7 @@ describe("30-second planner", () => {
     await waitFor(() =>
       expect(screen.getByText("路线包含 1 场活动")).toBeInTheDocument(),
     );
+    expect(new URLSearchParams(window.location.search).get("view")).toBe("route");
     expect(
       within(screen.getByRole("region", { name: "路线注意力预算" })).getByText(
         "1 场",
@@ -457,6 +561,7 @@ describe("30-second planner", () => {
     await waitFor(() =>
       expect(screen.getByText("规划结果：0 场可行活动")).toBeInTheDocument(),
     );
+    expect(new URLSearchParams(window.location.search).get("view")).toBe("route");
     const persisted = JSON.parse(
       new URLSearchParams(window.location.search).get("plan") ?? "{}",
     ) as PlannerState & { excludedEventIds: number[] };

@@ -14,7 +14,9 @@
   --muted: #5d6680;
   --cyan: #168ba1;
   --orange: #d86d32;
+  --orange-text: #9c431d;
   --green: #2e8b68;
+  --green-text: #226f53;
   --shadow: 0 22px 70px rgb(42 55 118 / 0.14);
   font-family:
     "SF Pro Display", "SF Pro Text", "PingFang SC", "Microsoft YaHei",
@@ -39,7 +41,9 @@
   --muted: #aeb7d4;
   --cyan: #56c2d6;
   --orange: #ef9b63;
+  --orange-text: #ef9b63;
   --green: #65c99b;
+  --green-text: #65c99b;
   --shadow: 0 24px 80px rgb(0 0 0 / 0.34);
 }
 
@@ -875,7 +879,7 @@ a {
 .control-message {
   min-height: 18px;
   margin: 8px 0 0;
-  color: var(--orange);
+  color: var(--orange-text);
   font-size: 12px;
 }
 
@@ -921,7 +925,7 @@ a {
   align-items: flex-start;
   gap: 8px;
   margin: 12px 0 0;
-  color: var(--orange);
+  color: var(--orange-text);
   font-size: 11px;
   line-height: 1.5;
 }
@@ -969,7 +973,7 @@ a {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--green);
+  color: var(--green-text);
   font-size: 18px;
   font-weight: 800;
 }
@@ -1001,9 +1005,40 @@ a {
 .route-action-status {
   flex-basis: 100%;
   min-height: 16px;
-  color: var(--green);
+  color: var(--green-text);
   font-size: 11px;
   text-align: right;
+}
+
+.route-eligibility-note {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  margin: 0 0 24px;
+  padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--orange), transparent 70%);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface), var(--orange) 6%);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.route-eligibility-note > svg {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  color: var(--orange);
+}
+
+.route-eligibility-note p {
+  margin: 0;
+}
+
+.route-eligibility-note a {
+  display: inline-block;
+  margin-top: 5px;
+  color: var(--accent-strong);
+  font-weight: 760;
 }
 
 .attention-budget {
@@ -1139,7 +1174,7 @@ a {
 }
 
 .route-buffer {
-  color: var(--orange);
+  color: var(--orange-text);
 }
 
 .route-reasons {
@@ -1152,10 +1187,36 @@ a {
 .route-reasons span {
   padding: 5px 9px;
   border-radius: 999px;
-  color: var(--green);
+  color: var(--green-text);
   background: color-mix(in srgb, var(--green), transparent 90%);
   font-size: 10px;
   font-weight: 680;
+}
+
+.route-exclude-button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  color: var(--muted);
+  background: var(--surface);
+  font-size: 11px;
+  font-weight: 720;
+  cursor: pointer;
+}
+
+.route-exclude-button:hover {
+  border-color: var(--orange-text);
+  color: var(--orange-text);
+}
+
+.route-exclude-button svg {
+  width: 14px;
+  height: 14px;
 }
 
 .rejected-section,
@@ -1205,7 +1266,7 @@ a {
 
 .rejected-list article p {
   margin: 0;
-  color: var(--orange);
+  color: var(--orange-text);
   font-size: 11px;
 }
 
@@ -1266,7 +1327,7 @@ a {
 .planner-error code {
   display: block;
   margin-top: 12px;
-  color: var(--orange);
+  color: var(--orange-text);
   font-size: 11px;
   white-space: normal;
 }
@@ -1311,8 +1372,8 @@ a {
 }
 
 .remove-event-button:hover {
-  border-color: var(--orange);
-  color: var(--orange);
+  border-color: var(--orange-text);
+  color: var(--orange-text);
 }
 
 .remove-event-button svg {
@@ -2230,6 +2291,10 @@ a {
     width: min(100% - 32px, 100%);
     margin-bottom: 88px;
     scroll-margin-top: 143px;
+  }
+
+  .landscape-section {
+    scroll-margin-top: 167px;
   }
 
   .section-heading {
