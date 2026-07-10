@@ -52,6 +52,39 @@ const EXPECTED_HEADER = [
   "展馆",
 ] as const;
 
+const EXPECTED_DATE_COUNTS: Record<WaicDate, number> = {
+  "2026-07-17": 27,
+  "2026-07-18": 65,
+  "2026-07-19": 64,
+  "2026-07-20": 19,
+};
+
+const EXPECTED_CATEGORY_COUNTS: Record<EventCategory, number> = {
+  综合论坛: 45,
+  大模型与AI基础: 35,
+  算力与AI芯片: 22,
+  产业与工业智能化: 32,
+  机器人与具身智能: 5,
+  前沿科技与探索: 5,
+  治理标准与政策: 7,
+  金融与科技投资: 4,
+  内容创意与AIGC: 4,
+  教育与人才发展: 9,
+  医疗与生命科学: 3,
+  能源与可持续发展: 3,
+  女性与多元发展: 1,
+};
+
+const EXPECTED_VENUE_COUNTS: Record<VenueCategory, number> = {
+  世博中心: 91,
+  世博展览馆: 28,
+  西岸国际会展中心: 25,
+  世博桐森酒店: 13,
+  世博滨江酒店: 5,
+  张江科学会堂: 5,
+  其他场馆: 8,
+};
+
 function requireText(value: unknown, fieldName: string): string {
   if (typeof value !== "string" || value.trim().length === 0) {
     throw new Error(`${fieldName} must be a non-empty string`);
@@ -78,6 +111,27 @@ function withEventContext<T>(id: number, operation: () => T): T {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`event ${id} ${message}`);
+  }
+}
+
+function assertDistribution<T>(
+  items: readonly T[],
+  label: string,
+  expected: Readonly<Record<string, number>>,
+  keyOf: (item: T) => string,
+): void {
+  const actual = countBy(items, keyOf);
+  const entries = Object.entries(expected);
+  const matches =
+    Object.keys(actual).length === entries.length &&
+    entries.every(([key, count]) => actual[key] === count);
+
+  if (!matches) {
+    const format = (counts: Readonly<Record<string, number>>) =>
+      entries.map(([key]) => `${key}:${counts[key] ?? 0}`).join(", ");
+    throw new Error(
+      `${label} distribution does not match the WAIC source; expected ${format(expected)}; received ${format(actual)}`,
+    );
   }
 }
 
@@ -255,6 +309,14 @@ export function normalizeEvents(input: unknown): WaicEvent[] {
       throw new Error(`missing event id ${index + 1}`);
     }
   });
+
+  assertDistribution(events, "date", EXPECTED_DATE_COUNTS, (event) => event.date);
+  assertDistribution(events, "category", EXPECTED_CATEGORY_COUNTS, (event) =>
+    event.category,
+  );
+  assertDistribution(events, "venue", EXPECTED_VENUE_COUNTS, (event) =>
+    event.venue.zh,
+  );
 
   return events;
 }

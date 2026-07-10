@@ -183,4 +183,36 @@ describe("normalizeEvents", () => {
       "event 1 time end must be later than start",
     );
   });
+
+  it("rejects valid dates when the fixed four-day distribution drifts", () => {
+    const rows = cloneRows();
+    rows[1][3] = "7月18日";
+    rows[1][4] = "7月18日 14:00-17:00\nJuly 18th 14:00-17:00";
+
+    expect(() => normalizeEvents(rows)).toThrow(
+      "date distribution does not match the WAIC source",
+    );
+  });
+
+  it("rejects valid categories when the fixed track distribution drifts", () => {
+    const rows = cloneRows();
+    rows.slice(1).forEach((row) => {
+      row[1] = "综合论坛";
+    });
+
+    expect(() => normalizeEvents(rows)).toThrow(
+      "category distribution does not match the WAIC source",
+    );
+  });
+
+  it("rejects valid venues when the fixed venue distribution drifts", () => {
+    const rows = cloneRows();
+    rows.slice(1).forEach((row) => {
+      row[6] = "世博中心";
+    });
+
+    expect(() => normalizeEvents(rows)).toThrow(
+      "venue distribution does not match the WAIC source",
+    );
+  });
 });
