@@ -1,6 +1,8 @@
 import type { PlannedEvent, WaicEvent } from "./types";
 
 const CRLF = "\r\n";
+const MAX_CONTENT_LINE_OCTETS = 75;
+const UTF8_ENCODER = new TextEncoder();
 
 function unwrapEvent(item: PlannedEvent | WaicEvent): WaicEvent {
   return "event" in item ? item.event : item;
@@ -16,6 +18,27 @@ function compareEvents(left: WaicEvent, right: WaicEvent): number {
 
 function localDateTime(event: WaicEvent, time: string): string {
   return `${event.date.replaceAll("-", "")}T${time.replace(":", "")}00`;
+}
+
+function foldContentLine(line: string): string {
+  const physicalLines: string[] = [];
+  let current = "";
+  let currentOctets = 0;
+
+  for (const character of line) {
+    const characterOctets = UTF8_ENCODER.encode(character).byteLength;
+    if (currentOctets + characterOctets > MAX_CONTENT_LINE_OCTETS) {
+      physicalLines.push(current);
+      current = ` ${character}`;
+      currentOctets = 1 + characterOctets;
+    } else {
+      current += character;
+      currentOctets += characterOctets;
+    }
+  }
+
+  physicalLines.push(current);
+  return physicalLines.join(CRLF);
 }
 
 export function escapeIcsText(value: string): string {
@@ -65,5 +88,5 @@ export function createRouteIcs(
   });
 
   lines.push("END:VCALENDAR");
-  return `${lines.join(CRLF)}${CRLF}`;
+  return `${lines.map(foldContentLine).join(CRLF)}${CRLF}`;
 }
