@@ -1,0 +1,1586 @@
+[
+  [
+    "序号",
+    "赛道分类",
+    "论坛名称",
+    "日期",
+    "时间",
+    "地点",
+    "展馆"
+  ],
+  [
+    1,
+    "治理标准与政策",
+    "2026世界人工智能大会暨人工智能全球治理高级别会议主论坛\n2026 WORLD AI CONFERENCE & HIGH-LEVEL MEETING ON GLOBAL AI GOVERNANCE MAIN FORUM",
+    "7月17日",
+    "7月17日 14:00-17:00\nJuly 17th 14:00-17:00",
+    "世博中心金厅A+B\nExpo Center Gold Hall A+B",
+    "世博中心"
+  ],
+  [
+    2,
+    "女性与多元发展",
+    "AI女性论坛\nAI Transformation · Her Edge The Rise of Women's Strength",
+    "7月17日",
+    "7月17日 13:30-15:20\nJuly 17th 13:30-15:20",
+    "西岸国际会展中心2号厅A\nWest Bund International Convention and Exhibition Center Hall 2A",
+    "西岸国际会展中心"
+  ],
+  [
+    3,
+    "治理标准与政策",
+    "全球人工智能创新治理中心·人工智能全球治理与可持续发展挑战与应对论坛\nCGAlG · Global Al Governance and Sustainable Development: Challenges and Responses",
+    "7月17日",
+    "7月17日 13:30-17:00\nJuly 17th 13:30-17:00",
+    "世博中心620会议室\nExpo Center Conference Room 620",
+    "世博中心"
+  ],
+  [
+    4,
+    "治理标准与政策",
+    "人工智能标准国际化论坛\nInternational Artificial Intelligence Standardization Forum",
+    "7月17日",
+    "7月17日 13:30-17:30\nJuly 17th 13:30-17:30",
+    "世博中心518会议室\nExpo Center Conference Room 518",
+    "世博中心"
+  ],
+  [
+    5,
+    "前沿科技与探索",
+    "数学与人工智能论坛\nResonance Summit: Al x Mathematics and the Next Paradigm Shift",
+    "7月17日",
+    "7月17日 13:25-18:00\nJuly 17th 13:25-18:00",
+    "世博中心银厅A\nExpo Center Silver Hall A",
+    "世博中心"
+  ],
+  [
+    6,
+    "能源与可持续发展",
+    "AI与先进核能共筑可持续智能未来论坛\nAl and Advanced Nuclear Energy for a Sustainable Intelligent Future",
+    "7月17日",
+    "7月17日 14:00-17:00\nJuly 17th 14:00-17:00",
+    "西岸国际会展中心402会议室\nWest Bund International Convention and Exhibition Center Conference Room 402",
+    "西岸国际会展中心"
+  ],
+  [
+    7,
+    "大模型与AI基础",
+    "人工智能+消费论坛\nArtificial Intelligence + Consumption Forum",
+    "7月17日",
+    "7月17日 14:00-17:00\nJuly 17th 14:00-17:00",
+    "世博展览馆1A会议室\nExpo Exhibition and Convention Center Conference Room 1A",
+    "世博展览馆"
+  ],
+  [
+    8,
+    "前沿科技与探索",
+    "上海量子城市空间智能建设论坛\nShanghai Quantum City Spatial Intelligence Construction Sub-Forum",
+    "7月17日",
+    "7月17日 14:00-17:00\nJuly 17th 14:00-17:00",
+    "上海市杨浦区共青路136号复兴岛“复兴云厅”\nFuxing Cloud Hall, No. 136 Gongqing Road, Fuxing Island, Yangpu District, Shanghai",
+    "其他场馆"
+  ],
+  [
+    9,
+    "产业与工业智能化",
+    "人工智能终端产业演进与协同发展论坛\nHigh-Quality Development Forum for the Artificial Intelligence Terminal Industry",
+    "7月17日",
+    "7月17日 14:00-17:00\nJuly 17th 14:00-17:00",
+    "世博展览馆2号会议室\nExpo Exhibition and Convention Center Conference Room 2",
+    "世博展览馆"
+  ],
+  [
+    10,
+    "医疗与生命科学",
+    "AI赋能生命健康新范式论坛\nAl Empowered New Paradigm for Life and Health Forum",
+    "7月17日",
+    "7月17日 14:00-17:00\nJuly 17th 14:00-17:00",
+    "世博中心616会议室\nExpo Center Conference Room 616",
+    "世博中心"
+  ],
+  [
+    11,
+    "治理标准与政策",
+    "人工智能赋能无线电创新论坛\nAl-Empowered Radio Innovation and Development Forum",
+    "7月17日",
+    "7月17日 14:00-17:00\nJuly 17th 14:00-17:00",
+    "世博中心618会议室\nExpo Center Conference Room 618",
+    "世博中心"
+  ],
+  [
+    12,
+    "大模型与AI基础",
+    "AI Agent时代的一人公司与Token经济论坛\nOne-Person Company and Token Economics in the Al Agent Era",
+    "7月17日",
+    "7月17日 14:00-17:00\nJuly 17th 14:00-17:00",
+    "世博展览馆H4创新舞台\nExpo Exhibition and Convention Center Innovation Stage, Exhibition Hall4",
+    "世博展览馆"
+  ],
+  [
+    13,
+    "能源与可持续发展",
+    "人工智能与能源双向赋能论坛\nSub-forum 'Mutual Empowerment of Al and Energy'",
+    "7月17日",
+    "7月17日 14:00-17:00\nJuly 17th 14:00-17:00",
+    "世博中心金厅C\nExpo Center Gold Hall C",
+    "世博中心"
+  ],
+  [
+    14,
+    "教育与人才发展",
+    "“人机共育·重塑大学”人工智能+教育论坛\nReimagining the University for an Al-Driven Future",
+    "7月17日",
+    "7月17日 14:00-17:30\nJuly 17th 14:00-17:30",
+    "世博中心红厅\nExpo Center Red Hall",
+    "世博中心"
+  ],
+  [
+    15,
+    "算力与AI芯片",
+    "RISC-V与AI融合发展论坛\nRISC-V & Al Integrated Development Forum",
+    "7月17日",
+    "7月17日 14:00-17:00\nJuly 17th 14:00-17:00",
+    "世博中心617会议室\nExpo Center Conference Room 617",
+    "世博中心"
+  ],
+  [
+    16,
+    "大模型与AI基础",
+    "从一次性Agent到记忆原生智能时代论坛\nBuild with Memory, From One-off Agents to Memory-Native Intelligence",
+    "7月17日",
+    "7月17日 14:30-18:00\nJuly 17th 14:30-18:00",
+    "世博展览馆9号会议室\nExpo Exhibition and Convention Center Conference Room 9",
+    "世博展览馆"
+  ],
+  [
+    17,
+    "算力与AI芯片",
+    "智算超节点与算电协同论坛\nForum on Intelligent Computing Super-nodes and Computing-Power Synergy",
+    "7月17日",
+    "7月17日 14:00-17:30\nJuly 17th 14:00-17:30",
+    "世博展览馆8号会议室\nExpo Exhibition and Convention Center Conference Room 8",
+    "世博展览馆"
+  ],
+  [
+    18,
+    "产业与工业智能化",
+    "物理AI重塑智能制造论坛\nPhysical Al for Next Generation Manufacturing",
+    "7月17日",
+    "7月17日 14:00-17:30\nJuly 17th 14:00-17:30",
+    "西岸国际会展中心401会议室\nWest Bund International Convention and Exhibition Center Conference Room 401",
+    "西岸国际会展中心"
+  ],
+  [
+    19,
+    "治理标准与政策",
+    "人工智能规则全球对话与协同发展论坛\nGlobal Al Policy Dialogue and Collaboration Development Forum",
+    "7月17日",
+    "7月17日 14:00-18:00\nJuly 17th 14:00-18:00",
+    "世博中心619会议室\nExpo Center Conference Room 619",
+    "世博中心"
+  ],
+  [
+    20,
+    "前沿科技与探索",
+    "人工智能赋能材料科学论坛\nAl for Materials Forum",
+    "7月17日",
+    "7月17日 14:00-18:00\nJuly 17th 14:00-18:00",
+    "西岸国际会展中心2号厅C\nWest Bund International Convention and Exhibition Center Hall 2C",
+    "西岸国际会展中心"
+  ],
+  [
+    21,
+    "产业与工业智能化",
+    "模数同频智造共振AI赋能新型工业化发展论坛\nSynchronizing Models & Data, Resonating Smart Manufacturing: Al Empowering New Industrialization Forum",
+    "7月17日",
+    "7月17日 14:00-16:20\nJuly 17th 14:00-16:20",
+    "世博中心银厅B\nExpo Center Silver Hall B",
+    "世博中心"
+  ],
+  [
+    22,
+    "产业与工业智能化",
+    "“智赋新质 全域焕新”企业人工智能高质量发展论坛\nAl Empowers New Quality Productive Forces · Comprehensive Renewal",
+    "7月17日",
+    "7月17日 14:30-17:00\nJuly 17th 14:30-17:00",
+    "世博中心银厅C+D\nExpo Center Silver Hall C+D",
+    "世博中心"
+  ],
+  [
+    23,
+    "大模型与AI基础",
+    "AI驱动经济前沿与全球协同论坛\nSeminar on Fostering Economic Innovation and Global Collaboration through Al",
+    "7月17日",
+    "7月17日 14:30-17:00\nJuly 17th 14:30-17:00",
+    "世博中心517会议室\nExpo Center Conference Room 517",
+    "世博中心"
+  ],
+  [
+    24,
+    "综合论坛",
+    "人工智能赋能全民早期预警携手应对气候变化论坛\nAl Empowering Early Warnings for All in Response to Climate Change",
+    "7月17日",
+    "7月17日 14:30-17:30\nJuly 17th 14:30-17:30",
+    "世博滨江酒店四季厅\nExpo Riverside Hotel Four Seasons Hall",
+    "世博滨江酒店"
+  ],
+  [
+    25,
+    "综合论坛",
+    "共赢金砖论坛\nWin-Win BRICS Scientific Frontier Forum",
+    "7月17日",
+    "7月17日 15:00-18:40\nJuly 17th 15:00-18:40",
+    "西岸国际会展中心2号厅B\nWest Bund International Convention and Exhibition Center Hall 2B",
+    "西岸国际会展中心"
+  ],
+  [
+    26,
+    "前沿科技与探索",
+    "科学前沿论坛\nScientific Frontier Forum",
+    "7月17日",
+    "7月17日 15:00-18:45\nJuly 17th 15:00-18:45",
+    "上海市徐汇区龙兰路801号上海人工智能实验室新园区\nShanghai Artificial Intelligence Laboratory New Campus No.801 Longlan Road, Xuhui District, Shanghai, China",
+    "其他场馆"
+  ],
+  [
+    27,
+    "综合论坛",
+    "WAICA·世界人工智能大会学术2026启动会\nWAICA 2026 Opening Ceremony",
+    "7月18日",
+    "7月18日 09:00-11:30\nJuly 18th 09:00-11:30",
+    "世博展览馆2号会议室\nExpo Exhibition and Convention Center Conference Room 2",
+    "世博展览馆"
+  ],
+  [
+    28,
+    "综合论坛",
+    "创造下一代人工智能论坛\nArtificial Intelligence Journey: Creating the Next Generation of Al",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "世博中心518会议室\nExpo Center Conference Room 518",
+    "世博中心"
+  ],
+  [
+    29,
+    "综合论坛",
+    "智能社会论坛：迈向人机共生的智能社会\nTongji University · Intelligent Society Forum: Towards a Human-Machine Symbiotic Intelligent Society",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "上海世博桐森酒店桐森厅3\nThompson Shanghai Expo Thompson Hall 3",
+    "世博桐森酒店"
+  ],
+  [
+    30,
+    "综合论坛",
+    "人工智能创新发展论坛\nCECLOUD Forum on Al Innovation and Development",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "上海世博桐森酒店多功能厅1+2\nThompson Shanghai Expo Multi-functional Hall 1+2",
+    "世博桐森酒店"
+  ],
+  [
+    31,
+    "算力与AI芯片",
+    "全栈智算生态论坛\nZTE Full-Stack Intelligent Computing Ecosystem Forum",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "世博中心616会议室\nExpo Center Conference Room 616",
+    "世博中心"
+  ],
+  [
+    32,
+    "大模型与AI基础",
+    "认知智能论坛\nCognition of the World, Innovation for Future",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "世博中心515会议室\nExpo Center Conference Room 515",
+    "世博中心"
+  ],
+  [
+    33,
+    "综合论坛",
+    "两岸人工智能融合发展创新论坛\nCross-Straits Forum on Artificial Intelligence Integrated Development and Innovation",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "世博中心617会议室\nExpo Center Conference Room 617",
+    "世博中心"
+  ],
+  [
+    34,
+    "大模型与AI基础",
+    "基座大模型架构创新与生态合作论坛\nSenseTime Foundation Large Model Architecture Innovation & Ecosystem Cooperation Forum",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "世博中心银厅A\nExpo Center Silver Hall A",
+    "世博中心"
+  ],
+  [
+    35,
+    "综合论坛",
+    "AI管理创新论坛\nUnlocking Hidden Value Al for Management Innovation Forum",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "世博中心619会议室\nExpo Center Conference Room 619",
+    "世博中心"
+  ],
+  [
+    36,
+    "算力与AI芯片",
+    "大规模国产算力系统驱动AI+规模化落地论坛\nLarge-Scale Homegrown Computing Systems Driving Al+ Scaled Application Forum",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "张江科学会堂204会议室\nZhangjiang Science Hall Conference Room 204",
+    "张江科学会堂"
+  ],
+  [
+    37,
+    "综合论坛",
+    "星辰共生人工智能生态论坛\nChina Telecom Artificial Intelligence Ecological Conference (2026)",
+    "7月18日",
+    "7月18日 09:30-12:00\nJuly 18th 09:30-12:00",
+    "世博中心金厅A+B\nExpo Center Gold Hall A+B",
+    "世博中心"
+  ],
+  [
+    38,
+    "产业与工业智能化",
+    "实体世界智能科学论坛\nAl for the Real World",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "世博中心金厅C\nExpo Center Gold Hall C",
+    "世博中心"
+  ],
+  [
+    39,
+    "产业与工业智能化",
+    "AI产业技术安全生态论坛\nTophant Al Industry Technology Security Forum",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "世博展览馆9号会议室\nExpo Exhibition and Convention Center Conference Room9",
+    "世博展览馆"
+  ],
+  [
+    40,
+    "综合论坛",
+    "智擎未来人工智能应用创新论坛\nChina Tower \"Intelligent Engine for the Future\" Al Application Innovation Forum",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "世博中心618会议室\nExpo Center Conference Room 618",
+    "世博中心"
+  ],
+  [
+    41,
+    "治理标准与政策",
+    "全球人工智能治理的可能路径论坛\nFrom Consensus to Action: Possible Pathways for Global Al Governance",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "上海世博桐森酒店桐森厅1+2\nThompson Shanghai Expo Thompson Hall 1+2",
+    "世博桐森酒店"
+  ],
+  [
+    42,
+    "综合论坛",
+    "Al in Action应用创新论坛\nAl in Action Tencent Al Applications Forum",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "西岸国际会展中心2号厅B\nWest Bund International Convention and Exhibition Center Hall 2B",
+    "西岸国际会展中心"
+  ],
+  [
+    43,
+    "大模型与AI基础",
+    "AgenticCloud:智能体时代的基础设施论坛\nAgentic Cloud: Infrastructure for the Agentic Era",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "世博中心银厅C+D\nExpo Center Silver Hall C+D",
+    "世博中心"
+  ],
+  [
+    44,
+    "算力与AI芯片",
+    "以开放互联释放多元算力效能—AI算力技术架构创新论坛\nAI Computing Architecture Innovation Forum",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "世博中心银厅B\nExpo Center Silver Hall B",
+    "世博中心"
+  ],
+  [
+    45,
+    "教育与人才发展",
+    "新声归潮AI上海创新资源对接会暨2026青年海归科技对话论坛\nAl Innovation Resource Matchmaking Summit",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "西岸国际会展中心401会议室\nWest Bund International Convention and Exhibition Center Conference Room 401",
+    "西岸国际会展中心"
+  ],
+  [
+    46,
+    "产业与工业智能化",
+    "AI进入物理世界:模型、数据、终端与场景\nAl into the Physical World: Models, Data, Devices, and Use cases",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "世博展览馆1A会议室\nExpo Exhibition and Convention Center Conference Room 1A",
+    "世博展览馆"
+  ],
+  [
+    47,
+    "算力与AI芯片",
+    "RISC-V和物理智能论坛\nRISC-V and Physical Al Forum",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "张江科学会堂科创厅\nZhangjiang Science Hall Inspire Hall",
+    "张江科学会堂"
+  ],
+  [
+    48,
+    "大模型与AI基础",
+    "词元时代万物智能论坛\nToken Era: Intelligence of Things",
+    "7月18日",
+    "7月18日 09:00-12:30\nJuly 18th 09:00-12:30",
+    "世博展览馆1B会议室\nExpo Exhibition and Convention Center Conference Room 1B",
+    "世博展览馆"
+  ],
+  [
+    49,
+    "金融与科技投资",
+    "AI原生与硬科技投资生态论坛\nAl-Native & Hard Tech Investment Ecosystem Forum",
+    "7月18日",
+    "7月18日 09:00-12:00\nJuly 18th 09:00-12:00",
+    "世博展览馆H4领航舞台\nExpo Exhibition and Convention Center - Pioneer Stage, Exhibition Hall4",
+    "世博展览馆"
+  ],
+  [
+    50,
+    "产业与工业智能化",
+    "企业智能体产业论坛\nEnterprise Agent Forum",
+    "7月18日",
+    "7月18日 09:30-11:30\nJuly 18th 09:30-11:30",
+    "上海世博桐森酒店盛宴厅\nThompson Shanghai Expo Banquet Hall",
+    "世博桐森酒店"
+  ],
+  [
+    51,
+    "教育与人才发展",
+    "人工智能青年先锋对话论坛\nIntelligence Pioneers Dialogue among Chinese Youth Artificial",
+    "7月18日",
+    "7月18日 09:30-11:30\nJuly 18th 09:30-11:30",
+    "西岸国际会展中心2号厅C\nWest Bund International Convention and Exhibition Center Hall 2C",
+    "西岸国际会展中心"
+  ],
+  [
+    52,
+    "综合论坛",
+    "AI应用创新全球论坛\nAl Computing Applications Innovation Global Forum2026",
+    "7月18日",
+    "7月18日 09:30-11:30\nJuly 18th 09:30-11:30",
+    "世博中心620会议室\nExpo Center Conference Room 620",
+    "世博中心"
+  ],
+  [
+    53,
+    "算力与AI芯片",
+    "光计算与光互连双轮驱动的AI基础设施新范式论坛\nOptical Computing and Optical Interconnects: A New Dual-Engine Paradigm for Al Infrastructure Forum",
+    "7月18日",
+    "7月18日 09:30-11:30\nJuly 18th 09:30-11:30",
+    "世博中心517会议室\nExpo Center Conference Room 517",
+    "世博中心"
+  ],
+  [
+    54,
+    "产业与工业智能化",
+    "具身智能前沿趋势与产业生态论坛\nForum on Frontier Trends and Industrial Ecosystem of Embodied Intelligence",
+    "7月18日",
+    "7月18日 09:30-11:30\nJuly 18th 09:30-11:30",
+    "西岸国际会展中心402会议室\nWest Bund International Convention and Exhibition Center Conference Room 402",
+    "西岸国际会展中心"
+  ],
+  [
+    55,
+    "产业与工业智能化",
+    "工业AI迈进现实-工业AI创新论坛暨Eigen工程智能体发布会\nMake Industrial Al Real - Siemens Industrial Al Innovation Forum and Eigen Engineering Agent Launch Ceremony",
+    "7月18日",
+    "7月18日 09:30-11:30\nJuly 18th 09:30-11:30",
+    "世博中心红厅\nExpo Center Red Hall",
+    "世博中心"
+  ],
+  [
+    56,
+    "大模型与AI基础",
+    "AI未来发展论坛\nAl Future Forum",
+    "7月18日",
+    "7月18日 09:30-12:00\nJuly 18th 09:30-12:00",
+    "西岸国际会展中心2号厅A\nWest Bund International Convention and Exhibition Center Hall 2A",
+    "西岸国际会展中心"
+  ],
+  [
+    57,
+    "产业与工业智能化",
+    "WAIC企业家论坛\nWAIC Entrepreneurs Forum",
+    "7月18日",
+    "7月18日 13:00-17:00\nJuly 18th 13:00-17:00",
+    "上海世博桐森酒店桐森厅1+2\nThompson Shanghai Expo Thompson Hall 1+2",
+    "世博桐森酒店"
+  ],
+  [
+    58,
+    "治理标准与政策",
+    "智法共生·法律大模型推理革新与应用生态论坛\nLegal Tech Scenario Restructuring & Global Governance in the LLM Era",
+    "7月18日",
+    "7月18日 13:30-17:00\nJuly 18th 13:30-17:00",
+    "世博展览馆1A会议室\nExpo Exhibition and Convention Center Conference Room 1A",
+    "世博展览馆"
+  ],
+  [
+    59,
+    "产业与工业智能化",
+    "实体世界智能科学论坛\nAl for the Real World",
+    "7月18日",
+    "7月18日 13:30-17:00\nJuly 18th 13:30-17:00",
+    "世博中心金厅C\nExpo Center Gold Hall C",
+    "世博中心"
+  ],
+  [
+    60,
+    "大模型与AI基础",
+    "心智与智能青年生态论坛\nMind Meets Machine Youth Forum",
+    "7月18日",
+    "7月18日 13:30-17:00\nJuly 18th 13:30-17:00",
+    "西岸国际会展中心402会议室\nWest Bund International Convention and Exhibition Center Conference Room 402",
+    "西岸国际会展中心"
+  ],
+  [
+    61,
+    "综合论坛",
+    "AI创新者思享汇\nAl Innovators Summit & Thought Share",
+    "7月18日",
+    "7月18日 13:30-17:00\nJuly 18th 13:30-17:00",
+    "世博展览馆9号会议室\nExpo Exhibition and Convention Center Conference Room9",
+    "世博展览馆"
+  ],
+  [
+    62,
+    "大模型与AI基础",
+    "从大模型到智能体迈向自主智能新纪元论坛\nCAICT Agent Forum: From Large Models to Agents Towards a New Era of Autonomous Intelligence Forum",
+    "7月18日",
+    "7月18日 13:30-17:30\nJuly 18th 13:30-17:30",
+    "西岸国际会展中心2号厅B\nWest Bund International Convention and Exhibition Center Hall 2B",
+    "西岸国际会展中心"
+  ],
+  [
+    63,
+    "算力与AI芯片",
+    "人工智能时代的开放计算与产业生态论坛\nOpen Computing Infrastructure Empowering Digital-Intelligent Application Innovation Forum",
+    "7月18日",
+    "7月18日 13:30-17:30\nJuly 18th 13:30-17:30",
+    "张江科学会堂科创厅\nZhangjiang Science Hall Inspire Hall",
+    "张江科学会堂"
+  ],
+  [
+    64,
+    "算力与AI芯片",
+    "未来计算与未来算力论坛\nFuture Computing - Future Computing Power Forum",
+    "7月18日",
+    "7月18日 13:30-17:30\nJuly 18th 13:30-17:30",
+    "世博中心红厅\nExpo Center Red Hall",
+    "世博中心"
+  ],
+  [
+    65,
+    "金融与科技投资",
+    "智见AI合创未来—人工智能投融资论坛\nAl Foresight, Co-creating the Future Al Investment & Financing Forum",
+    "7月18日",
+    "7月18日 13:30-18:00\nJuly 18th 13:30-18:00",
+    "世博中心银厅A\nExpo Center Silver Hall A",
+    "世博中心"
+  ],
+  [
+    66,
+    "内容创意与AIGC",
+    "从量产到精品·Al赋能影视内容创作新生态论坛\nShanghai Al-Powered Micro-Short Drama Industry Development Forum",
+    "7月18日",
+    "7月18日 14:00-16:00\nJuly 18th 14:00-16:00",
+    "世博滨江酒店四季厅\nExpo Riverside Hotel Four Seasons Hall",
+    "世博滨江酒店"
+  ],
+  [
+    67,
+    "产业与工业智能化",
+    "产业数据智能跃迁与普惠论坛\nIndustrial Data Intelligence: Transformation and Inclusion",
+    "7月18日",
+    "7月18日 14:00-16:45\nJuly 18th 14:00-16:45",
+    "世博中心515会议室\nExpo Center Conference Room 515",
+    "世博中心"
+  ],
+  [
+    68,
+    "算力与AI芯片",
+    "面向10亿瓦级AI工厂的网络创新论坛\nNetwork innovation for Giga-scale Al factories",
+    "7月18日",
+    "7月18日 14:00-17:00\nJuly 18th 14:00-17:00",
+    "世博中心517会议室\nExpo Center Conference Room 517",
+    "世博中心"
+  ],
+  [
+    69,
+    "能源与可持续发展",
+    "领深蓝Al+船海产业实景应用论坛\nGreen Innovation & Blue Intelligence: Al Real-World Applications in Maritime & Shipbuilding Industry",
+    "7月18日",
+    "7月18日 14:00-17:00\nJuly 18th 14:00-17:00",
+    "世博展览馆1B会议室\nExpo Exhibition and Convention Center Conference Room 1B",
+    "世博展览馆"
+  ],
+  [
+    70,
+    "大模型与AI基础",
+    "AgenticAI进场重塑全球供应链创新论\nAGENTIC AI ENTERS THE GAME-RESHAPING GLOBAL SUPPLY CHAINS",
+    "7月18日",
+    "7月18日 14:00-17:00\nJuly 18th 14:00-17:00",
+    "世博中心518会议室\nExpo Center Conference Room518",
+    "世博中心"
+  ],
+  [
+    71,
+    "算力与AI芯片",
+    "芯智相融Al启未来产融生态合作论坛\nChip & Intelligence Integrated, Al Powers the Future Forum",
+    "7月18日",
+    "7月18日 14:00-17:00\nJuly 18th 14:00-17:00",
+    "世博中心617会议室\nExpo Center Conference Room 617",
+    "世博中心"
+  ],
+  [
+    72,
+    "算力与AI芯片",
+    "算力基础设施与AI芯片协同发展论坛\nForum on Computing Infrastructure and Al Chip Collaborative Development",
+    "7月18日",
+    "7月18日 14:00-17:00\nJuly 18th 14:00-17:00",
+    "上海世博桐森酒店桐森厅3\nThompson Shanghai Expo Thompson Hall 3",
+    "世博桐森酒店"
+  ],
+  [
+    73,
+    "综合论坛",
+    "迈向决策智能的技术与应用探索\nTechnology and Application Explorations on the Path to Decision Intelligence",
+    "7月18日",
+    "7月18日 14:00-17:00\nJuly 18th 14:00-17:00",
+    "上海世博桐森酒店多功能厅1+2\nThompson Shanghai Expo Multi-functional Hall 1+2",
+    "世博桐森酒店"
+  ],
+  [
+    74,
+    "大模型与AI基础",
+    "Token经济协同芯片生态论坛\nA Collaborative Chip Ecosystem for the Token Economy",
+    "7月18日",
+    "7月18日 14:00-17:00\nJuly 18th 14:00-17:00",
+    "世博中心银厅B\nExpo Center Silver Hall B",
+    "世博中心"
+  ],
+  [
+    75,
+    "大模型与AI基础",
+    "全栈AI赋能民生福祉论坛\nFull-Stack Al for People's Well-being",
+    "7月18日",
+    "7月18日 14:00-17:00\nJuly 18th 14:00-17:00",
+    "世博中心616会议室\nExpo Center Conference Room 616",
+    "世博中心"
+  ],
+  [
+    76,
+    "大模型与AI基础",
+    "AGI前夜:智能如何突破自己的上限\nAGI on the Horizon: How Can Intelligence Transcend Its Own Limits",
+    "7月18日",
+    "7月18日 14:00-17:00\nJuly 18th 14:00-17:00",
+    "上海世博桐森酒店盛宴厅\nThompson Shanghai Expo Banquet Hall",
+    "世博桐森酒店"
+  ],
+  [
+    77,
+    "综合论坛",
+    "语料创新发展论坛\nCorpus as Base, Intelligence in Rise",
+    "7月18日",
+    "7月18日 14:00-17:00\nJuly 18th 14:00-17:00",
+    "世博中心金厅A+B\nExpo Center Gold Hall A+B",
+    "世博中心"
+  ],
+  [
+    78,
+    "教育与人才发展",
+    "AI青年创变者创新论坛\nAl Youth Innovators Innovation Forum",
+    "7月18日",
+    "7月18日 14:00-17:30\nJuly 18th 14:00-17:30",
+    "西岸国际会展中心401会议室\nWest Bund International Convention and Exhibition Center Conference Room 401",
+    "西岸国际会展中心"
+  ],
+  [
+    79,
+    "医疗与生命科学",
+    "AI在全球医疗领域的应用实践与监督机制论坛\nThe Real-World Application and Governance Mechanisms of Al in Global Healthcare",
+    "7月18日",
+    "7月18日 14:00-17:00\nJuly 18th 14:00-17:00",
+    "世博中心430会议室\nExpo Center Conference Room 430",
+    "世博中心"
+  ],
+  [
+    80,
+    "机器人与具身智能",
+    "从数字屏幕到具身智能物理世界新范式论坛\nBeyond the Screen: Embodied Al and the New Paradigm for the Physical World",
+    "7月18日",
+    "7月18日 14:00-17:00\nJuly 18th 14:00-17:00",
+    "世博中心银厅C+D\nExpo Center Silver Hall C+D",
+    "世博中心"
+  ],
+  [
+    81,
+    "大模型与AI基础",
+    "认知涌现·数据新生人工智能论坛\nTranswarp Technology \"Cognitive Emergence, Data Reborn\" Al Forum",
+    "7月18日",
+    "7月18日 14:00-17:00\nJuly 18th 14:00-17:00",
+    "世博中心619会议室\nExpo Center Conference Room 619",
+    "世博中心"
+  ],
+  [
+    82,
+    "内容创意与AIGC",
+    "AI浪潮下的媒体创新论坛\nMedia Innovation Forum in the Al Era",
+    "7月18日",
+    "7月18日 14:00-17:00\nJuly 18th 14:00-17:00",
+    "世博中心431会议室\nExpo Center Conference Room 431",
+    "世博中心"
+  ],
+  [
+    83,
+    "综合论坛",
+    "超智融合驱动Al4S发展论坛\nSupercomputing-Al Integration for Al4S Development Forum",
+    "7月18日",
+    "7月18日 14:00-17:00\nJuly 18th 14:00-17:00",
+    "世博中心618会议室\nExpo Center Conference Room 618",
+    "世博中心"
+  ],
+  [
+    84,
+    "综合论坛",
+    "WAICA - Main Track Session 1",
+    "7月18日",
+    "7月18日 14:00-17:00",
+    "世博展览馆8号会议室",
+    "世博展览馆"
+  ],
+  [
+    85,
+    "前沿科技与探索",
+    "AI网络前沿生态论坛\nAI Networking, Work as One",
+    "7月18日",
+    "7月18日 14:00-17:30\nJuly 18th 14:00-17:30",
+    "张江科学会堂204会议室\nZhangjiang Science Hall Conference Room 204",
+    "张江科学会堂"
+  ],
+  [
+    86,
+    "产业与工业智能化",
+    "AI企业的商业化突围与资本进阶论坛\nCommercial Breakthrough and Capital Advancement for Al Enterprises Forum",
+    "7月18日",
+    "7月18日 14:00-17:30\nJuly 18th 14:00-17:30",
+    "世博中心620会议室\nExpo Center Conference Room 620",
+    "世博中心"
+  ],
+  [
+    87,
+    "算力与AI芯片",
+    "算电协同XToken工厂东盟绿色智算与AI创新生态论坛\nComputing-Energy Synergy X Token Factory ASEAN Green Intelligent Computing and Al Innovation Ecosystem Conference",
+    "7月18日",
+    "7月18日 14:00-18:00\nJuly 18th 14:00-18:00",
+    "世博展览馆2号会议室\nExpo Exhibition and Convention Center Conference Room 2",
+    "世博展览馆"
+  ],
+  [
+    88,
+    "综合论坛",
+    "科学智能开放论坛\nAl for Science Discovery Forum",
+    "7月18日",
+    "7月18日 14:00-18:20\nJuly 18th 14:00-18:20",
+    "西岸国际会展中心2号厅C\nWest Bund International Convention and Exhibition Center Hall 2C",
+    "西岸国际会展中心"
+  ],
+  [
+    89,
+    "综合论坛",
+    "WAIC·思想者论坛姚期智专场\nWAIC Thought Leaders Forum -Prof.Andrew Chi-Chih Yao",
+    "7月19日",
+    "7月19日 09:00-10:00\nJuly 19th 09:00-10:00",
+    "世博中心红厅\nExpo Center Red Hall",
+    "世博中心"
+  ],
+  [
+    90,
+    "大模型与AI基础",
+    "向深处去:2026 Enterprise AGI价值落地与产业实证论坛\nEnterprise AGI: From Consensus to Commercial Value",
+    "7月19日",
+    "7月19日 09:00-11:10\nJuly 19th 09:00-11:10",
+    "世博中心蓝厅\nExpo Center Blue Hall",
+    "世博中心"
+  ],
+  [
+    91,
+    "算力与AI芯片",
+    "新一代智算云产业技术创新论坛\nNext-Generation Intelligent Computing Cloud Industry Technology Innovation Forum",
+    "7月19日",
+    "7月19日 09:00-11:40\nJuly 19th 09:00-11:40",
+    "世博中心金厅C\nExpo Center Gold Hall C",
+    "世博中心"
+  ],
+  [
+    92,
+    "大模型与AI基础",
+    "AI赋能智慧港口全球航运生态体系论坛\nSIPG-Port Al Empower Smart Ports to Co-Create A New Global Shipping Ecosystem",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "世博中心430会议室\nExpo Center Conference Room 430",
+    "世博中心"
+  ],
+  [
+    93,
+    "算力与AI芯片",
+    "专用算力时代下TPU的创新与共进论坛\nTPU Innovation and Collaborative Progress in the Era of Dedicated Computing Power",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "世博中心617会议室\nExpo Center Conference Room 617",
+    "世博中心"
+  ],
+  [
+    94,
+    "大模型与AI基础",
+    "数据要素赋能行业智能体论坛\nForum on Data Elements Empowering Industry Al Agents| China Association of Information",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "世博展览馆9号会议室\nExpo Exhibition and Convention Center Conference Room 9",
+    "世博展览馆"
+  ],
+  [
+    95,
+    "综合论坛",
+    "AI规模化落地与增长新蓝图生态论坛\nEmpowering Industries with Intelligence, Birthing New Value-Large-scale Al Implementation and New Blueprint for Growth",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "世博中心619会议室\nExpo Center Conference Room619",
+    "世博中心"
+  ],
+  [
+    96,
+    "产业与工业智能化",
+    "人工智能引领产业变革思客会\nXinhuanet Thinker Conference: Al-Driven Industrial Transformation",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "西岸国际会展中心2号厅B\nWest Bund International Convention and Exhibition Center Hall 2B",
+    "西岸国际会展中心"
+  ],
+  [
+    97,
+    "产业与工业智能化",
+    "世界物理模型:重塑工业AI新范式论坛\nWorld Physical Model: Reshaping the New Paradigm of Industrial Al",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "世博中心518会议室\nExpo Center Conference Room518",
+    "世博中心"
+  ],
+  [
+    98,
+    "算力与AI芯片",
+    "AI开放计算与智能体技术生态论坛\nOpen Compute for Al and Al Agent Ecosystem Forum",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "世博中心618会议室\nExpo Center Conference Room 618",
+    "世博中心"
+  ],
+  [
+    99,
+    "大模型与AI基础",
+    "端侧多模态基座赋能AI硬件论坛\nOm Al. End-side Multimodal Base Empowering Al Hardware Theme Forum",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "世博中心517会议室\nExpo Center Conference Room 517",
+    "世博中心"
+  ],
+  [
+    100,
+    "金融与科技投资",
+    "智能经济发展生态论坛\nIntelligent Economy Development Forum",
+    "7月19日",
+    "7月19日 09:00-12:30\nJuly 19th 09:00-12:30",
+    "世博展览馆2号会议室\nExpo Exhibition and Convention Center Conference Room 2",
+    "世博展览馆"
+  ],
+  [
+    101,
+    "产业与工业智能化",
+    "数智金融协同共创:Al+金融助力谱写高质量发展新篇章金融科技论坛\nDigital and Intelligent Finance, Synergistic Co-creation: Al + Finance Powers a New Chapter of High-Quality Development",
+    "7月19日",
+    "7月19日 09:00-11:20\nJuly 19th 09:00-11:20",
+    "世博中心银厅C+D\nExpo Center Silver Hall C+D",
+    "世博中心"
+  ],
+  [
+    102,
+    "产业与工业智能化",
+    "人工智能赋能物流网高质量发展论坛\nAl Empowering High-Quality Development of the Logistics Network",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "世博展览馆1B会议室\nExpo Exhibition and Convention Center Conference Room 1B",
+    "世博展览馆"
+  ],
+  [
+    103,
+    "产业与工业智能化",
+    "智在终端惠及千行On-device Al for All端侧AI创新和行业发展论坛\nForum on On-Device Al Innovation and Industrial Development",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "世博中心620会议室\nExpo Center Conference Room 620",
+    "世博中心"
+  ],
+  [
+    104,
+    "大模型与AI基础",
+    "从Token到材料配方AI4S产业创新生态论坛\nFrom Token to Formula: Al for Materials Industrial Innovation Ecosystem Forum",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "世博中心515会议室\nExpo Center Conference Room 515",
+    "世博中心"
+  ],
+  [
+    105,
+    "综合论坛",
+    "AI共生·智护未来论坛\nEmpower the Secure Future",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "世博中心616会议室\nExpo Center Conference Room616",
+    "世博中心"
+  ],
+  [
+    106,
+    "产业与工业智能化",
+    "东盟中国人工智能技术与产业合作生态论坛\nASEAN-China Al Technology & Industry Collaboration Forum",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "西岸国际会展中心401会议室\nWest Bund International Convention and Exhibition Center Conference Room 401",
+    "西岸国际会展中心"
+  ],
+  [
+    107,
+    "综合论坛",
+    "WAIC·在AI中看见具体的人(青春与锋芒)\nAmplified Individual:Seeing the Individual in Al (Youth and Fire)",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "上海世博桐森酒店盛宴厅\nThompson Shanghai Expo Banquet Hall",
+    "世博桐森酒店"
+  ],
+  [
+    108,
+    "产业与工业智能化",
+    "人工智能赋能防震减灾高质量发展论坛\nForum on High-Quality Development of Disaster Prevention and Mitigation Empowered by Artificial Intelligence",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "张江科学会堂204会议室\nZhangjiang Science Hall Conference Room 204",
+    "张江科学会堂"
+  ],
+  [
+    109,
+    "算力与AI芯片",
+    "WAICA研讨会·数学建模与科学计算中的人工智能\nWAICA Workshop: Al for Mathematical Modelling and Scientific Computing",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "世博展览馆8号会议室\nExpo Exhibition and Convention Center Conference Room 8",
+    "世博展览馆"
+  ],
+  [
+    110,
+    "大模型与AI基础",
+    "WAICA研讨会·多模态智能体驱动的科学计算\nWAICA Workshop: Multi-Modal Agents for Science",
+    "7月19日",
+    "7月19日 09:00-12:00\nJuly 19th 09:00-12:00",
+    "西岸国际会展中心上海厅\nWest Bund International Convention and Exhibition Center 5F- Shanghai Hall",
+    "西岸国际会展中心"
+  ],
+  [
+    111,
+    "综合论坛",
+    "WAICA · Main Track Session 2",
+    "7月19日",
+    "7月19日 09:00-12:00",
+    "世博中心431会议室",
+    "世博中心"
+  ],
+  [
+    112,
+    "教育与人才发展",
+    "国际人工智能教育论坛\nInternational Forum on Artificial Intelligence in Education",
+    "7月19日",
+    "7月19日 09:00-12:10\nJuly 19th 09:00-12:10",
+    "世博展览馆1A会议室\nExpo Exhibition and Convention Center Conference Room 1A",
+    "世博展览馆"
+  ],
+  [
+    113,
+    "医疗与生命科学",
+    "智能伙伴共建未来元医院论坛\nUnited Imaging Intelligence · Human-Al Partnership: Shaping the Digitelligent Hospital of Tomorrow",
+    "7月19日",
+    "7月19日 09:00-12:20\nJuly 19th 09:00-12:20",
+    "西岸国际会展中心2号厅A\nWest Bund International Convention and Exhibition Center Hall 2A",
+    "西岸国际会展中心"
+  ],
+  [
+    114,
+    "大模型与AI基础",
+    "前沿AI与智能体安全论坛\nFrontier and Agentic Al Safety Forum",
+    "7月19日",
+    "7月19日 09:00-12:30\nJuly 19th 09:00-12:30",
+    "上海世博桐森酒店桐森厅1+2\nThompson Shanghai Expo Thompson Hall 1+2",
+    "世博桐森酒店"
+  ],
+  [
+    115,
+    "机器人与具身智能",
+    "人形机器人与具身智能创新发展论坛\nHumanoid Robotics and Embodied Intelligence Development Forum",
+    "7月19日",
+    "7月19日 09:00-12:30\nJuly 19th 09:00-12:30",
+    "世博中心银厅A\nExpo Center Silver Hall A",
+    "世博中心"
+  ],
+  [
+    116,
+    "产业与工业智能化",
+    "智启具身:迎接物理AI智能涌现论坛\nEmbodied Intelligence Forum:The Horizon of Physical Al Emergence",
+    "7月19日",
+    "7月19日 09:10-12:20\nJuly 19th 09:10-12:20",
+    "世博中心金厅A+B\nExpo Center Gold Hall A+B",
+    "世博中心"
+  ],
+  [
+    117,
+    "机器人与具身智能",
+    "自动驾驶论坛\nHigh-Level Autonomous Driving Forum",
+    "7月19日",
+    "7月19日 09:30-12:00\nJuly 19th 09:30-12:00",
+    "世博中心银厅B\nExpo Center Silver Hall B",
+    "世博中心"
+  ],
+  [
+    118,
+    "大模型与AI基础",
+    "AI时代全球青少年创新素养培育论坛\nForum on Cultivating Global Youth Innovation Literacy in the Al Era",
+    "7月19日",
+    "7月19日 09:30-12:00\nJuly 19th 09:30-12:00",
+    "西岸国际会展中心2号厅C\nWest Bund International Convention and Exhibition Center Hall 2C",
+    "西岸国际会展中心"
+  ],
+  [
+    119,
+    "产业与工业智能化",
+    "长三角人工智能产业集群发展协同论坛\nYangtze River Delta Artificial Intelligence Industrial Cluster Development Synergy Forum",
+    "7月19日",
+    "7月19日 09:30-12:00\nJuly 19th 09:30-12:00",
+    "世博滨江酒店四季厅\nExpo Riverside Hotel Four Seasons Hall",
+    "世博滨江酒店"
+  ],
+  [
+    120,
+    "大模型与AI基础",
+    "世界模型与多模态范式跃迁论坛\nWorld Model and Multimodal Paradigm Transition",
+    "7月19日",
+    "7月19日 09:30-12:15\nJuly 19th 09:30-12:15",
+    "西岸国际会展中心402会议室\nWest Bund International Convention and Exhibition Center Conference Room 402",
+    "西岸国际会展中心"
+  ],
+  [
+    121,
+    "综合论坛",
+    "WAIC·思想者论坛Richard S Sutton专场\nWAIC Thought Leaders Forum - Prof.Richard S Sutton",
+    "7月19日",
+    "7月19日 11:00-12:00\nJuly 19th 11:00-12:00",
+    "世博中心红厅\nExpo Center Red Hall",
+    "世博中心"
+  ],
+  [
+    122,
+    "机器人与具身智能",
+    "具身人形机器人落地与核心零部件发展论坛\nThe Future of Embodied Humanoid Robots and the Intelligent Upgrade of Core Components",
+    "7月19日",
+    "7月19日 13:00-16:55\nJuly 19th 13:00-16:55",
+    "上海世博桐森酒店桐森厅3\nThompson Shanghai Expo Thompson Hall3",
+    "世博桐森酒店"
+  ],
+  [
+    123,
+    "大模型与AI基础",
+    "智能体时代:引领企业价值跃迁论坛\nReinvent with Agentic Al",
+    "7月19日",
+    "7月19日 13:30-16:30\nJuly 19th 13:30-16:30",
+    "世博中心517会议室\nExpo Center Conference Room517",
+    "世博中心"
+  ],
+  [
+    124,
+    "产业与工业智能化",
+    "WAIC·“涌现·无限”未来科技产业生态论坛\nEmergence & Infinity| Future Technology Industry Ecosystem Forum",
+    "7月19日",
+    "7月19日 13:30-17:30\nJuly 19th 13:30-17:30",
+    "世博中心620会议室\nExpo Center Conference Room 620",
+    "世博中心"
+  ],
+  [
+    125,
+    "产业与工业智能化",
+    "国际AI产业创新生态论坛\nHKUST . Awaken Forum '26 Al Industry Innovation Network",
+    "7月19日",
+    "7月19日 13:30-18:00\nJuly 19th 13:30-18:00",
+    "西岸国际会展中心2号厅B\nWest Bund International Convention and Exhibition Center Hall 2B",
+    "西岸国际会展中心"
+  ],
+  [
+    126,
+    "综合论坛",
+    "WAIC·在AI中看见具体的人(深耕与守望)\nAmplified Individual: Seeing the Individual in Al (Depth and Endurance)",
+    "7月19日",
+    "7月19日 13:30-18:00\nJuly 19th 13:30-18:00",
+    "上海世博桐森酒店盛宴厅\nThompson Shanghai Expo Banquet Hall",
+    "世博桐森酒店"
+  ],
+  [
+    127,
+    "综合论坛",
+    "全球视野破局智能财务新范式论坛\nGlobal perspective, breaking the mould: redefining the paradigm of intelligent finance",
+    "7月19日",
+    "7月19日 13:35-17:25\nJuly 19th 13:35-17:25",
+    "世博中心蓝厅\nExpo Center Blue Hall",
+    "世博中心"
+  ],
+  [
+    128,
+    "产业与工业智能化",
+    "具身智能产业生态论坛\nAl Convergence · 2026 Embodied Intelligence Ecosystem Forum",
+    "7月19日",
+    "7月19日 13:40-16:45\nJuly 19th 13:40-16:45",
+    "世博展览馆2号会议室\nExpo Exhibition and Convention Center Conference Room 2",
+    "世博展览馆"
+  ],
+  [
+    129,
+    "综合论坛",
+    "WAIC·思想者论坛朱松纯专场\nWAIC Thought Leaders Forum-Prof.Songchun,Zhu",
+    "7月19日",
+    "7月19日 14:00-15:00\nJuly 19th 14:00-15:00",
+    "世博中心红厅\nExpo Center Red Hall",
+    "世博中心"
+  ],
+  [
+    130,
+    "大模型与AI基础",
+    "AGI基础设施与普惠实践论坛\nInfrastructure and Practice for Available AGI",
+    "7月19日",
+    "7月19日 14:00-16:50\nJuly 19th 14:00-16:50",
+    "世博中心518会议室\nExpo Center Conference Room 518",
+    "世博中心"
+  ],
+  [
+    131,
+    "产业与工业智能化",
+    "迈向自主化:工业AI落地的真实挑战与解法论坛\nIntelligent Trending Forum Toward Autonomy & Real Challenges and Solutions for Industrial Al Implementation",
+    "7月19日",
+    "7月19日 13:30-17:00\nJuly 19th 13:30-17:00",
+    "上海世博桐森酒店桐森厅1+2\nThompson Shanghai Expo Thompson Hall 1+2",
+    "世博桐森酒店"
+  ],
+  [
+    132,
+    "算力与AI芯片",
+    "创业与投资论坛从算力原点到应用落地的进化征程\nQiming Venture Partners - Entrepreneurship and Investment Forum From Silicon Origins to Real-World Implementation: An Evolutionary Odyssey",
+    "7月19日",
+    "7月19日 14:00-17:00\nJuly 19th 14:00-17:00",
+    "世博中心银厅B\nExpo Center Silver Hall B",
+    "世博中心"
+  ],
+  [
+    133,
+    "教育与人才发展",
+    "让孩子未来驾驭AI青少年人工智能教育论坛\nYouth Artificial Intelligence Education Development Forum",
+    "7月19日",
+    "7月19日 14:00-17:00\nJuly 19th 14:00-17:00",
+    "世博中心515会议室\nExpo Center Conference Room 515",
+    "世博中心"
+  ],
+  [
+    134,
+    "大模型与AI基础",
+    "Agent安全运营新范式创新论坛\nAl+Security Conference: ALL IN Al AGENT",
+    "7月19日",
+    "7月19日 14:00-17:00\nJuly 19th 14:00-17:00",
+    "世博展览馆9号会议室\nExpo Exhibition and Convention Center Conference Room 9",
+    "世博展览馆"
+  ],
+  [
+    135,
+    "大模型与AI基础",
+    "如何驾驭企业级Agent论坛\nHow to Harness Enterprise-Grade Agents Forum",
+    "7月19日",
+    "7月19日 14:00-17:00\nJuly 19th 14:00-17:00",
+    "世博中心619会议室\nExpo Center Conference Room 619",
+    "世博中心"
+  ],
+  [
+    136,
+    "产业与工业智能化",
+    "智启新金融:全球视野下的AI转型之路论坛\nReimagining Finance Through Al: A Global Transformation Perspective",
+    "7月19日",
+    "7月19日 14:00-17:00\nJuly 19th 14:00-17:00",
+    "世博中心430会议室\nExpo Center Conference Room 430",
+    "世博中心"
+  ],
+  [
+    137,
+    "内容创意与AIGC",
+    "AI重构增长:从内容博弈到系统性变革Al+广告营销创新论坛\nSHAI Forum Al-Driven Growth: From Content Game to Systemic Shift",
+    "7月19日",
+    "7月19日 14:00-17:00\nJuly 19th 14:00-17:00",
+    "西岸国际会展中心2号厅A\nWest Bund International Convention and Exhibition Center Hall 2A",
+    "西岸国际会展中心"
+  ],
+  [
+    138,
+    "算力与AI芯片",
+    "先进计算网络与算电协同论坛\nAdvanced Computing Network & Compute-Electricity Synergy",
+    "7月19日",
+    "7月19日 14:00-17:00\nJuly 19th 14:00-17:00",
+    "世博中心617会议室\nExpo Center Conference Room 617",
+    "世博中心"
+  ],
+  [
+    139,
+    "综合论坛",
+    "物理智能创新生态论坛\nPhysical Intelligence Innovation Ecosystem Forum",
+    "7月19日",
+    "7月19日 14:00-17:00\nJuly 19th 14:00-17:00",
+    "西岸国际会展中心2号厅C\nWest Bund International Convention and Exhibition Center Hall 2C",
+    "西岸国际会展中心"
+  ],
+  [
+    140,
+    "算力与AI芯片",
+    "WAICA研讨会·人工智能驱动的量子计算\nWAICA Workshop: Al Acceleration in Quantum Computing",
+    "7月19日",
+    "7月19日 14:00-17:00\nJuly 19th 14:00-17:00",
+    "西岸国际会展中心上海厅\nWest Bund International Convention and Exhibition Center 5F- Shanghai Hall",
+    "西岸国际会展中心"
+  ],
+  [
+    141,
+    "算力与AI芯片",
+    "WAICA研讨会·天基智能计算前沿\nWAICA Workshop: Frontiers of Space-Based Intelligent Computing",
+    "7月19日",
+    "7月19日 14:00-17:00\nJuly 19th 14:00-17:00",
+    "西岸国际会展中心401会议室\nWest Bund International Convention and Exhibition Center Conference Room 401",
+    "西岸国际会展中心"
+  ],
+  [
+    142,
+    "综合论坛",
+    "WAICA - Main Track Session 3",
+    "7月19日",
+    "7月19日 14:00-17:00",
+    "世博中心431会议室",
+    "世博中心"
+  ],
+  [
+    143,
+    "产业与工业智能化",
+    "世界模型驱动物理AI从理解到执行论坛\nWorld Model-Driven Physical Al Forum: From Understanding to Execution",
+    "7月19日",
+    "7月19日 14:00-17:10\nJuly 19th 14:00-17:10",
+    "世博中心银厅C+D\nExpo Center Silver Hall C+D",
+    "世博中心"
+  ],
+  [
+    144,
+    "大模型与AI基础",
+    "面向AI时代的数据存储架构创新论坛\nData Storage Architecture Innovation for the Al Era Forum",
+    "7月19日",
+    "7月19日 14:00-17:30\nJuly 19th 14:00-17:30",
+    "世博中心616会议室\nExpo Center Conference Room 616",
+    "世博中心"
+  ],
+  [
+    145,
+    "综合论坛",
+    "人工智能高质量语料生态论坛\nGOMAX LAB High-Quality Al Corpora Ecosystem Forum",
+    "7月19日",
+    "7月19日 14:00-17:30\nJuly 19th 14:00-17:30",
+    "世博中心银厅A\nExpo Center Silver Hall A",
+    "世博中心"
+  ],
+  [
+    146,
+    "教育与人才发展",
+    "WAIC UP!2026——青年观察家·思享会\nWAIC UP! 2026 Youth Observer Ideas Sharing Session",
+    "7月19日",
+    "7月19日 13:30-21:30\nJuly 19th 13:30-21:30",
+    "世博展览馆1A会议室\nExpo Exhibition and Convention Center Conference Room 1A",
+    "世博展览馆"
+  ],
+  [
+    147,
+    "产业与工业智能化",
+    "人工智能与产业绿色低碳转型创新发展论坛\n\"Al + Green and Low-Carbon Transformation\" Innovation and Development Forum",
+    "7月19日",
+    "7月19日 14:00-17:30\nJuly 19th 14:00-17:30",
+    "世博展览馆1B会议室\nExpo Exhibition and Convention Center Conference Room 1B",
+    "世博展览馆"
+  ],
+  [
+    148,
+    "金融与科技投资",
+    "共建全球科技金融伙伴新生态投融资论坛\nCo-creating a New Global Ecosystem for Technology-Finance Partnerships-CICC Investment and Financing Forum",
+    "7月19日",
+    "7月19日 14:00-18:00\nJuly 19th 14:00-18:00",
+    "世博中心金厅C\nExpo Center Gold Hall C",
+    "世博中心"
+  ],
+  [
+    149,
+    "算力与AI芯片",
+    "算力基座进化与千行百业智能重塑论坛\nEvolved Computing Infrastructure, Industry-Wide Intelligent Reinvention",
+    "7月19日",
+    "7月19日 14:30-17:00\nJuly 19th 14:30-17:00",
+    "世博滨江酒店四季厅\nExpo Riverside Hotel Four Seasons Hall",
+    "世博滨江酒店"
+  ],
+  [
+    150,
+    "综合论坛",
+    "WAIC·思想者论坛俞勇专场\nWAIC Thought Leaders Forum Prof.YuYong",
+    "7月19日",
+    "7月19日 16:00-17:00\nJuly 19th 16:00-17:00",
+    "世博中心红厅\nExpo Center Red Hall",
+    "世博中心"
+  ],
+  [
+    151,
+    "综合论坛",
+    "WAIC·思想者论坛李开复专场\nWAIC Thought Leaders Forum -Mr.Kai-Fu Lee",
+    "7月20日",
+    "7月20日 09:00-10:00\nJuly 20th 09:00-10:00",
+    "世博中心红厅\nExpo Center Red Hall",
+    "世博中心"
+  ],
+  [
+    152,
+    "综合论坛",
+    "政务智能创新论坛\nGovernment Intelligence Innovation Forum",
+    "7月20日",
+    "7月20日 09:00-11:30\nJuly 20th 09:00-11:30",
+    "世博展览馆2号会议室\nExpo Exhibition and Convention Center Conference Room 2",
+    "世博展览馆"
+  ],
+  [
+    153,
+    "教育与人才发展",
+    "未来青年科技创新论坛\nFuture Youth Science and Technology Innovation Forum",
+    "7月20日",
+    "7月20日 09:00-11:30\nJuly 20th 09:00-11:30",
+    "世博展览馆1B会议室\nExpo Exhibition and Convention Center Conference Room 1B",
+    "世博展览馆"
+  ],
+  [
+    154,
+    "产业与工业智能化",
+    "Al for SME人工智能赋能中小企业高质量发展论坛\nAl for SME - Artificial Intelligence Empowerment for High-Quality Development of SME Forum",
+    "7月20日",
+    "7月20日 09:30-12:00\nJuly 20th 09:30-12:00",
+    "世博中心619会议室\nExpo Center Conference Room619",
+    "世博中心"
+  ],
+  [
+    155,
+    "综合论坛",
+    "人工智能法治论坛\nAl Rule of Law Forum",
+    "7月20日",
+    "7月20日 09:00-12:00\nJuly 20th 09:00-12:00",
+    "世博中心蓝厅\nExpo Center Blue Hall",
+    "世博中心"
+  ],
+  [
+    156,
+    "内容创意与AIGC",
+    "世界模型驱动下的AI影视生产力新范式论坛\nWorld Models Driving a New Paradigm for Al Filmmaking",
+    "7月20日",
+    "7月20日 09:00-12:00\nJuly 20th 09:00-12:00",
+    "世博展览馆1A会议室\nExpo Exhibition and Convention Center Conference Room 1A",
+    "世博展览馆"
+  ],
+  [
+    157,
+    "综合论坛",
+    "高质量数据集与AI编程实践创新论坛\nHigh-Quality Dataset and Al Programming Innovation Forum",
+    "7月20日",
+    "7月20日 09:00-12:00\nJuly 20th 09:00-12:00",
+    "世博中心617会议室\nExpo Center Conference Room 617",
+    "世博中心"
+  ],
+  [
+    158,
+    "大模型与AI基础",
+    "AI原生智慧消防论坛\nAl-Native Intelligent Fire Safety Forum",
+    "7月20日",
+    "7月20日 09:00-12:00\nJuly 20th 09:00-12:00",
+    "世博滨江酒店四季厅\nExpo Riverside Hotel Four Seasons Hall",
+    "世博滨江酒店"
+  ],
+  [
+    159,
+    "产业与工业智能化",
+    "用可信AI构建企业新智生产力论坛\nTrusted Al Builds New Intelligent Productivity for Enterprises",
+    "7月20日",
+    "7月20日 09:00-12:00\nJuly 20th 09:00-12:00",
+    "世博展览馆9号会议室\nExpo Exhibition and Convention Center Conference Room 9",
+    "世博展览馆"
+  ],
+  [
+    160,
+    "大模型与AI基础",
+    "AI驱动东西部协同发展论坛\nThe Guizhou Forum on Al-Driven East-West Collaborative Development",
+    "7月20日",
+    "7月20日 09:00-12:00\nJuly 20th 09:00-12:00",
+    "世博中心620会议室\nExpo Center Conference Room 620",
+    "世博中心"
+  ],
+  [
+    161,
+    "综合论坛",
+    "WAICA · Main Track Session 4",
+    "7月20日",
+    "7月20日 09:00-12:00",
+    "世博中心431会议室",
+    "世博中心"
+  ],
+  [
+    162,
+    "综合论坛",
+    "WAICA . Main Track Session 5",
+    "7月20日",
+    "7月20日 09:00-12:00",
+    "世博中心430会议室",
+    "世博中心"
+  ],
+  [
+    163,
+    "综合论坛",
+    "WAICA Main Track Session 6",
+    "7月20日",
+    "7月20日 09:00-12:00",
+    "世博中心515会议室",
+    "世博中心"
+  ],
+  [
+    164,
+    "机器人与具身智能",
+    "WAICA研讨会·具身智能空间交互\nSpacial Intelligence for Embodied Al",
+    "7月20日",
+    "7月20日 09:00-12:00\nJuly 20th 09:00-12:00",
+    "世博中心518会议室\nExpo Center Conference Room 518",
+    "世博中心"
+  ],
+  [
+    165,
+    "教育与人才发展",
+    "WAICA·青年菁英交流会\nWAICA Youth Elite Association",
+    "7月20日",
+    "7月20日 09:00-12:00\nJuly 20th 09:00-12:00",
+    "世博中心616会议室\nExpo Center Conference Room 616",
+    "世博中心"
+  ],
+  [
+    166,
+    "大模型与AI基础",
+    "Token涌现万物生长论坛\nINFINIGENCE Forum: Tokens Emerge, Intelligence Grows",
+    "7月20日",
+    "7月20日 09:00-12:10\nJuly 20th 09:00-12:10",
+    "世博中心金厅C\nExpo Center Gold Hall C",
+    "世博中心"
+  ],
+  [
+    167,
+    "大模型与AI基础",
+    "企业级Agent的进化与商业落地论坛\nThe Evolution and Business Adoption of CLOOPEN Enterprise AI Agents",
+    "7月20日",
+    "7月20日 09:30-12:00\nJuly 20th 09:30-12:00",
+    "世博中心517会议室\nExpo Center Conference Room 517",
+    "世博中心"
+  ],
+  [
+    168,
+    "综合论坛",
+    "WAIC思想者论坛郭毅可专场\nWAIC Thought Leaders Forum-Prof.GuoYike",
+    "7月20日",
+    "7月20日 11:00-12:00\nJuly 20th 11:00-12:00",
+    "世博中心红厅\nExpo Center Red Hall",
+    "世博中心"
+  ],
+  [
+    169,
+    "综合论坛",
+    "SCDI·国际AI城市生态论坛\nEarth Intelligence Drives Al Cities-2026 International Al Cities Ecology Forum",
+    "7月20日",
+    "7月20日 13:30-17:00\nJuly 20th 13:30-17:00",
+    "世博中心517会议室\nExpo Center Conference Room517",
+    "世博中心"
+  ],
+  [
+    170,
+    "大模型与AI基础",
+    "AI原生驱动工业全域升级应用实践研讨会\nSeminar on Practical Applications of Al-Native Driven All-Round Industrial Upgrade New Industrialization",
+    "7月17日",
+    "7月17日 14:00-17:20\nJuly17th 14:00-17:20",
+    "上海市浦东新区花木路1388号浦东嘉里大酒店\nKerry Hotel Pudong, Shanghai No.1388 Huamu Road, Pudong New Area, Shanghai",
+    "其他场馆"
+  ],
+  [
+    171,
+    "综合论坛",
+    "院士看洋山\nAcademicians Visit Yangshan",
+    "7月18日",
+    "7月18日 13:00-18:00\nJuly 18th 13:00-18:00",
+    "上海临港锦江国际酒店观潮厅\nShanghai Lingang Jinjiang International Hotel Guanchao Hall",
+    "其他场馆"
+  ],
+  [
+    172,
+    "综合论坛",
+    "AI智联低空，链启长三角新篇论坛\nAl Empowers Low-Altitude Connectivity, Forging a New Yangtze River Delta Landscape",
+    "7月18日",
+    "7月18日 15:00-17:10\nJuly 18th 15:00-17:10",
+    "上海市长宁区云纱路188号希尔顿酒店一楼大宴会厅\nGrand Ballroom, Hilton Hotel,188 Yun Sha Road, Changning District,Shanghai",
+    "其他场馆"
+  ],
+  [
+    173,
+    "综合论坛",
+    "2026中国·AI盛典\n2026 China · Al Gala",
+    "7月18日",
+    "7月18日 19:30-21:30\nJuly 18th 19:30-21:30",
+    "上海市徐汇区龙腾大道2350号西岸穹顶艺术中心\nWEST BUND DOME,No. 2350 Longteng Avenue, Xuhui District, Shanghai",
+    "其他场馆"
+  ],
+  [
+    174,
+    "综合论坛",
+    "浦江生态论坛\n2026 WAIC Pujiang Ecological Forum",
+    "7月19日",
+    "7月19日 14:00-17:30\nJuly 19th 14:00-17:30",
+    "上海市徐汇区龙兰路801号上海人工智能实验室新园区\nShanghai Artificial Intelligence Laboratory New Campus No.801 Longlan Road, Xuhui District,Shanghai, China",
+    "其他场馆"
+  ],
+  [
+    175,
+    "综合论坛",
+    "中国年度AI人物·巅峰对话\nChina Annual Al Figures · Summit Dialogue",
+    "7月19日",
+    "7月19日 14:00-16:00\nJuly 19th 14:00-16:00",
+    "上海市徐汇区龙腾大道2350号西岸穹顶艺术中心\nWEST BUND DOME,No. 2350 Longteng Avenue, Xuhui District, Shanghai",
+    "其他场馆"
+  ]
+]
