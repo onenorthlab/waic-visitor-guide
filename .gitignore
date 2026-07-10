@@ -3,6 +3,7 @@ dist/
 playwright-report/
 test-results/
 output/
+.playwright-cli/
 .wrangler/
 .dev.vars
 .DS_Store
