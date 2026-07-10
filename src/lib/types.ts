@@ -78,3 +78,42 @@ export interface WaicEvent {
   location: BilingualText;
   venue: CanonicalVenue;
 }
+
+export interface DiscoveryFilters {
+  query?: string;
+  dates?: readonly WaicDate[];
+  categories?: readonly EventCategory[];
+  venues?: readonly VenueId[];
+}
+
+export interface TimeHeatmapCell {
+  date: WaicDate;
+  start: string;
+  end: string;
+  startMinutes: number;
+  endMinutes: number;
+  count: number;
+  eventIds: number[];
+}
+
+export interface CategorySummary {
+  category: EventCategory;
+  count: number;
+  share: number;
+  eventIds: number[];
+}
+
+export interface VenueSummary {
+  venueId: VenueId;
+  zh: VenueCategory;
+  en: string;
+  count: number;
+  share: number;
+  eventIds: number[];
+}
+
+export interface ShareSummary {
+  count: number;
+  total: number;
+  share: number;
+}
