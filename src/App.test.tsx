@@ -123,6 +123,7 @@ describe("application shell", () => {
     expect(document.documentElement).toHaveAttribute("data-theme", "light");
 
     await user.click(screen.getByRole("button", { name: "Switch to English" }));
+    expect(document.documentElement).toHaveAttribute("lang", "en");
     expect(
       screen.getByRole("heading", {
         level: 1,
@@ -137,6 +138,22 @@ describe("application shell", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("Data updated: 2026-07-10")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "WAIC official website" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Switch to dark theme" })).toBeInTheDocument();
+  });
+
+  it("keeps every primary navigation destination keyboard reachable on mobile", () => {
+    render(<App />);
+
+    const navigation = screen.getByRole("navigation", { name: "主导航" });
+    expect(navigation.querySelector(".nav-links")).toHaveClass("mobile-scroll-nav");
+    ["总览", "机会全景", "路线工作台", "全部日程", "场馆指南"].forEach(
+      (label) => {
+        expect(screen.getByRole("link", { name: label })).not.toHaveAttribute(
+          "tabindex",
+          "-1",
+        );
+      },
+    );
   });
 
   it("follows system theme changes until the visitor makes an explicit choice", async () => {

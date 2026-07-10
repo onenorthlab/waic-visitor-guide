@@ -17,6 +17,22 @@ import type {
 import type { Language } from "./AppShell";
 import type { ExplorerSelection } from "./explorerTypes";
 
+const CATEGORY_EN: Record<CategorySummary["category"], string> = {
+  综合论坛: "Comprehensive Forums",
+  大模型与AI基础: "Foundation Models & AI",
+  算力与AI芯片: "Compute & AI Chips",
+  产业与工业智能化: "Industrial AI",
+  机器人与具身智能: "Robotics & Embodied AI",
+  前沿科技与探索: "Frontier Science",
+  治理标准与政策: "Governance & Standards",
+  金融与科技投资: "Finance & Tech Investment",
+  内容创意与AIGC: "Creative & AIGC",
+  教育与人才发展: "Education & Talent",
+  医疗与生命科学: "Healthcare & Life Sciences",
+  能源与可持续发展: "Energy & Sustainability",
+  女性与多元发展: "Women & Diversity",
+};
+
 interface LandscapePartProps {
   onSelect: (selection: ExplorerSelection) => void;
   activeLabel?: string;
@@ -46,6 +62,7 @@ export function ScheduleHeatmap({
   language = "zh",
 }: ScheduleHeatmapProps) {
   const maximum = Math.max(...cells.map((cell) => cell.count), 0);
+  const activeWindowCount = cells.filter((cell) => cell.count > 0).length;
   const byDate = cells.reduce<Map<WaicDate, TimeHeatmapCell[]>>((groups, cell) => {
     const group = groups.get(cell.date) ?? [];
     group.push(cell);
@@ -64,19 +81,28 @@ export function ScheduleHeatmap({
               : "Concurrent events across four days in half-hour windows."}
           </p>
         </div>
-        <strong>{cells.reduce((sum, cell) => sum + (cell.count > 0 ? 1 : 0), 0)} 个活跃时段</strong>
+        <strong>
+          {language === "zh"
+            ? `${activeWindowCount} 个活跃时段`
+            : `${activeWindowCount} active half-hour windows`}
+        </strong>
       </div>
       <div className="heatmap-days">
         {[...byDate.entries()].map(([date, dateCells]) => (
           <div className="heatmap-day" key={date}>
             <div className="heatmap-day-heading">
               <h4>{DATE_LABELS[date][language]}</h4>
-              <span>{Math.max(...dateCells.map((cell) => cell.count))} 场峰值</span>
+              <span>
+                {language === "zh"
+                  ? `${Math.max(...dateCells.map((cell) => cell.count))} 场峰值`
+                  : `${Math.max(...dateCells.map((cell) => cell.count))} event peak`}
+              </span>
             </div>
             <div className="heatmap-grid">
               {dateCells.map((cell) => {
-                const dateLabel = DATE_LABELS[cell.date][language];
-                const label = `${dateLabel} ${cell.start}-${cell.end}`;
+                const label = `${DATE_LABELS[cell.date][language]} ${cell.start}-${cell.end}`;
+                const labelZh = `${DATE_LABELS[cell.date].zh} ${cell.start}-${cell.end}`;
+                const labelEn = `${DATE_LABELS[cell.date].en} ${cell.start}-${cell.end}`;
                 const accessibleLabel =
                   language === "zh"
                     ? `${label}，${cell.count} 场活动`
@@ -90,7 +116,8 @@ export function ScheduleHeatmap({
                     key={`${cell.date}-${cell.start}`}
                     onClick={() =>
                       onSelect({
-                        label,
+                        label: labelZh,
+                        labelEn,
                         dates: [cell.date],
                         eventIds: cell.eventIds,
                       })
@@ -106,7 +133,9 @@ export function ScheduleHeatmap({
         ))}
       </div>
       <p className="chart-fallback">
-        文字摘要：7月18日 09:30-10:00 为全程峰值，同时进行 30 场活动。颜色越深代表同一时段选择越多，每格仍标注具体场数。
+        {language === "zh"
+          ? "文字摘要：7月18日 09:30-10:00 为全程峰值，同时进行 30 场活动。颜色越深代表同一时段选择越多，每格仍标注具体场数。"
+          : "Text summary: Jul 18 at 09:30-10:00 is the overall peak with 30 concurrent events. Darker cells mean more choices, and every cell includes its count."}
       </p>
     </section>
   );
@@ -139,27 +168,45 @@ export function TopicAtlas({
               : "Area follows real event counts. Select a topic to focus."}
           </p>
         </div>
-        <strong>13 个真实主题类别，共 175 场</strong>
+        <strong>
+          {language === "zh"
+            ? "13 个真实主题类别，共 175 场"
+            : "13 real topic categories, 175 events"}
+        </strong>
       </div>
       <div className="topic-atlas">
         {categories.map((item, index) => (
           <button
             className={`topic-node ${topicClass(item)} topic-tone-${index % 4}`}
             type="button"
-            aria-label={`${displayText(item.category)}，${item.count} 场`}
+            aria-label={
+              language === "zh"
+                ? `${displayText(item.category)}，${item.count} 场`
+                : `${CATEGORY_EN[item.category]}, ${item.count} events`
+            }
             aria-pressed={activeLabel === item.category}
             key={item.category}
             onClick={() =>
-              onSelect({ label: item.category, categories: [item.category] })
+              onSelect({
+                label: item.category,
+                labelEn: CATEGORY_EN[item.category],
+                categories: [item.category],
+              })
             }
           >
-            <span>{displayText(item.category)}</span>
+            <span>
+              {displayText(
+                language === "zh" ? item.category : CATEGORY_EN[item.category],
+              )}
+            </span>
             <strong>{item.count}</strong>
           </button>
         ))}
       </div>
       <p className="chart-fallback">
-        文字摘要：综合论坛 45 场，大模型与AI基础 35 场，产业与工业智能化 32 场，算力与AI芯片 22 场，其余 9 类共 41 场。
+        {language === "zh"
+          ? "文字摘要：综合论坛 45 场，大模型与AI基础 35 场，产业与工业智能化 32 场，算力与AI芯片 22 场，其余 9 类共 41 场。"
+          : "Text summary: Comprehensive Forums 45, Foundation Models & AI 35, Industrial AI 32, Compute & AI Chips 22, and the remaining nine topics 41."}
       </p>
     </section>
   );
@@ -182,9 +229,17 @@ export function VenueConstellation({
           <h3 id="constellation-title">
             {language === "zh" ? "场馆星座" : "Venue constellation"}
           </h3>
-          <p>位置为场馆类别关系示意，不代表精确地图坐标。</p>
+          <p>
+            {language === "zh"
+              ? "位置为场馆类别关系示意，不代表精确地图坐标。"
+              : "Positions show venue-category relationships, not precise map coordinates."}
+          </p>
         </div>
-        <strong>7 类场馆，共 175 场</strong>
+        <strong>
+          {language === "zh"
+            ? "7 类场馆，共 175 场"
+            : "7 venue categories, 175 events"}
+        </strong>
       </div>
       <div className="venue-constellation">
         {venues.map((item, index) => {
@@ -193,11 +248,21 @@ export function VenueConstellation({
             <button
               className={`venue-node venue-node-${index + 1}`}
               type="button"
-              aria-label={`${displayText(item.zh)}，${item.count} 场，示意位置`}
+              aria-label={
+                language === "zh"
+                  ? `${displayText(item.zh)}，${item.count} 场，示意位置`
+                  : `${displayText(item.en)}, ${item.count} events, schematic position`
+              }
               aria-pressed={activeLabel === item.zh}
               key={item.venueId}
               style={{ "--venue-size": `${size}px` } as CSSProperties}
-              onClick={() => onSelect({ label: item.zh, venues: [item.venueId] })}
+              onClick={() =>
+                onSelect({
+                  label: item.zh,
+                  labelEn: item.en,
+                  venues: [item.venueId],
+                })
+              }
             >
               <span>
                 {displayText(language === "zh" ? item.zh : item.en)}
@@ -208,7 +273,9 @@ export function VenueConstellation({
         })}
       </div>
       <p className="chart-fallback">
-        文字摘要：世博中心 91 场，世博展览馆 28 场，西岸国际会展中心 25 场，酒店、张江与其他场馆共 31 场。
+        {language === "zh"
+          ? "文字摘要：世博中心 91 场，世博展览馆 28 场，西岸国际会展中心 25 场，酒店、张江与其他场馆共 31 场。"
+          : "Text summary: Expo Center 91, Expo Exhibition and Convention Center 28, West Bund 25, and hotels, Zhangjiang, and other venues 31."}
       </p>
     </section>
   );
@@ -231,6 +298,10 @@ export function OpportunityLandscape({
   const cells = useMemo(() => buildTimeHeatmap(events), [events]);
   const categories = useMemo(() => summarizeCategories(events), [events]);
   const venues = useMemo(() => summarizeVenues(events), [events]);
+  const activeLabel =
+    language === "zh"
+      ? activeSelection?.label
+      : activeSelection?.labelEn ?? activeSelection?.label;
 
   return (
     <motion.section
@@ -255,20 +326,20 @@ export function OpportunityLandscape({
       <ScheduleHeatmap
         cells={cells}
         onSelect={onSelect}
-        activeLabel={activeSelection?.label}
+        activeLabel={activeLabel}
         language={language}
       />
       <div className="landscape-secondary-grid">
         <TopicAtlas
           categories={categories}
           onSelect={onSelect}
-          activeLabel={activeSelection?.label}
+          activeLabel={activeLabel}
           language={language}
         />
         <VenueConstellation
           venues={venues}
           onSelect={onSelect}
-          activeLabel={activeSelection?.label}
+          activeLabel={activeLabel}
           language={language}
         />
       </div>

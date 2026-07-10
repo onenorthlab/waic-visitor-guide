@@ -23,8 +23,12 @@ export function App() {
           />
           <p className="landscape-filter-status" id="schedule" aria-live="polite">
             {selection
-              ? `当前筛选：${displayText(selection.label)}`
-              : "选择任一全景节点，下方日程将同步筛选。"}
+              ? language === "zh"
+                ? `当前筛选：${displayText(selection.label)}`
+                : `Current filter: ${displayText(selection.labelEn ?? selection.label)}`
+              : language === "zh"
+                ? "选择任一全景节点，下方日程将同步筛选。"
+                : "Select any landscape node to filter the schedule below."}
           </p>
         </>
       )}

@@ -79,4 +79,38 @@ describe("opportunity landscape", () => {
     );
     expect(screen.getByText("当前筛选：世博中心")).toBeInTheDocument();
   });
+
+  it("switches every dynamic label, fallback, aria label, and filter status to English", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<App />);
+
+    await user.click(screen.getByRole("button", { name: "Switch to English" }));
+    expect(screen.getByText(/active half-hour windows/u)).toBeInTheDocument();
+    expect(screen.getByText("13 real topic categories, 175 events")).toBeInTheDocument();
+    expect(screen.getByText("7 venue categories, 175 events")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Positions show venue-category relationships, not precise map coordinates.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Comprehensive Forums, 45 events" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: "Expo Center, 91 events, schematic position",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: "Jul 18 09:30-10:00, 30 events",
+      }),
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", { name: "Comprehensive Forums, 45 events" }),
+    );
+    expect(screen.getByText("Current filter: Comprehensive Forums")).toBeInTheDocument();
+    expect(container.textContent).not.toMatch(/文字摘要|场峰值|活跃时段|真实主题类别/u);
+  });
 });

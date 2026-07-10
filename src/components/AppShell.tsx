@@ -32,6 +32,8 @@ const copy = {
     secondary: "查看全景",
     terrainAlt: "WAIC 2026 活动密度地形图",
     switchLanguage: "Switch to English",
+    themeToLight: "切换浅色主题",
+    themeToDark: "切换深色主题",
     insightsLabel: "数据洞察",
     insights: [
       ["129/175", "黄金两日", "7 月 18-19 日活动最密集"],
@@ -61,6 +63,8 @@ const copy = {
     secondary: "View landscape",
     terrainAlt: "WAIC 2026 event density terrain",
     switchLanguage: "切换中文",
+    themeToLight: "Switch to light theme",
+    themeToDark: "Switch to dark theme",
     insightsLabel: "Data insights",
     insights: [
       ["129/175", "Peak two days", "July 18-19 hold the densest schedule"],
@@ -136,7 +140,7 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
           <span>WAIC 2026</span>
           <small>{language === "zh" ? "访客指南" : "VISITOR GUIDE"}</small>
         </a>
-        <div className="nav-links">
+        <div className="nav-links mobile-scroll-nav">
           {content.nav.map(([label, href]) => (
             <a href={href} key={href}>
               {displayText(label)}
@@ -156,7 +160,9 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
           <button
             className="icon-button"
             type="button"
-            aria-label={theme === "dark" ? "切换浅色主题" : "切换深色主题"}
+            aria-label={displayText(
+              theme === "dark" ? content.themeToLight : content.themeToDark,
+            )}
             onClick={() =>
               setThemePreference(theme === "dark" ? "light" : "dark")
             }
@@ -242,6 +248,10 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   const [language, setLanguage] = useState<Language>("zh");
+
+  useEffect(() => {
+    document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
+  }, [language]);
 
   return (
     <div className="app-shell">
