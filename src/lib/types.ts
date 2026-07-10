@@ -117,3 +117,90 @@ export interface ShareSummary {
   total: number;
   share: number;
 }
+
+export type PlannerIdentity =
+  | "developer"
+  | "executive"
+  | "founder"
+  | "investor"
+  | "researcher"
+  | "creator"
+  | "first-timer";
+
+export type PlannerGoal =
+  | "technical-depth"
+  | "industry-insight"
+  | "investment-opportunities"
+  | "policy-understanding"
+  | "creative-inspiration"
+  | "talent-network"
+  | "sustainable-impact";
+
+export type PlannerPace = "relaxed" | "balanced" | "intensive";
+
+export interface AvailabilityWindow {
+  start: string;
+  end: string;
+}
+
+export interface PlannerState {
+  dates: WaicDate[];
+  availability: Partial<Record<WaicDate, AvailabilityWindow>>;
+  interests: EventCategory[];
+  identity: PlannerIdentity | null;
+  goals: PlannerGoal[];
+  pace: PlannerPace;
+}
+
+export type PlannerReasonType = "interest" | "identity" | "goal" | "diversity";
+
+export interface PlannerReason {
+  type: PlannerReasonType;
+  label: string;
+}
+
+export interface PlannedEvent {
+  event: WaicEvent;
+  reasons: PlannerReason[];
+  bufferFromPreviousMinutes: number;
+}
+
+export type RejectionType =
+  | "outside-availability"
+  | "time-conflict"
+  | "venue-buffer"
+  | "daily-limit"
+  | "lower-match";
+
+export interface RejectionReason {
+  type: RejectionType;
+  label: string;
+  relatedEventIds: number[];
+}
+
+export interface RejectedCandidate {
+  event: WaicEvent;
+  relevanceReasons: PlannerReason[];
+  directInterest: boolean;
+  rejection: RejectionReason;
+}
+
+export interface PlannerMetrics {
+  eventCount: number;
+  contentMinutes: number;
+  venueChanges: number;
+  transitionBufferMinutes: number;
+  directInterestMatches: number;
+  identityMatches: number;
+  goalMatches: number;
+  goalsCovered: PlannerGoal[];
+  goalCoverage: number;
+  distinctCategories: number;
+  dailyCounts: Partial<Record<WaicDate, number>>;
+}
+
+export interface PlannerResult {
+  items: PlannedEvent[];
+  rejectedHighRelevance: RejectedCandidate[];
+  metrics: PlannerMetrics;
+}
