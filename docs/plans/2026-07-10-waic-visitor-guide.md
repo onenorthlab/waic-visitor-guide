@@ -382,7 +382,7 @@ git commit -m "feat: visualize WAIC opportunity density"
 
 **Step 1: Write failing user-flow tests**
 
-Test defaults, multi-select limits, route generation, visible explanation, swap/remove action, no-result state, share action fallback, and ICS action.
+Test defaults, multi-select limits, route generation, visible explanation, swap/remove action, no-result state, share action fallback, and ICS action. When a high-relevance rejected candidate exists, show at least one with its rejection reason; when none exists, render an explicit empty explanation and never invent a candidate.
 
 **Step 2: Verify red**
 
