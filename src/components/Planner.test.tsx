@@ -7,14 +7,15 @@ import {
   within,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { useState } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { App } from "../App";
 import rawRows from "../data/waic-raw.json";
-import { normalizeEvents } from "../lib/events";
+import { canonicalVenue, normalizeEvents } from "../lib/events";
 import { encodePlannerState, PLANNER_STORAGE_KEY } from "../lib/share";
-import type { PlannerState } from "../lib/types";
-import { Planner } from "./Planner";
+import type { PlannerState, WaicEvent } from "../lib/types";
+import { Planner, RouteActions } from "./Planner";
 
 function installBrowserState() {
   const values = new Map<string, string>();
@@ -53,6 +54,45 @@ const restoredState: PlannerState = {
   pace: "relaxed",
   selectedEventIds: [16],
 };
+
+function plannerEvent(
+  id: number,
+  startTime: string,
+  endTime: string,
+  category: WaicEvent["category"] = "大模型与AI基础",
+): WaicEvent {
+  const toMinutes = (value: string) => {
+    const [hours, minutes] = value.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+  const startMinutes = toMinutes(startTime);
+  const endMinutes = toMinutes(endTime);
+  const location = { zh: "测试会议室A", en: "Test Room A" };
+  return {
+    id,
+    category,
+    date: "2026-07-17",
+    title: { zh: `测试活动${id}`, en: `Test event ${id}` },
+    startTime,
+    endTime,
+    startMinutes,
+    endMinutes,
+    durationMinutes: endMinutes - startMinutes,
+    location,
+    venue: canonicalVenue("世博中心", location),
+  };
+}
+
+function StatefulPlanner({
+  events,
+  initialState,
+}: {
+  events: readonly WaicEvent[];
+  initialState: PlannerState;
+}) {
+  const [state, setState] = useState(initialState);
+  return <Planner events={events} state={state} onStateChange={setState} />;
+}
 
 describe("30-second planner", () => {
   beforeEach(() => {
@@ -94,6 +134,10 @@ describe("30-second planner", () => {
     await user.click(screen.getByRole("button", { name: "生成我的路线" }));
 
     expect(await screen.findByText("路线已生成")).toBeInTheDocument();
+    expect(screen.getByText(/路线包含 \d+ 场活动/u)).toHaveAttribute(
+      "aria-live",
+      "polite",
+    );
     const budget = screen.getByRole("region", { name: "路线注意力预算" });
     expect(within(budget).getByText("活动场数")).toBeInTheDocument();
     expect(within(budget).getByText("有效内容小时")).toBeInTheDocument();
@@ -121,6 +165,10 @@ describe("30-second planner", () => {
     expect(
       screen.getByText("请放宽日期、可用时段或兴趣类别后重试。"),
     ).toBeInTheDocument();
+    expect(screen.getByText("规划结果：0 场可行活动")).toHaveAttribute(
+      "aria-live",
+      "polite",
+    );
     expect(date).toBeChecked();
   });
 
@@ -160,9 +208,12 @@ describe("30-second planner", () => {
     expect(writeText).toHaveBeenCalledWith(expect.stringContaining("plan="));
     expect(screen.getByText("链接已复制")).toBeInTheDocument();
 
+    await user.click(screen.getByRole("button", { name: "生成我的路线" }));
     await user.click(screen.getByRole("button", { name: "下载 ICS" }));
     expect(createObjectURL).toHaveBeenCalledWith(expect.any(Blob));
-    expect(revokeObjectURL).toHaveBeenCalledWith("blob:waic-route");
+    await waitFor(() =>
+      expect(revokeObjectURL).toHaveBeenCalledWith("blob:waic-route"),
+    );
 
     await user.click(
       screen.getByRole("button", {
@@ -263,5 +314,119 @@ describe("30-second planner", () => {
 
     await user.click(screen.getByRole("button", { name: "生成我的路线" }));
     expect(screen.getByText("当前路线没有额外的高相关冲突项。")).toBeInTheDocument();
+  });
+
+  it("keeps fixed sessions in the canonical route and recomputes after removal", async () => {
+    const events = [
+      plannerEvent(1, "09:00", "10:00"),
+      plannerEvent(2, "10:10", "11:10", "能源与可持续发展"),
+      plannerEvent(3, "11:20", "12:20"),
+    ];
+    const state: PlannerState = {
+      dates: ["2026-07-17"],
+      availability: {},
+      interests: ["大模型与AI基础"],
+      identity: null,
+      goals: [],
+      pace: "balanced",
+      selectedEventIds: [2],
+    };
+    const user = userEvent.setup();
+    render(<StatefulPlanner events={events} initialState={state} />);
+
+    await user.click(screen.getByRole("button", { name: "生成我的路线" }));
+
+    const budget = screen.getByRole("region", { name: "路线注意力预算" });
+    expect(within(budget).getByText("3 场")).toBeInTheDocument();
+    expect(screen.getByText("手动保留活动")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /从路线移除：测试活动1/u }),
+    ).not.toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", { name: /从路线移除：测试活动2/u }),
+    );
+
+    await waitFor(() =>
+      expect(within(budget).getByText("2 场")).toBeInTheDocument(),
+    );
+    expect(screen.getByText("测试活动1")).toBeInTheDocument();
+    expect(screen.getByText("测试活动3")).toBeInTheDocument();
+    expect(screen.queryByText("测试活动2")).not.toBeInTheDocument();
+  });
+
+  it("reports invalid planner state when sharing without an unhandled rejection", async () => {
+    const event = plannerEvent(1, "09:00", "10:00");
+    const invalidState: PlannerState = {
+      dates: ["2026-07-17"],
+      availability: {
+        "2026-07-17": { start: "12:00", end: "10:00" },
+      },
+      interests: [],
+      identity: null,
+      goals: [],
+      pace: "relaxed",
+      selectedEventIds: [1],
+    };
+    const user = userEvent.setup();
+    render(
+      <Planner
+        events={[event]}
+        state={invalidState}
+        onStateChange={vi.fn()}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "分享路线" }));
+
+    expect(screen.getByText("分享失败，请重试")).toBeInTheDocument();
+  });
+
+  it("reports an ICS failure when object URL creation throws", async () => {
+    const event = plannerEvent(1, "09:00", "10:00");
+    Object.defineProperty(URL, "createObjectURL", {
+      configurable: true,
+      value: vi.fn(() => {
+        throw new Error("blocked");
+      }),
+    });
+    const user = userEvent.setup();
+    render(<RouteActions state={restoredState} events={[event]} />);
+
+    await user.click(screen.getByRole("button", { name: "下载 ICS" }));
+
+    expect(screen.getByText("ICS 生成失败，请重试")).toBeInTheDocument();
+  });
+
+  it("removes its temporary anchor and revokes the URL when download click throws", async () => {
+    const event = plannerEvent(1, "09:00", "10:00");
+    const createObjectURL = vi.fn().mockReturnValue("blob:failed-route");
+    const revokeObjectURL = vi.fn();
+    Object.defineProperty(URL, "createObjectURL", {
+      configurable: true,
+      value: createObjectURL,
+    });
+    Object.defineProperty(URL, "revokeObjectURL", {
+      configurable: true,
+      value: revokeObjectURL,
+    });
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(
+      function (this: HTMLAnchorElement) {
+        expect(this.isConnected).toBe(true);
+        throw new Error("download blocked");
+      },
+    );
+    const user = userEvent.setup();
+    render(<RouteActions state={restoredState} events={[event]} />);
+
+    await user.click(screen.getByRole("button", { name: "下载 ICS" }));
+
+    expect(screen.getByText("ICS 生成失败，请重试")).toBeInTheDocument();
+    expect(
+      document.querySelector('a[download="waic-2026-route.ics"]'),
+    ).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(revokeObjectURL).toHaveBeenCalledWith("blob:failed-route"),
+    );
   });
 });

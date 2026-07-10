@@ -153,7 +153,12 @@ export interface PlannerState {
   selectedEventIds: number[];
 }
 
-export type PlannerReasonType = "interest" | "identity" | "goal" | "diversity";
+export type PlannerReasonType =
+  | "interest"
+  | "identity"
+  | "goal"
+  | "diversity"
+  | "manual";
 
 export interface PlannerReason {
   type: PlannerReasonType;

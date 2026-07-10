@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { canonicalVenue } from "./events";
+import { createRouteIcs } from "./ics";
 import { planRoute } from "./planner";
 import type {
   PlannerState,
@@ -143,6 +144,107 @@ describe("planRoute constraints", () => {
     ];
 
     expect(planRoute(events, makeState({ pace })).items).toHaveLength(expected);
+  });
+
+  it("dedupes fixed sessions and plans relevant events around them", () => {
+    const events = [
+      makeEvent({ id: 1, start: "09:00", end: "10:00" }),
+      makeEvent({
+        id: 2,
+        category: "能源与可持续发展",
+        start: "10:10",
+        end: "11:10",
+      }),
+      makeEvent({ id: 3, start: "11:20", end: "12:20" }),
+    ];
+
+    const result = planRoute(
+      events,
+      makeState({ pace: "balanced", selectedEventIds: [2, 2] }),
+    );
+
+    expect(result.items.map(({ event }) => event.id)).toEqual([1, 2, 3]);
+    expect(result.metrics.eventCount).toBe(3);
+    expect(result.items.find(({ event }) => event.id === 2)?.reasons).toEqual(
+      expect.arrayContaining([expect.objectContaining({ type: "manual" })]),
+    );
+    expect(createRouteIcs(result.items).match(/BEGIN:VEVENT/g)).toHaveLength(3);
+  });
+
+  it("rejects a fixed session outside the selected dates", () => {
+    const events = [
+      makeEvent({ id: 1, date: "2026-07-18", start: "09:00", end: "10:00" }),
+    ];
+
+    expect(() =>
+      planRoute(events, makeState({ selectedEventIds: [1] })),
+    ).toThrow(/fixed event 1 is outside the selected dates/i);
+  });
+
+  it("rejects a fixed session outside its availability window", () => {
+    const events = [makeEvent({ id: 1, start: "09:00", end: "10:00" })];
+
+    expect(() =>
+      planRoute(
+        events,
+        makeState({
+          availability: { "2026-07-17": { start: "10:00", end: "12:00" } },
+          selectedEventIds: [1],
+        }),
+      ),
+    ).toThrow(/fixed event 1 is outside availability/i);
+  });
+
+  it("rejects fixed sessions that overlap", () => {
+    const events = [
+      makeEvent({ id: 1, start: "09:00", end: "10:00" }),
+      makeEvent({ id: 2, start: "09:30", end: "10:30" }),
+    ];
+
+    expect(() =>
+      planRoute(events, makeState({ selectedEventIds: [1, 2] })),
+    ).toThrow(/fixed events 1 and 2 overlap/i);
+  });
+
+  it("rejects fixed sessions without the venue-transfer buffer", () => {
+    const events = [
+      makeEvent({ id: 1, start: "09:00", end: "10:00" }),
+      makeEvent({
+        id: 2,
+        start: "10:20",
+        end: "11:20",
+        venue: "世博展览馆",
+        location: "展览馆会议室A",
+      }),
+    ];
+
+    expect(() =>
+      planRoute(events, makeState({ selectedEventIds: [1, 2] })),
+    ).toThrow(/fixed events 1 and 2 need a 25-minute venue-transfer buffer/i);
+  });
+
+  it("rejects fixed sessions over the selected daily pace", () => {
+    const events = [
+      makeEvent({ id: 1, start: "09:00", end: "10:00" }),
+      makeEvent({ id: 2, start: "10:10", end: "11:10" }),
+      makeEvent({ id: 3, start: "11:20", end: "12:20" }),
+    ];
+
+    expect(() =>
+      planRoute(
+        events,
+        makeState({ pace: "relaxed", selectedEventIds: [1, 2, 3] }),
+      ),
+    ).toThrow(/fixed events exceed the 2-event daily pace/i);
+  });
+
+  it("rejects a fixed session id that is absent from the schedule", () => {
+    expect(() =>
+      planRoute(
+        [makeEvent({ id: 1 })],
+        makeState({ selectedEventIds: [99] }),
+      ),
+    ).toThrow(/fixed event 99 was not found/i);
   });
 });
 

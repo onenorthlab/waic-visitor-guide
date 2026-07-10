@@ -193,6 +193,22 @@ function canFollow(from: WaicEvent, to: WaicEvent): boolean {
   );
 }
 
+function countVenueChanges(events: readonly WaicEvent[]): number {
+  return events.reduce(
+    (total, event, index) =>
+      total +
+      (index > 0 && hasVenueChange(events[index - 1], event) ? 1 : 0),
+    0,
+  );
+}
+
+function isFeasibleDay(events: readonly WaicEvent[]): boolean {
+  const sorted = [...events].sort(compareEvents);
+  return sorted.every(
+    (event, index) => index === 0 || canFollow(sorted[index - 1], event),
+  );
+}
+
 function parseClock(value: string, fieldName: string): number {
   if (value === "24:00") return 24 * 60;
 
@@ -311,19 +327,27 @@ function bestDayRoutes(
   events: readonly WaicEvent[],
   matches: ReadonlyMap<number, EventMatch>,
   dailyLimit: number,
+  fixedEvents: readonly WaicEvent[] = [],
 ): RouteOption[] {
+  const fixedIds = new Set(fixedEvents.map((event) => event.id));
   const candidates = events
-    .filter((event) => (matches.get(event.id)?.score ?? 0) > 0)
+    .filter(
+      (event) =>
+        !fixedIds.has(event.id) && (matches.get(event.id)?.score ?? 0) > 0,
+    )
     .sort(compareEvents);
+  const fixedScore = fixedEvents.reduce(
+    (total, event) => total + (matches.get(event.id)?.score ?? 0),
+    0,
+  );
   let bestScore = -1;
   let bestVenueChanges = Number.POSITIVE_INFINITY;
   let variants = new Map<string, RouteOption>();
 
-  const consider = (
-    selected: readonly WaicEvent[],
-    score: number,
-    venueChanges: number,
-  ) => {
+  const consider = (autoEvents: readonly WaicEvent[], autoScore: number) => {
+    const selected = [...fixedEvents, ...autoEvents].sort(compareEvents);
+    const score = fixedScore + autoScore;
+    const venueChanges = countVenueChanges(selected);
     if (score < bestScore) return;
     if (score === bestScore && venueChanges > bestVenueChanges) return;
 
@@ -343,28 +367,25 @@ function bestDayRoutes(
     startIndex: number,
     selected: WaicEvent[],
     score: number,
-    venueChanges: number,
   ) => {
-    consider(selected, score, venueChanges);
-    if (selected.length >= dailyLimit) return;
+    consider(selected, score);
+    if (fixedEvents.length + selected.length >= dailyLimit) return;
 
     for (let index = startIndex; index < candidates.length; index += 1) {
       const event = candidates[index];
-      const previous = selected.at(-1);
-      if (previous && !canFollow(previous, event)) continue;
-
       selected.push(event);
-      visit(
-        index + 1,
-        selected,
-        score + (matches.get(event.id)?.score ?? 0),
-        venueChanges + (previous && hasVenueChange(previous, event) ? 1 : 0),
-      );
+      if (isFeasibleDay([...fixedEvents, ...selected])) {
+        visit(
+          index + 1,
+          selected,
+          score + (matches.get(event.id)?.score ?? 0),
+        );
+      }
       selected.pop();
     }
   };
 
-  visit(0, [], 0, 0);
+  visit(0, [], 0);
   return [...variants.values()];
 }
 
@@ -408,12 +429,16 @@ function chooseFinalRoute(options: readonly RouteOption[]): RouteOption {
 function buildItems(
   events: readonly WaicEvent[],
   matches: ReadonlyMap<number, EventMatch>,
+  fixedIds: ReadonlySet<number>,
 ): PlannedEvent[] {
   const seenCategories = new Set<EventCategory>();
 
   return [...events].sort(compareEvents).map((event, index, sorted) => {
     const previous = sorted[index - 1];
     const reasons = [...(matches.get(event.id)?.reasons ?? [])];
+    if (fixedIds.has(event.id)) {
+      reasons.unshift({ type: "manual", label: "手动保留活动" });
+    }
     if (seenCategories.size > 0 && !seenCategories.has(event.category)) {
       reasons.push({ type: "diversity", label: `补充主题：${event.category}` });
     }
@@ -428,6 +453,58 @@ function buildItems(
           : 0,
     };
   });
+}
+
+function resolveFixedEvents(
+  events: readonly WaicEvent[],
+  state: PlannerState,
+  selectedDates: readonly WaicDate[],
+  availabilityByDate: ReadonlyMap<WaicDate, AvailabilityMinutes>,
+  dailyLimit: number,
+): WaicEvent[] {
+  const eventById = new Map(events.map((event) => [event.id, event]));
+  const fixedEvents = [...new Set(state.selectedEventIds)].map((id) => {
+    const event = eventById.get(id);
+    if (!event) throw new Error(`Fixed event ${id} was not found`);
+    return event;
+  });
+  const selectedDateSet = new Set(selectedDates);
+
+  fixedEvents.forEach((event) => {
+    if (!selectedDateSet.has(event.date)) {
+      throw new Error(`Fixed event ${event.id} is outside the selected dates`);
+    }
+    const availability = availabilityByDate.get(event.date);
+    if (!availability || !isAvailable(event, availability)) {
+      throw new Error(`Fixed event ${event.id} is outside availability`);
+    }
+  });
+
+  selectedDates.forEach((date) => {
+    const fixedDay = fixedEvents
+      .filter((event) => event.date === date)
+      .sort(compareEvents);
+    if (fixedDay.length > dailyLimit) {
+      throw new Error(
+        `Fixed events exceed the ${dailyLimit}-event daily pace on ${date}`,
+      );
+    }
+
+    fixedDay.slice(1).forEach((event, index) => {
+      const previous = fixedDay[index];
+      if (previous.endMinutes > event.startMinutes) {
+        throw new Error(`Fixed events ${previous.id} and ${event.id} overlap`);
+      }
+      const buffer = recommendedVenueBuffer(previous.venue, event.venue);
+      if (previous.endMinutes + buffer > event.startMinutes) {
+        throw new Error(
+          `Fixed events ${previous.id} and ${event.id} need a ${buffer}-minute venue-transfer buffer`,
+        );
+      }
+    });
+  });
+
+  return fixedEvents.sort(compareEvents);
 }
 
 const REJECTION_LABELS: Record<RejectionReason["type"], string> = {
@@ -555,6 +632,14 @@ export function planRoute(
       parseAvailability(date, state.availability[date]),
     ]),
   );
+  const fixedEvents = resolveFixedEvents(
+    events,
+    state,
+    selectedDates,
+    availabilityByDate,
+    dailyLimit,
+  );
+  const fixedIds = new Set(fixedEvents.map((event) => event.id));
 
   let combinedRoutes: RouteOption[] = [
     {
@@ -572,7 +657,8 @@ export function planRoute(
     const dayEvents = events.filter(
       (event) => event.date === date && isAvailable(event, availability),
     );
-    const dayRoutes = bestDayRoutes(dayEvents, matches, dailyLimit);
+    const fixedDay = fixedEvents.filter((event) => event.date === date);
+    const dayRoutes = bestDayRoutes(dayEvents, matches, dailyLimit, fixedDay);
     const next = new Map<string, RouteOption>();
 
     combinedRoutes.forEach((combined) => {
@@ -588,7 +674,7 @@ export function planRoute(
   });
 
   const route = chooseFinalRoute(combinedRoutes);
-  const items = buildItems(route.events, matches);
+  const items = buildItems(route.events, matches, fixedIds);
   const selectedMatches = route.events.map((event) => matches.get(event.id) as EventMatch);
   const goalsCovered = PLANNER_GOALS.filter((goal) =>
     selectedMatches.some((match) => match.goals.includes(goal)),

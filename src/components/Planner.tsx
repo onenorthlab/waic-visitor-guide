@@ -77,6 +77,9 @@ const copy = {
     remove: "移除",
     rejected: "高相关但未进入路线",
     noRejected: "当前路线没有额外的高相关冲突项。",
+    routeSummary: (count: number) => `路线包含 ${count} 场活动`,
+    emptySummary: "规划结果：0 场可行活动",
+    icsFailure: "ICS 生成失败，请重试",
   },
   en: {
     title: "Build your visit route in 30 seconds",
@@ -104,6 +107,9 @@ const copy = {
     remove: "Remove",
     rejected: "High-relevance events left out",
     noRejected: "This route has no additional high-relevance conflicts.",
+    routeSummary: (count: number) => `Route includes ${count} events`,
+    emptySummary: "Planner result: no feasible events",
+    icsFailure: "ICS creation failed. Try again.",
   },
 } as const;
 
@@ -112,6 +118,7 @@ const REASON_LABELS_EN: Record<PlannerReason["type"], string> = {
   identity: "Fits your role",
   goal: "Supports a visit goal",
   diversity: "Adds topic breadth",
+  manual: "Manually kept in this route",
 };
 
 const REJECTION_LABELS_EN: Record<
@@ -263,9 +270,9 @@ export function RouteActions({
   const [status, setStatus] = useState("");
 
   const shareRoute = async () => {
-    const query = encodePlannerState(state);
-    const url = `${window.location.origin}${window.location.pathname}?${query}`;
     try {
+      const query = encodePlannerState(state);
+      const url = `${window.location.origin}${window.location.pathname}?${query}`;
       if (typeof navigator.share === "function") {
         await navigator.share({
           title: "WAIC 2026 Visitor Guide",
@@ -296,15 +303,33 @@ export function RouteActions({
   };
 
   const downloadIcs = () => {
-    const ics = createRouteIcs(events);
-    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = "waic-2026-route.ics";
-    anchor.click();
-    URL.revokeObjectURL(url);
-    setStatus(language === "zh" ? "ICS 已生成" : "ICS created");
+    let url: string | null = null;
+    let anchor: HTMLAnchorElement | null = null;
+    try {
+      const ics = createRouteIcs(events);
+      const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+      url = URL.createObjectURL(blob);
+      anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "waic-2026-route.ics";
+      document.body.append(anchor);
+      anchor.click();
+      setStatus(language === "zh" ? "ICS 已生成" : "ICS created");
+    } catch {
+      setStatus(copy[language].icsFailure);
+    } finally {
+      anchor?.remove();
+      if (url) {
+        const objectUrl = url;
+        window.setTimeout(() => {
+          try {
+            URL.revokeObjectURL(objectUrl);
+          } catch {
+            // The download has already been handed off; revocation is best effort.
+          }
+        }, 0);
+      }
+    }
   };
 
   return (
@@ -322,7 +347,7 @@ export function RouteActions({
         <DownloadSimple aria-hidden="true" weight="bold" />
         {language === "zh" ? "下载 ICS" : "Download ICS"}
       </button>
-      <span className="route-action-status" role="status">
+      <span className="route-action-status" role="status" aria-live="polite">
         {status}
       </span>
     </div>
@@ -351,9 +376,11 @@ export function Planner({
     () => new Map(events.map((event) => [event.id, event])),
     [events],
   );
-  const manualEvents = state.selectedEventIds
-    .map((id) => eventById.get(id))
-    .filter((event): event is WaicEvent => Boolean(event));
+  const manualEvents = uniqueEvents(
+    state.selectedEventIds
+      .map((id) => eventById.get(id))
+      .filter((event): event is WaicEvent => Boolean(event)),
+  );
 
   const update = (next: PlannerState, affectsRoute = true) => {
     onStateChange(next);
@@ -405,19 +432,23 @@ export function Planner({
   };
 
   const removeManualEvent = (event: WaicEvent) => {
-    update(
-      {
-        ...state,
-        selectedEventIds: state.selectedEventIds.filter((id) => id !== event.id),
-      },
-      false,
-    );
+    const next = {
+      ...state,
+      selectedEventIds: state.selectedEventIds.filter((id) => id !== event.id),
+    };
+    onStateChange(next);
+    if (hasGenerated) {
+      setError("");
+      try {
+        setResult(planRoute(events, next));
+      } catch (routeError) {
+        setResult(null);
+        setError(routeError instanceof Error ? routeError.message : String(routeError));
+      }
+    }
   };
 
-  const actionEvents = uniqueEvents([
-    ...(result?.items.map((item) => item.event) ?? []),
-    ...manualEvents,
-  ]);
+  const actionEvents = result?.items.map((item) => item.event) ?? [];
 
   return (
     <section className="page-section planner-section" id="planner" aria-labelledby="planner-title">
@@ -603,6 +634,13 @@ export function Planner({
         </form>
 
         <div className="planner-output">
+          <p className="control-message" aria-live="polite">
+            {!error && hasGenerated
+              ? result?.items.length
+                ? content.routeSummary(result.items.length)
+                : content.emptySummary
+              : ""}
+          </p>
           {error ? (
             <div className="planner-error" role="alert">
               <WarningCircle aria-hidden="true" weight="fill" />
