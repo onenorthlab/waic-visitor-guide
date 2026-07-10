@@ -212,18 +212,47 @@ describe("event explorer", () => {
     expect(screen.getByRole("checkbox", { name: "7月17日" })).toBeChecked();
   });
 
-  it("preserves an existing availability window when adding a fixed event", async () => {
+  it("expands the default availability to contain a newly fixed event", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /查看活动：数学与人工智能论坛/u,
+      }),
+    );
+    await user.click(screen.getByRole("button", { name: "加入路线" }));
+
+    const persisted = await waitFor(() => {
+      const state = plannerStateFromUrl();
+      expect(state).toMatchObject({
+        dates: ["2026-07-17"],
+        availability: {
+          "2026-07-17": { start: "13:25", end: "18:00" },
+        },
+        selectedEventIds: [5],
+      });
+      return state;
+    });
+    expect(
+      planRoute(normalizeEvents(rawRows), persisted).items.map(
+        ({ event }) => event.id,
+      ),
+    ).toContain(5);
+  });
+
+  it("preserves and expands an existing availability window for a fixed event", async () => {
     const customState: PlannerState = {
       dates: [],
       availability: {
-        "2026-07-17": { start: "13:00", end: "18:00" },
+        "2026-07-17": { start: "13:00", end: "17:30" },
       },
       interests: [],
       identity: null,
       goals: [],
       pace: "balanced",
       selectedEventIds: [],
-      excludedEventIds: [1],
+      excludedEventIds: [5],
     };
     window.history.replaceState(
       null,
@@ -235,19 +264,28 @@ describe("event explorer", () => {
 
     await user.click(
       screen.getByRole("button", {
-        name: /查看活动：2026世界人工智能大会暨人工智能全球治理高级别会议主论坛/u,
+        name: /查看活动：数学与人工智能论坛/u,
       }),
     );
     await user.click(screen.getByRole("button", { name: "加入路线" }));
 
-    await waitFor(() =>
-      expect(plannerStateFromUrl()).toMatchObject({
+    const persisted = await waitFor(() => {
+      const state = plannerStateFromUrl();
+      expect(state).toMatchObject({
         dates: ["2026-07-17"],
         availability: {
           "2026-07-17": { start: "13:00", end: "18:00" },
         },
-      }),
-    );
+        selectedEventIds: [5],
+        excludedEventIds: [],
+      });
+      return state;
+    });
+    expect(
+      planRoute(normalizeEvents(rawRows), persisted).items.map(
+        ({ event }) => event.id,
+      ),
+    ).toContain(5);
   });
 
   it("wraps forward and reverse tab focus inside the detail dialog", async () => {

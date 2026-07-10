@@ -420,6 +420,8 @@ export function EventExplorer({
 
   const toggleSelectedEvent = (event: WaicEvent) => {
     const selected = plannerState.selectedEventIds.includes(event.id);
+    const currentAvailability =
+      plannerState.availability[event.date] ?? DEFAULT_AVAILABILITY[event.date];
     onPlannerStateChange({
       ...plannerState,
       dates:
@@ -432,9 +434,16 @@ export function EventExplorer({
         ? plannerState.availability
         : {
             ...plannerState.availability,
-            [event.date]:
-              plannerState.availability[event.date] ??
-              DEFAULT_AVAILABILITY[event.date],
+            [event.date]: {
+              start:
+                event.startTime < currentAvailability.start
+                  ? event.startTime
+                  : currentAvailability.start,
+              end:
+                event.endTime > currentAvailability.end
+                  ? event.endTime
+                  : currentAvailability.end,
+            },
           },
       selectedEventIds: selected
         ? plannerState.selectedEventIds.filter((id) => id !== event.id)
