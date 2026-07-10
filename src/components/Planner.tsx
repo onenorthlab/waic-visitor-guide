@@ -26,6 +26,7 @@ import {
   PLANNER_IDENTITIES,
   planRoute,
 } from "../lib/planner";
+import { DEFAULT_AVAILABILITY } from "../lib/plannerDefaults";
 import { encodePlannerState } from "../lib/share";
 import {
   WAIC_CATEGORIES,
@@ -39,16 +40,6 @@ import {
   type WaicEvent,
 } from "../lib/types";
 import type { Language } from "./AppShell";
-
-const DEFAULT_AVAILABILITY: Record<
-  WaicDate,
-  { start: string; end: string }
-> = {
-  "2026-07-17": { start: "13:30", end: "17:00" },
-  "2026-07-18": { start: "09:00", end: "17:00" },
-  "2026-07-19": { start: "09:00", end: "17:00" },
-  "2026-07-20": { start: "09:00", end: "16:00" },
-};
 
 const copy = {
   zh: {

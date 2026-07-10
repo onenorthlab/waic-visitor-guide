@@ -3,6 +3,17 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { App } from "../App";
+import rawRows from "../data/waic-raw.json";
+import { normalizeEvents } from "../lib/events";
+import { planRoute } from "../lib/planner";
+import { encodePlannerState } from "../lib/share";
+import type { PlannerState } from "../lib/types";
+
+function plannerStateFromUrl(): PlannerState {
+  const encoded = new URLSearchParams(window.location.search).get("plan");
+  if (!encoded) throw new Error("planner state is missing from the URL");
+  return JSON.parse(encoded) as PlannerState;
+}
 
 function installBrowserState() {
   const values = new Map<string, string>();
@@ -154,14 +165,76 @@ describe("event explorer", () => {
     const removeButton = screen.getByRole("button", { name: "移出路线" });
     expect(removeButton).toHaveFocus();
     expect(screen.getByText("已手动加入 1 场")).toBeInTheDocument();
+    const persistedAfterAdd = await waitFor(() => {
+      const state = plannerStateFromUrl();
+      expect(state.dates).toContain("2026-07-17");
+      expect(state.availability["2026-07-17"]).toEqual({
+        start: "13:30",
+        end: "17:00",
+      });
+      return state;
+    });
+    expect(
+      planRoute(normalizeEvents(rawRows), persistedAfterAdd).items.every(
+        ({ event }) =>
+          event.date !== "2026-07-17" ||
+          (event.startMinutes >= 13 * 60 + 30 && event.endMinutes <= 17 * 60),
+      ),
+    ).toBe(true);
 
     await user.click(removeButton);
     expect(screen.getByRole("button", { name: "加入路线" })).toHaveFocus();
+    await waitFor(() => {
+      const state = plannerStateFromUrl();
+      expect(state.selectedEventIds).not.toContain(1);
+      expect(state.dates).toContain("2026-07-17");
+      expect(state.availability["2026-07-17"]).toEqual({
+        start: "13:30",
+        end: "17:00",
+      });
+    });
 
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     await waitFor(() => expect(trigger).toHaveFocus());
     expect(screen.getByRole("checkbox", { name: "7月17日" })).toBeChecked();
+  });
+
+  it("preserves an existing availability window when adding a fixed event", async () => {
+    const customState: PlannerState = {
+      dates: [],
+      availability: {
+        "2026-07-17": { start: "13:00", end: "18:00" },
+      },
+      interests: [],
+      identity: null,
+      goals: [],
+      pace: "balanced",
+      selectedEventIds: [],
+    };
+    window.history.replaceState(
+      null,
+      "",
+      `/?${encodePlannerState(customState)}`,
+    );
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /查看活动：2026世界人工智能大会暨人工智能全球治理高级别会议主论坛/u,
+      }),
+    );
+    await user.click(screen.getByRole("button", { name: "加入路线" }));
+
+    await waitFor(() =>
+      expect(plannerStateFromUrl()).toMatchObject({
+        dates: ["2026-07-17"],
+        availability: {
+          "2026-07-17": { start: "13:00", end: "18:00" },
+        },
+      }),
+    );
   });
 
   it("wraps forward and reverse tab focus inside the detail dialog", async () => {

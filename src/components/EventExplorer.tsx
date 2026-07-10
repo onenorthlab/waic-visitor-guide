@@ -21,6 +21,7 @@ import {
 import { filterEvents, summarizeVenues } from "../lib/discovery";
 import { displayText } from "../lib/display";
 import { CATEGORY_LABELS_EN, DATE_LABELS } from "../lib/labels";
+import { DEFAULT_AVAILABILITY } from "../lib/plannerDefaults";
 import {
   WAIC_CATEGORIES,
   WAIC_DATES,
@@ -427,6 +428,14 @@ export function EventExplorer({
           : WAIC_DATES.filter(
               (date) => date === event.date || plannerState.dates.includes(date),
             ),
+      availability: selected
+        ? plannerState.availability
+        : {
+            ...plannerState.availability,
+            [event.date]:
+              plannerState.availability[event.date] ??
+              DEFAULT_AVAILABILITY[event.date],
+          },
       selectedEventIds: selected
         ? plannerState.selectedEventIds.filter((id) => id !== event.id)
         : [...plannerState.selectedEventIds, event.id],
