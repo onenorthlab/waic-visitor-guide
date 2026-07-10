@@ -6,8 +6,11 @@ import {
 } from "@phosphor-icons/react";
 import { useEffect, useState, type ReactNode } from "react";
 
+import { displayText } from "../lib/display";
+
 export type Language = "zh" | "en";
 type Theme = "light" | "dark";
+type ThemePreference = Theme | "system";
 
 const THEME_STORAGE_KEY = "waic-visitor-guide:theme";
 
@@ -35,6 +38,11 @@ const copy = {
       ["112/175", "三大赛道", "综合、大模型、产业智能"],
       ["91/175", "世博中心", "论坛最集中的核心场馆"],
     ],
+    footerTrust:
+      "WaytoAGI 制作的独立访客规划工具。活动时间与入场规则请以 WAIC 官网和 Hi WAIC APP 最新发布为准。",
+    footerSource: "源表：上海 WAIC 完整会议活动情况",
+    footerUpdated: "数据更新：2026-07-10",
+    footerOfficial: "WAIC 官网",
   },
   en: {
     navLabel: "Primary navigation",
@@ -59,13 +67,26 @@ const copy = {
       ["112/175", "Three leading tracks", "General, foundation models, industry AI"],
       ["91/175", "Expo Center", "The forum program's main hub"],
     ],
+    footerTrust:
+      "An independent visitor planning tool by WaytoAGI. Please follow the latest WAIC website and Hi WAIC APP updates for event times and admission rules.",
+    footerSource: "Source: complete Shanghai WAIC forum schedule",
+    footerUpdated: "Data updated: 2026-07-10",
+    footerOfficial: "WAIC official website",
   },
 } as const;
 
-function preferredTheme(): Theme {
+function savedThemePreference(): ThemePreference {
+  if (typeof window === "undefined") return "system";
+  try {
+    const saved = window.localStorage?.getItem(THEME_STORAGE_KEY);
+    return saved === "light" || saved === "dark" ? saved : "system";
+  } catch {
+    return "system";
+  }
+}
+
+function currentSystemTheme(): Theme {
   if (typeof window === "undefined") return "light";
-  const saved = window.localStorage?.getItem(THEME_STORAGE_KEY);
-  if (saved === "light" || saved === "dark") return saved;
   return window.matchMedia?.("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light";
@@ -78,25 +99,47 @@ interface HeaderProps {
 
 export function Header({ language, onLanguageChange }: HeaderProps) {
   const content = copy[language];
-  const [theme, setTheme] = useState<Theme>(preferredTheme);
+  const [themePreference, setThemePreference] =
+    useState<ThemePreference>(savedThemePreference);
+  const [systemTheme, setSystemTheme] = useState<Theme>(currentSystemTheme);
+  const theme = themePreference === "system" ? systemTheme : themePreference;
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = theme;
-    window.localStorage?.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
+
+  useEffect(() => {
+    try {
+      if (themePreference === "system") {
+        window.localStorage?.removeItem(THEME_STORAGE_KEY);
+      } else {
+        window.localStorage?.setItem(THEME_STORAGE_KEY, themePreference);
+      }
+    } catch {
+      // Theme selection remains usable when browser storage is unavailable.
+    }
+
+    if (themePreference !== "system") return;
+    const media = window.matchMedia?.("(prefers-color-scheme: dark)");
+    if (!media) return;
+    const onChange = (event: MediaQueryListEvent) =>
+      setSystemTheme(event.matches ? "dark" : "light");
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, [themePreference]);
 
   return (
     <header className="site-header">
-      <nav className="site-nav" aria-label={content.navLabel}>
-        <a className="wordmark" href="#overview" aria-label={content.brand}>
+      <nav className="site-nav" aria-label={displayText(content.navLabel)}>
+        <a className="wordmark" href="#overview" aria-label={displayText(content.brand)}>
           <span>WAIC 2026</span>
           <small>{language === "zh" ? "访客指南" : "VISITOR GUIDE"}</small>
         </a>
         <div className="nav-links">
           {content.nav.map(([label, href]) => (
             <a href={href} key={href}>
-              {label}
+              {displayText(label)}
             </a>
           ))}
         </div>
@@ -104,7 +147,7 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
           <button
             className="icon-button language-toggle"
             type="button"
-            aria-label={content.switchLanguage}
+            aria-label={displayText(content.switchLanguage)}
             onClick={() => onLanguageChange(language === "zh" ? "en" : "zh")}
           >
             <Translate aria-hidden="true" weight="bold" />
@@ -114,7 +157,9 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
             className="icon-button"
             type="button"
             aria-label={theme === "dark" ? "切换浅色主题" : "切换深色主题"}
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            onClick={() =>
+              setThemePreference(theme === "dark" ? "light" : "dark")
+            }
           >
             {theme === "dark" ? (
               <Sun aria-hidden="true" weight="bold" />
@@ -135,23 +180,23 @@ export function Hero({ language }: { language: Language }) {
     <>
       <section className="hero" id="overview" aria-labelledby="hero-title">
         <div className="hero-copy">
-          <p className="eyebrow">{content.independent}</p>
-          <h1 id="hero-title">{content.heading}</h1>
-          <p className="hero-subcopy">{content.subcopy}</p>
+          <p className="eyebrow">{displayText(content.independent)}</p>
+          <h1 id="hero-title">{displayText(content.heading)}</h1>
+          <p className="hero-subcopy">{displayText(content.subcopy)}</p>
           <div className="hero-actions">
             <a className="button button-primary" href="#planner">
-              {content.primary}
+              {displayText(content.primary)}
               <ArrowDownRight aria-hidden="true" weight="bold" />
             </a>
             <a className="button button-secondary" href="#landscape">
-              {content.secondary}
+              {displayText(content.secondary)}
             </a>
           </div>
         </div>
         <figure className="hero-visual">
           <img
             src="/assets/waic-data-terrain.webp"
-            alt={content.terrainAlt}
+            alt={displayText(content.terrainAlt)}
             width="1774"
             height="887"
             fetchPriority="high"
@@ -159,13 +204,13 @@ export function Hero({ language }: { language: Language }) {
           />
         </figure>
       </section>
-      <section className="insight-spine" aria-label={content.insightsLabel}>
+      <section className="insight-spine" aria-label={displayText(content.insightsLabel)}>
         {content.insights.map(([value, label, detail], index) => (
           <article className={`insight insight-${index + 1}`} key={value}>
-            <strong>{value}</strong>
+            <strong>{displayText(value)}</strong>
             <div>
-              <h2>{label}</h2>
-              <p>{detail}</p>
+              <h2>{displayText(label)}</h2>
+              <p>{displayText(detail)}</p>
             </div>
           </article>
         ))}
@@ -174,17 +219,17 @@ export function Hero({ language }: { language: Language }) {
   );
 }
 
-export function Footer() {
+export function Footer({ language }: { language: Language }) {
+  const content = copy[language];
+
   return (
     <footer className="site-footer">
-      <p>
-        WaytoAGI 制作的独立访客规划工具。活动时间与入场规则请以 WAIC 官网和 Hi WAIC APP 最新发布为准。
-      </p>
+      <p>{displayText(content.footerTrust)}</p>
       <div className="footer-meta">
-        <span>源表：上海 WAIC 完整会议活动情况</span>
-        <span>数据更新：2026-07-10</span>
+        <span>{displayText(content.footerSource)}</span>
+        <span>{displayText(content.footerUpdated)}</span>
         <a href="https://www.worldaic.com.cn/" target="_blank" rel="noreferrer">
-          WAIC 官网
+          {displayText(content.footerOfficial)}
         </a>
       </div>
     </footer>
@@ -192,7 +237,7 @@ export function Footer() {
 }
 
 interface AppShellProps {
-  children?: ReactNode;
+  children?: ReactNode | ((language: Language) => ReactNode);
 }
 
 export function AppShell({ children }: AppShellProps) {
@@ -203,9 +248,9 @@ export function AppShell({ children }: AppShellProps) {
       <Header language={language} onLanguageChange={setLanguage} />
       <main>
         <Hero language={language} />
-        {children}
+        {typeof children === "function" ? children(language) : children}
       </main>
-      <Footer />
+      <Footer language={language} />
     </div>
   );
 }

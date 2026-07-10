@@ -1,23 +1,54 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { App } from "./App";
 
 function mockColorScheme(matches: boolean) {
+  let darkMatches = matches;
+  const listeners = new Set<(event: MediaQueryListEvent) => void>();
   vi.stubGlobal(
     "matchMedia",
     vi.fn().mockImplementation((query: string) => ({
-      matches: query === "(prefers-color-scheme: dark)" ? matches : false,
+      get matches() {
+        return query === "(prefers-color-scheme: dark)" ? darkMatches : false;
+      },
       media: query,
       onchange: null,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
+      addEventListener: (
+        type: string,
+        listener: (event: MediaQueryListEvent) => void,
+      ) => {
+        if (query === "(prefers-color-scheme: dark)" && type === "change") {
+          listeners.add(listener);
+        }
+      },
+      removeEventListener: (
+        type: string,
+        listener: (event: MediaQueryListEvent) => void,
+      ) => {
+        if (query === "(prefers-color-scheme: dark)" && type === "change") {
+          listeners.delete(listener);
+        }
+      },
+      addListener: (listener: (event: MediaQueryListEvent) => void) =>
+        listeners.add(listener),
+      removeListener: (listener: (event: MediaQueryListEvent) => void) =>
+        listeners.delete(listener),
       dispatchEvent: vi.fn(),
     })),
   );
+
+  return {
+    setDark(next: boolean) {
+      darkMatches = next;
+      const event = {
+        matches: next,
+        media: "(prefers-color-scheme: dark)",
+      } as MediaQueryListEvent;
+      listeners.forEach((listener) => listener(event));
+    },
+  };
 }
 
 function installLocalStorage() {
@@ -99,6 +130,33 @@ describe("application shell", () => {
       }),
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Plan my route" })).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "An independent visitor planning tool by WaytoAGI. Please follow the latest WAIC website and Hi WAIC APP updates for event times and admission rules.",
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Data updated: 2026-07-10")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "WAIC official website" })).toBeInTheDocument();
+  });
+
+  it("follows system theme changes until the visitor makes an explicit choice", async () => {
+    const systemTheme = mockColorScheme(false);
+    const user = userEvent.setup();
+    render(<App />);
+
+    expect(document.documentElement).toHaveAttribute("data-theme", "light");
+    expect(window.localStorage.getItem("waic-visitor-guide:theme")).toBeNull();
+
+    act(() => systemTheme.setDark(true));
+    expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+    expect(window.localStorage.getItem("waic-visitor-guide:theme")).toBeNull();
+
+    await user.click(screen.getByRole("button", { name: "切换浅色主题" }));
+    expect(window.localStorage.getItem("waic-visitor-guide:theme")).toBe("light");
+
+    act(() => systemTheme.setDark(false));
+    act(() => systemTheme.setDark(true));
+    expect(document.documentElement).toHaveAttribute("data-theme", "light");
   });
 
   it("shows fixed provenance and never exposes em or en dashes in rendered copy", () => {
