@@ -187,11 +187,23 @@ describe("event explorer", () => {
     await waitFor(() => {
       const state = plannerStateFromUrl();
       expect(state.selectedEventIds).not.toContain(1);
+      expect(
+        (state as PlannerState & { excludedEventIds: number[] }).excludedEventIds,
+      ).toContain(1);
       expect(state.dates).toContain("2026-07-17");
       expect(state.availability["2026-07-17"]).toEqual({
         start: "13:30",
         end: "17:00",
       });
+    });
+
+    await user.click(screen.getByRole("button", { name: "加入路线" }));
+    await waitFor(() => {
+      const state = plannerStateFromUrl() as PlannerState & {
+        excludedEventIds: number[];
+      };
+      expect(state.selectedEventIds).toContain(1);
+      expect(state.excludedEventIds).not.toContain(1);
     });
 
     await user.keyboard("{Escape}");
@@ -211,6 +223,7 @@ describe("event explorer", () => {
       goals: [],
       pace: "balanced",
       selectedEventIds: [],
+      excludedEventIds: [1],
     };
     window.history.replaceState(
       null,

@@ -151,6 +151,7 @@ export interface PlannerState {
   goals: PlannerGoal[];
   pace: PlannerPace;
   selectedEventIds: number[];
+  excludedEventIds: number[];
 }
 
 export type PlannerReasonType =

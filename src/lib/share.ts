@@ -23,6 +23,7 @@ export const DEFAULT_PLANNER_STATE: PlannerState = {
   goals: [],
   pace: "balanced",
   selectedEventIds: [],
+  excludedEventIds: [],
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -108,6 +109,9 @@ function normalizePlannerState(value: unknown): PlannerState | null {
   );
   const goals = normalizeOrderedSelection<PlannerGoal>(value.goals, PLANNER_GOALS);
   const selectedEventIds = normalizeSelectedEventIds(value.selectedEventIds);
+  const excludedEventIds = normalizeSelectedEventIds(
+    value.excludedEventIds ?? [],
+  );
   const identity = value.identity;
   const pace = value.pace;
 
@@ -117,6 +121,7 @@ function normalizePlannerState(value: unknown): PlannerState | null {
     !interests ||
     !goals ||
     !selectedEventIds ||
+    !excludedEventIds ||
     !(
       identity === null ||
       (typeof identity === "string" &&
@@ -136,6 +141,9 @@ function normalizePlannerState(value: unknown): PlannerState | null {
     goals,
     pace: pace as PlannerState["pace"],
     selectedEventIds,
+    excludedEventIds: excludedEventIds.filter(
+      (id) => !selectedEventIds.includes(id),
+    ),
   };
 }
 
@@ -153,6 +161,7 @@ function cloneState(state: PlannerState): PlannerState {
     goals: [...state.goals],
     pace: state.pace,
     selectedEventIds: [...state.selectedEventIds],
+    excludedEventIds: [...state.excludedEventIds],
   };
 }
 

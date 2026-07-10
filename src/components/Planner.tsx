@@ -9,7 +9,7 @@ import {
   X,
 } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "motion/react";
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 
 import { displayText } from "../lib/display";
 import { createRouteIcs } from "../lib/ics";
@@ -417,6 +417,17 @@ export function Planner({
     }
   };
 
+  useEffect(() => {
+    if (!hasGenerated) return;
+    setError("");
+    try {
+      setResult(planRoute(events, state));
+    } catch (routeError) {
+      setResult(null);
+      setError(routeError instanceof Error ? routeError.message : String(routeError));
+    }
+  }, [events, hasGenerated, state]);
+
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     generateRoute();
@@ -426,6 +437,9 @@ export function Planner({
     const next = {
       ...state,
       selectedEventIds: state.selectedEventIds.filter((id) => id !== event.id),
+      excludedEventIds: [
+        ...new Set([...state.excludedEventIds, event.id]),
+      ],
     };
     onStateChange(next);
     if (hasGenerated) {

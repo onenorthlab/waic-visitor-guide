@@ -439,6 +439,9 @@ export function EventExplorer({
       selectedEventIds: selected
         ? plannerState.selectedEventIds.filter((id) => id !== event.id)
         : [...plannerState.selectedEventIds, event.id],
+      excludedEventIds: selected
+        ? [...new Set([...plannerState.excludedEventIds, event.id])]
+        : plannerState.excludedEventIds.filter((id) => id !== event.id),
     });
   };
 

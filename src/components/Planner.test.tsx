@@ -53,6 +53,7 @@ const restoredState: PlannerState = {
   goals: ["technical-depth"],
   pace: "relaxed",
   selectedEventIds: [16],
+  excludedEventIds: [],
 };
 
 function plannerEvent(
@@ -91,7 +92,21 @@ function StatefulPlanner({
   initialState: PlannerState;
 }) {
   const [state, setState] = useState(initialState);
-  return <Planner events={events} state={state} onStateChange={setState} />;
+  return (
+    <>
+      <Planner events={events} state={state} onStateChange={setState} />
+      <output aria-label="planner state">{JSON.stringify(state)}</output>
+    </>
+  );
+}
+
+function readBlob(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(String(reader.result)));
+    reader.addEventListener("error", () => reject(reader.error));
+    reader.readAsText(blob);
+  });
 }
 
 describe("30-second planner", () => {
@@ -302,6 +317,7 @@ describe("30-second planner", () => {
       goals: [],
       pace: "relaxed",
       selectedEventIds: [],
+      excludedEventIds: [],
     };
     const user = userEvent.setup();
     render(
@@ -330,6 +346,7 @@ describe("30-second planner", () => {
       goals: [],
       pace: "balanced",
       selectedEventIds: [2],
+      excludedEventIds: [],
     };
     const user = userEvent.setup();
     render(<StatefulPlanner events={events} initialState={state} />);
@@ -355,6 +372,101 @@ describe("30-second planner", () => {
     expect(screen.queryByText("测试活动2")).not.toBeInTheDocument();
   });
 
+  it("keeps a removed highest-match fixed event excluded after recomputing", async () => {
+    const event = plannerEvent(1, "09:00", "10:00");
+    const state = {
+      dates: ["2026-07-17"],
+      availability: {},
+      interests: ["大模型与AI基础"],
+      identity: null,
+      goals: [],
+      pace: "relaxed",
+      selectedEventIds: [1],
+      excludedEventIds: [],
+    } as PlannerState & { excludedEventIds: number[] };
+    const user = userEvent.setup();
+    render(<StatefulPlanner events={[event]} initialState={state} />);
+
+    await user.click(screen.getByRole("button", { name: "生成我的路线" }));
+    expect(screen.getByText("路线包含 1 场活动")).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", { name: /从路线移除：测试活动1/u }),
+    );
+
+    await waitFor(() =>
+      expect(screen.getByText("规划结果：0 场可行活动")).toBeInTheDocument(),
+    );
+    expect(
+      JSON.parse(screen.getByLabelText("planner state").textContent ?? "{}"),
+    ).toMatchObject({ selectedEventIds: [], excludedEventIds: [1] });
+  });
+
+  it("recomputes metrics and ICS when Explorer changes a generated route", async () => {
+    const routeBlobs: Blob[] = [];
+    Object.defineProperty(URL, "createObjectURL", {
+      configurable: true,
+      value: vi.fn((blob: Blob) => {
+        routeBlobs.push(blob);
+        return "blob:external-route";
+      }),
+    });
+    Object.defineProperty(URL, "revokeObjectURL", {
+      configurable: true,
+      value: vi.fn(),
+    });
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: "生成我的路线" }));
+    expect(screen.getByText("规划结果：0 场可行活动")).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /查看活动：2026世界人工智能大会暨人工智能全球治理高级别会议主论坛/u,
+      }),
+    );
+    await user.click(screen.getByRole("button", { name: "加入路线" }));
+    await user.keyboard("{Escape}");
+
+    await waitFor(() =>
+      expect(screen.getByText("路线包含 1 场活动")).toBeInTheDocument(),
+    );
+    expect(
+      within(screen.getByRole("region", { name: "路线注意力预算" })).getByText(
+        "1 场",
+      ),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "下载 ICS" }));
+    expect(routeBlobs).toHaveLength(1);
+    const ics = (await readBlob(routeBlobs[0])).replace(/\r?\n[ \t]/gu, "");
+    expect(ics).toContain(
+      "SUMMARY:2026世界人工智能大会暨人工智能全球治理高级别会议主论坛",
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /查看活动：2026世界人工智能大会暨人工智能全球治理高级别会议主论坛/u,
+      }),
+    );
+    await user.click(screen.getByRole("button", { name: "移出路线" }));
+    await user.keyboard("{Escape}");
+
+    await waitFor(() =>
+      expect(screen.getByText("规划结果：0 场可行活动")).toBeInTheDocument(),
+    );
+    const persisted = JSON.parse(
+      new URLSearchParams(window.location.search).get("plan") ?? "{}",
+    ) as PlannerState & { excludedEventIds: number[] };
+    expect(persisted).toMatchObject({
+      selectedEventIds: [],
+      excludedEventIds: [1],
+    });
+    expect(screen.queryByRole("button", { name: "下载 ICS" })).not.toBeInTheDocument();
+  });
+
   it("reports invalid planner state when sharing without an unhandled rejection", async () => {
     const event = plannerEvent(1, "09:00", "10:00");
     const invalidState: PlannerState = {
@@ -367,6 +479,7 @@ describe("30-second planner", () => {
       goals: [],
       pace: "relaxed",
       selectedEventIds: [1],
+      excludedEventIds: [],
     };
     const user = userEvent.setup();
     render(

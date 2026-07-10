@@ -13,7 +13,7 @@ import {
 import type { StorageLike } from "./share";
 import type { PlannerState } from "./types";
 
-const state: PlannerState = {
+const state = {
   dates: ["2026-07-17", "2026-07-19"],
   availability: {
     "2026-07-17": { start: "13:00", end: "18:30" },
@@ -24,7 +24,8 @@ const state: PlannerState = {
   goals: ["technical-depth", "industry-insight"],
   pace: "intensive",
   selectedEventIds: [42, 7, 175],
-};
+  excludedEventIds: [3, 9],
+} as PlannerState & { excludedEventIds: number[] };
 
 function memoryStorage(initial?: Record<string, string>): StorageLike {
   const values = new Map(Object.entries(initial ?? {}));
@@ -44,6 +45,21 @@ describe("planner state URL sharing", () => {
 
     expect(new URLSearchParams(encoded).has("plan")).toBe(true);
     expect(decodePlannerState(`?${encoded}`)).toEqual(state);
+  });
+
+  it("migrates legacy links without exclusions and persists exclusions", () => {
+    const { excludedEventIds: _excludedEventIds, ...legacyState } = state;
+    const legacy = new URLSearchParams({
+      plan: JSON.stringify(legacyState),
+    }).toString();
+
+    expect(decodePlannerState(legacy)).toMatchObject({ excludedEventIds: [] });
+
+    const storage = memoryStorage();
+    expect(savePlannerState(state, storage)).toBe(true);
+    expect(loadPlannerState(storage)).toMatchObject({
+      excludedEventIds: [3, 9],
+    });
   });
 
   it("canonicalizes selection order for deterministic links", () => {
@@ -88,6 +104,8 @@ describe("planner state URL sharing", () => {
     const decoded = decodePlannerState("", DEFAULT_PLANNER_STATE);
     decoded.dates.push("2026-07-17");
     decoded.selectedEventIds.push(1);
+
+    expect(decoded).toMatchObject({ excludedEventIds: [] });
 
     expect(DEFAULT_PLANNER_STATE.dates).toEqual([]);
     expect(DEFAULT_PLANNER_STATE.selectedEventIds).toEqual([]);

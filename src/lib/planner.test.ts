@@ -61,6 +61,7 @@ function makeState(overrides: Partial<PlannerState> = {}): PlannerState {
     goals: [],
     pace: "balanced",
     selectedEventIds: [],
+    excludedEventIds: [],
     ...overrides,
   };
 }
@@ -245,6 +246,24 @@ describe("planRoute constraints", () => {
         makeState({ selectedEventIds: [99] }),
       ),
     ).toThrow(/fixed event 99 was not found/i);
+  });
+
+  it("keeps explicitly removed events out of the route and rejected list", () => {
+    const events = [
+      makeEvent({ id: 1, start: "09:00", end: "10:00" }),
+      makeEvent({ id: 2, start: "10:10", end: "11:10" }),
+    ];
+    const state = {
+      ...makeState({ pace: "relaxed" }),
+      excludedEventIds: [1],
+    } as PlannerState & { excludedEventIds: number[] };
+
+    const result = planRoute(events, state);
+
+    expect(result.items.map(({ event }) => event.id)).toEqual([2]);
+    expect(
+      result.rejectedHighRelevance.map(({ event }) => event.id),
+    ).not.toContain(1);
   });
 });
 

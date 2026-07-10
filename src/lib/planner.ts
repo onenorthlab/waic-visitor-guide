@@ -582,6 +582,7 @@ function buildRejectedCandidates(
   availabilityByDate: ReadonlyMap<WaicDate, AvailabilityMinutes>,
   dailyLimit: number,
   matches: ReadonlyMap<number, EventMatch>,
+  excludedIds: ReadonlySet<number>,
 ): RejectedCandidate[] {
   const selectedIds = new Set(selected.map((event) => event.id));
   const selectedDateSet = new Set(selectedDates);
@@ -591,6 +592,7 @@ function buildRejectedCandidates(
       (event) =>
         selectedDateSet.has(event.date) &&
         !selectedIds.has(event.id) &&
+        !excludedIds.has(event.id) &&
         (matches.get(event.id)?.score ?? 0) > 0,
     )
     .map((event) => {
@@ -640,6 +642,7 @@ export function planRoute(
     dailyLimit,
   );
   const fixedIds = new Set(fixedEvents.map((event) => event.id));
+  const excludedIds = new Set(state.excludedEventIds);
 
   let combinedRoutes: RouteOption[] = [
     {
@@ -655,7 +658,10 @@ export function planRoute(
   selectedDates.forEach((date) => {
     const availability = availabilityByDate.get(date) as AvailabilityMinutes;
     const dayEvents = events.filter(
-      (event) => event.date === date && isAvailable(event, availability),
+      (event) =>
+        event.date === date &&
+        isAvailable(event, availability) &&
+        (!excludedIds.has(event.id) || fixedIds.has(event.id)),
     );
     const fixedDay = fixedEvents.filter((event) => event.date === date);
     const dayRoutes = bestDayRoutes(dayEvents, matches, dailyLimit, fixedDay);
@@ -693,6 +699,7 @@ export function planRoute(
       availabilityByDate,
       dailyLimit,
       matches,
+      excludedIds,
     ),
     metrics: {
       eventCount: items.length,
