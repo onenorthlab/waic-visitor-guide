@@ -1,10 +1,20 @@
-import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { App } from "../App";
+import rawRows from "../data/waic-raw.json";
+import { normalizeEvents } from "../lib/events";
 import { encodePlannerState, PLANNER_STORAGE_KEY } from "../lib/share";
 import type { PlannerState } from "../lib/types";
+import { Planner } from "./Planner";
 
 function installBrowserState() {
   const values = new Map<string, string>();
@@ -140,7 +150,11 @@ describe("30-second planner", () => {
     render(<App />);
 
     expect(screen.getByText("已手动加入 1 场")).toBeInTheDocument();
-    expect(screen.getByText(/从一次性Agent到记忆原生智能时代论坛/u)).toBeInTheDocument();
+    expect(
+      within(
+        screen.getByRole("region", { name: "手动加入的活动" }),
+      ).getByText(/从一次性Agent到记忆原生智能时代论坛/u),
+    ).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "分享路线" }));
     expect(writeText).toHaveBeenCalledWith(expect.stringContaining("plan="));
@@ -192,5 +206,62 @@ describe("30-second planner", () => {
       expect.objectContaining({ url: expect.stringContaining("plan=") }),
     );
     expect(writeText).not.toHaveBeenCalled();
+  });
+
+  it("keeps the last valid URL while availability is temporarily invalid and lets Planner report it", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole("checkbox", { name: "7月18日" }));
+    await waitFor(() =>
+      expect(window.location.search).toContain(encodeURIComponent("09:00")),
+    );
+    const lastValidSearch = window.location.search;
+
+    fireEvent.change(screen.getByLabelText("7月18日开始时间"), {
+      target: { value: "18:00" },
+    });
+    expect(
+      screen.getByRole("heading", { name: "30 秒生成你的参访路线" }),
+    ).toBeInTheDocument();
+    expect(window.location.search).toBe(lastValidSearch);
+
+    await user.click(screen.getByRole("button", { name: "生成我的路线" }));
+    expect(within(screen.getByRole("alert")).getByText("路线计算失败")).toBeInTheDocument();
+    const saved = JSON.parse(
+      window.localStorage.getItem(PLANNER_STORAGE_KEY) ?? "null",
+    ) as PlannerState;
+    expect(saved.availability["2026-07-18"]?.start).toBe("09:00");
+
+    fireEvent.change(screen.getByLabelText("7月18日结束时间"), {
+      target: { value: "19:00" },
+    });
+    await waitFor(() => expect(window.location.search).not.toBe(lastValidSearch));
+  });
+
+  it("states that no rejected candidate exists instead of inventing one", async () => {
+    const event = normalizeEvents(rawRows)[0];
+    const state: PlannerState = {
+      dates: ["2026-07-17"],
+      availability: {
+        "2026-07-17": { start: "13:00", end: "18:00" },
+      },
+      interests: [event.category],
+      identity: null,
+      goals: [],
+      pace: "relaxed",
+      selectedEventIds: [],
+    };
+    const user = userEvent.setup();
+    render(
+      <Planner
+        events={[event]}
+        state={state}
+        onStateChange={vi.fn()}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "生成我的路线" }));
+    expect(screen.getByText("当前路线没有额外的高相关冲突项。")).toBeInTheDocument();
   });
 });

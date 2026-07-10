@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import rawRows from "./data/waic-raw.json";
 import { AppShell } from "./components/AppShell";
+import { EventExplorer } from "./components/EventExplorer";
 import { OpportunityLandscape } from "./components/OpportunityLandscape";
 import { Planner } from "./components/Planner";
 import type { ExplorerSelection } from "./components/explorerTypes";
@@ -29,7 +30,12 @@ export function App() {
 
   useEffect(() => {
     savePlannerState(plannerState);
-    const nextSearch = `?${encodePlannerState(plannerState)}`;
+    let nextSearch: string;
+    try {
+      nextSearch = `?${encodePlannerState(plannerState)}`;
+    } catch {
+      return;
+    }
     if (window.location.search !== nextSearch) {
       window.history.replaceState(
         null,
@@ -55,7 +61,7 @@ export function App() {
             onStateChange={setPlannerState}
             language={language}
           />
-          <p className="landscape-filter-status" id="schedule" aria-live="polite">
+          <p className="landscape-filter-status" aria-live="polite">
             {selection
               ? language === "zh"
                 ? `当前筛选：${displayText(selection.label)}`
@@ -64,6 +70,14 @@ export function App() {
                 ? "选择任一全景节点，下方日程将同步筛选。"
                 : "Select any landscape node to filter the schedule below."}
           </p>
+          <EventExplorer
+            events={events}
+            selection={selection}
+            onClearSelection={() => setSelection(null)}
+            plannerState={plannerState}
+            onPlannerStateChange={setPlannerState}
+            language={language}
+          />
         </>
       )}
     </AppShell>
