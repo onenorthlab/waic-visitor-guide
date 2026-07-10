@@ -2,6 +2,7 @@ node_modules/
 dist/
 playwright-report/
 test-results/
+output/
 .wrangler/
 .dev.vars
 .DS_Store
