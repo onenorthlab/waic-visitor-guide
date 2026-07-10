@@ -111,6 +111,12 @@ describe("opportunity landscape", () => {
       screen.getByRole("button", { name: "Comprehensive Forums, 45 events" }),
     );
     expect(screen.getByText("Current filter: Comprehensive Forums")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Comprehensive Forums, 45 events" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.getByRole("button", { name: "Women & Diversity, 1 event" }),
+    ).toBeInTheDocument();
     expect(container.textContent).not.toMatch(/文字摘要|场峰值|活跃时段|真实主题类别/u);
   });
 });

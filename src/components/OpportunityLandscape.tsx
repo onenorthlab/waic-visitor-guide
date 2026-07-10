@@ -7,6 +7,7 @@ import {
   summarizeVenues,
 } from "../lib/discovery";
 import { displayText } from "../lib/display";
+import { CATEGORY_LABELS_EN, DATE_LABELS } from "../lib/labels";
 import type {
   CategorySummary,
   TimeHeatmapCell,
@@ -17,25 +18,9 @@ import type {
 import type { Language } from "./AppShell";
 import type { ExplorerSelection } from "./explorerTypes";
 
-const CATEGORY_EN: Record<CategorySummary["category"], string> = {
-  综合论坛: "Comprehensive Forums",
-  大模型与AI基础: "Foundation Models & AI",
-  算力与AI芯片: "Compute & AI Chips",
-  产业与工业智能化: "Industrial AI",
-  机器人与具身智能: "Robotics & Embodied AI",
-  前沿科技与探索: "Frontier Science",
-  治理标准与政策: "Governance & Standards",
-  金融与科技投资: "Finance & Tech Investment",
-  内容创意与AIGC: "Creative & AIGC",
-  教育与人才发展: "Education & Talent",
-  医疗与生命科学: "Healthcare & Life Sciences",
-  能源与可持续发展: "Energy & Sustainability",
-  女性与多元发展: "Women & Diversity",
-};
-
 interface LandscapePartProps {
   onSelect: (selection: ExplorerSelection) => void;
-  activeLabel?: string;
+  activeKey?: string;
   language?: Language;
 }
 
@@ -43,22 +28,19 @@ interface ScheduleHeatmapProps extends LandscapePartProps {
   cells: readonly TimeHeatmapCell[];
 }
 
-const DATE_LABELS: Record<WaicDate, { zh: string; en: string }> = {
-  "2026-07-17": { zh: "7月17日", en: "Jul 17" },
-  "2026-07-18": { zh: "7月18日", en: "Jul 18" },
-  "2026-07-19": { zh: "7月19日", en: "Jul 19" },
-  "2026-07-20": { zh: "7月20日", en: "Jul 20" },
-};
-
 function heatLevel(count: number, maximum: number): number {
   if (count === 0 || maximum === 0) return 0;
   return Math.max(1, Math.ceil((count / maximum) * 5));
 }
 
+function englishEventCount(count: number): string {
+  return `${count} ${count === 1 ? "event" : "events"}`;
+}
+
 export function ScheduleHeatmap({
   cells,
   onSelect,
-  activeLabel,
+  activeKey,
   language = "zh",
 }: ScheduleHeatmapProps) {
   const maximum = Math.max(...cells.map((cell) => cell.count), 0);
@@ -106,16 +88,18 @@ export function ScheduleHeatmap({
                 const accessibleLabel =
                   language === "zh"
                     ? `${label}，${cell.count} 场活动`
-                    : `${label}, ${cell.count} events`;
+                    : `${label}, ${englishEventCount(cell.count)}`;
                 return (
                   <button
                     className={`heat-cell heat-${heatLevel(cell.count, maximum)}`}
                     type="button"
                     aria-label={accessibleLabel}
-                    aria-pressed={activeLabel === label}
+                    aria-pressed={activeKey === `${cell.date}-${cell.start}`}
                     key={`${cell.date}-${cell.start}`}
                     onClick={() =>
                       onSelect({
+                        kind: "heatmap",
+                        key: `${cell.date}-${cell.start}`,
                         label: labelZh,
                         labelEn,
                         dates: [cell.date],
@@ -154,7 +138,7 @@ function topicClass(item: CategorySummary): string {
 export function TopicAtlas({
   categories,
   onSelect,
-  activeLabel,
+  activeKey,
   language = "zh",
 }: TopicAtlasProps) {
   return (
@@ -182,21 +166,25 @@ export function TopicAtlas({
             aria-label={
               language === "zh"
                 ? `${displayText(item.category)}，${item.count} 场`
-                : `${CATEGORY_EN[item.category]}, ${item.count} events`
+                : `${CATEGORY_LABELS_EN[item.category]}, ${englishEventCount(item.count)}`
             }
-            aria-pressed={activeLabel === item.category}
+            aria-pressed={activeKey === item.category}
             key={item.category}
             onClick={() =>
               onSelect({
+                kind: "category",
+                key: item.category,
                 label: item.category,
-                labelEn: CATEGORY_EN[item.category],
+                labelEn: CATEGORY_LABELS_EN[item.category],
                 categories: [item.category],
               })
             }
           >
             <span>
               {displayText(
-                language === "zh" ? item.category : CATEGORY_EN[item.category],
+                language === "zh"
+                  ? item.category
+                  : CATEGORY_LABELS_EN[item.category],
               )}
             </span>
             <strong>{item.count}</strong>
@@ -219,7 +207,7 @@ interface VenueConstellationProps extends LandscapePartProps {
 export function VenueConstellation({
   venues,
   onSelect,
-  activeLabel,
+  activeKey,
   language = "zh",
 }: VenueConstellationProps) {
   return (
@@ -251,13 +239,15 @@ export function VenueConstellation({
               aria-label={
                 language === "zh"
                   ? `${displayText(item.zh)}，${item.count} 场，示意位置`
-                  : `${displayText(item.en)}, ${item.count} events, schematic position`
+                  : `${displayText(item.en)}, ${englishEventCount(item.count)}, schematic position`
               }
-              aria-pressed={activeLabel === item.zh}
+              aria-pressed={activeKey === item.venueId}
               key={item.venueId}
               style={{ "--venue-size": `${size}px` } as CSSProperties}
               onClick={() =>
                 onSelect({
+                  kind: "venue",
+                  key: item.venueId,
                   label: item.zh,
                   labelEn: item.en,
                   venues: [item.venueId],
@@ -298,11 +288,6 @@ export function OpportunityLandscape({
   const cells = useMemo(() => buildTimeHeatmap(events), [events]);
   const categories = useMemo(() => summarizeCategories(events), [events]);
   const venues = useMemo(() => summarizeVenues(events), [events]);
-  const activeLabel =
-    language === "zh"
-      ? activeSelection?.label
-      : activeSelection?.labelEn ?? activeSelection?.label;
-
   return (
     <motion.section
       className="page-section landscape-section"
@@ -326,20 +311,20 @@ export function OpportunityLandscape({
       <ScheduleHeatmap
         cells={cells}
         onSelect={onSelect}
-        activeLabel={activeLabel}
+        activeKey={activeSelection?.key}
         language={language}
       />
       <div className="landscape-secondary-grid">
         <TopicAtlas
           categories={categories}
           onSelect={onSelect}
-          activeLabel={activeLabel}
+          activeKey={activeSelection?.key}
           language={language}
         />
         <VenueConstellation
           venues={venues}
           onSelect={onSelect}
-          activeLabel={activeLabel}
+          activeKey={activeSelection?.key}
           language={language}
         />
       </div>

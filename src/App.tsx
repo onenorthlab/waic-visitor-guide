@@ -1,15 +1,43 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import rawRows from "./data/waic-raw.json";
 import { AppShell } from "./components/AppShell";
 import { OpportunityLandscape } from "./components/OpportunityLandscape";
+import { Planner } from "./components/Planner";
 import type { ExplorerSelection } from "./components/explorerTypes";
 import { displayText } from "./lib/display";
 import { normalizeEvents } from "./lib/events";
+import {
+  DEFAULT_PLANNER_STATE,
+  decodePlannerState,
+  encodePlannerState,
+  loadPlannerState,
+  savePlannerState,
+} from "./lib/share";
+import type { PlannerState } from "./lib/types";
+
+function initialPlannerState(): PlannerState {
+  if (typeof window === "undefined") return DEFAULT_PLANNER_STATE;
+  return decodePlannerState(window.location.search, loadPlannerState());
+}
 
 export function App() {
   const events = useMemo(() => normalizeEvents(rawRows), []);
   const [selection, setSelection] = useState<ExplorerSelection | null>(null);
+  const [plannerState, setPlannerState] =
+    useState<PlannerState>(initialPlannerState);
+
+  useEffect(() => {
+    savePlannerState(plannerState);
+    const nextSearch = `?${encodePlannerState(plannerState)}`;
+    if (window.location.search !== nextSearch) {
+      window.history.replaceState(
+        null,
+        "",
+        `${window.location.pathname}${nextSearch}${window.location.hash}`,
+      );
+    }
+  }, [plannerState]);
 
   return (
     <AppShell>
@@ -19,6 +47,12 @@ export function App() {
             events={events}
             onSelect={setSelection}
             activeSelection={selection}
+            language={language}
+          />
+          <Planner
+            events={events}
+            state={plannerState}
+            onStateChange={setPlannerState}
             language={language}
           />
           <p className="landscape-filter-status" id="schedule" aria-live="polite">
