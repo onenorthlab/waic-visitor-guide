@@ -203,7 +203,7 @@ type Event = {
 - Phosphor Icons 作为唯一图标家族。
 - 图表优先使用语义 HTML、CSS Grid 和小型数据 SVG，不引入重量级地图 SDK。
 - Vitest + Testing Library 验证数据、规划器和关键交互。
-- Playwright 验证桌面、移动端、分享恢复、空结果和 reduced motion。
+- Playwright CLI 验证桌面、移动端、分享恢复、空结果和 reduced motion，不在项目中维护额外的浏览器测试框架。
 - Cloudflare Workers Static Assets，独立 Worker `waic-visitor-guide`，不绑定 D1 或 R2。
 
 ## 10. 部署与信任边界
@@ -223,6 +223,5 @@ type Event = {
 3. 用户 30 秒内可生成第一条路线，并能看懂每个推荐理由。
 4. 手机 390px 宽度下首屏、规划器、路线和列表无横向溢出。
 5. 所有核心交互可键盘完成，reduced motion 下没有自动动画。
-6. `test / typecheck / build / data:check / Playwright` 全部通过。
+6. `test / typecheck / build / data:check` 与 Playwright CLI 走查全部通过。
 7. Cloudflare 线上路由返回 200，桌面与移动浏览器走查通过。
-

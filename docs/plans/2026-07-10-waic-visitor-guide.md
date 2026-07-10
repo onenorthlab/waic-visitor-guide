@@ -6,7 +6,7 @@
 
 **Architecture:** A static React/Vite SPA normalizes a checked-in raw schedule at load time, computes filters and routes entirely in the browser, and persists user selections in the URL and localStorage. Cloudflare Workers Static Assets serves the generated `dist` directory with SPA fallback; v1 has no database, login, map key, or server API.
 
-**Tech Stack:** React 19, TypeScript, Vite, Tailwind CSS v4, Motion, Phosphor Icons, Vitest, Testing Library, Playwright, Cloudflare Wrangler.
+**Tech Stack:** React 19, TypeScript, Vite, Tailwind CSS v4, Motion, Phosphor Icons, Vitest, Testing Library, Playwright CLI, Cloudflare Wrangler.
 
 ---
 
@@ -35,7 +35,6 @@ Use scripts:
   "test": "vitest run",
   "test:watch": "vitest",
   "data:check": "vitest run src/data/data-integrity.test.ts",
-  "e2e": "playwright test",
   "deploy": "pnpm build && wrangler deploy"
 }
 ```
@@ -455,11 +454,12 @@ git commit -m "feat: add the complete searchable WAIC schedule"
 ### Task 10: Responsive, accessibility, and visual pre-flight
 
 **Files:**
-- Create: `playwright.config.ts`
-- Create: `tests/visitor-guide.spec.ts`
 - Modify: relevant components and `src/styles.css`
+- Create during verification only: `output/playwright/` screenshots and snapshots, kept out of the shipped bundle
 
-**Step 1: Write failing browser checks**
+**Step 1: Start the preview and open a Playwright CLI session**
+
+Use the installed Playwright skill wrapper. Snapshot before every element-ref interaction and re-snapshot after significant state changes.
 
 Cover:
 
@@ -473,11 +473,9 @@ Cover:
 - light and dark mode both readable;
 - console has no errors.
 
-**Step 2: Run to verify red**
+**Step 2: Record observed browser failures**
 
-Run: `pnpm e2e`
-
-Expected: failures until the browser surface is complete.
+Capture concrete failures with CLI snapshots, screenshots, console output, and DOM overflow checks before changing the UI.
 
 **Step 3: Fix only demonstrated failures**
 
@@ -491,8 +489,6 @@ Run: `pnpm typecheck`
 
 Run: `pnpm build`
 
-Run: `pnpm e2e`
-
 Run: `git diff --check`
 
 Expected: all commands exit 0.
@@ -500,7 +496,7 @@ Expected: all commands exit 0.
 **Step 5: Commit**
 
 ```bash
-git add playwright.config.ts tests src
+git add src
 git commit -m "test: verify responsive visitor planning flows"
 ```
 
@@ -545,7 +541,6 @@ pnpm run data:check
 pnpm test
 pnpm typecheck
 pnpm build
-pnpm e2e
 git status --short
 ```
 
@@ -555,4 +550,3 @@ git status --short
 git add README.md wrangler.jsonc
 git commit -m "docs: document WAIC visitor guide deployment"
 ```
-
