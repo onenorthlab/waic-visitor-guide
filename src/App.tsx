@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 
 import rawRows from "./data/waic-raw.json";
+import { AppErrorBoundary } from "./components/AppErrorBoundary";
 import { AppShell } from "./components/AppShell";
 import { EventExplorer } from "./components/EventExplorer";
 import { OpportunityLandscape } from "./components/OpportunityLandscape";
 import { Planner } from "./components/Planner";
+import { VenueGuide } from "./components/VenueGuide";
 import type { ExplorerSelection } from "./components/explorerTypes";
 import { displayText } from "./lib/display";
 import { normalizeEvents } from "./lib/events";
@@ -22,7 +24,7 @@ function initialPlannerState(): PlannerState {
   return decodePlannerState(window.location.search, loadPlannerState());
 }
 
-export function App() {
+function VisitorGuideApp() {
   const events = useMemo(() => normalizeEvents(rawRows), []);
   const [selection, setSelection] = useState<ExplorerSelection | null>(null);
   const [plannerState, setPlannerState] =
@@ -78,8 +80,17 @@ export function App() {
             onPlannerStateChange={setPlannerState}
             language={language}
           />
+          <VenueGuide language={language} />
         </>
       )}
     </AppShell>
+  );
+}
+
+export function App() {
+  return (
+    <AppErrorBoundary>
+      <VisitorGuideApp />
+    </AppErrorBoundary>
   );
 }
