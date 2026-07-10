@@ -22,6 +22,7 @@ export const DEFAULT_PLANNER_STATE: PlannerState = {
   identity: null,
   goals: [],
   pace: "balanced",
+  selectedEventIds: [],
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -81,6 +82,21 @@ function normalizeAvailability(
   return result;
 }
 
+function normalizeSelectedEventIds(value: unknown): number[] | null {
+  if (
+    !Array.isArray(value) ||
+    !value.every(
+      (id): id is number =>
+        typeof id === "number" && Number.isInteger(id) && id >= 1 && id <= 175,
+    ) ||
+    new Set(value).size !== value.length
+  ) {
+    return null;
+  }
+
+  return [...value];
+}
+
 function normalizePlannerState(value: unknown): PlannerState | null {
   if (!isRecord(value)) return null;
 
@@ -91,6 +107,7 @@ function normalizePlannerState(value: unknown): PlannerState | null {
     WAIC_CATEGORIES,
   );
   const goals = normalizeOrderedSelection<PlannerGoal>(value.goals, PLANNER_GOALS);
+  const selectedEventIds = normalizeSelectedEventIds(value.selectedEventIds);
   const identity = value.identity;
   const pace = value.pace;
 
@@ -99,6 +116,7 @@ function normalizePlannerState(value: unknown): PlannerState | null {
     !availability ||
     !interests ||
     !goals ||
+    !selectedEventIds ||
     !(
       identity === null ||
       (typeof identity === "string" &&
@@ -117,6 +135,7 @@ function normalizePlannerState(value: unknown): PlannerState | null {
     identity: identity as PlannerState["identity"],
     goals,
     pace: pace as PlannerState["pace"],
+    selectedEventIds,
   };
 }
 
@@ -133,6 +152,7 @@ function cloneState(state: PlannerState): PlannerState {
     identity: state.identity,
     goals: [...state.goals],
     pace: state.pace,
+    selectedEventIds: [...state.selectedEventIds],
   };
 }
 

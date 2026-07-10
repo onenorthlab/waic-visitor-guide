@@ -150,6 +150,7 @@ export interface PlannerState {
   identity: PlannerIdentity | null;
   goals: PlannerGoal[];
   pace: PlannerPace;
+  selectedEventIds: number[];
 }
 
 export type PlannerReasonType = "interest" | "identity" | "goal" | "diversity";

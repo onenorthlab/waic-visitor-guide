@@ -23,6 +23,7 @@ const state: PlannerState = {
   identity: "developer",
   goals: ["technical-depth", "industry-insight"],
   pace: "intensive",
+  selectedEventIds: [42, 7, 175],
 };
 
 function memoryStorage(initial?: Record<string, string>): StorageLike {
@@ -66,11 +67,30 @@ describe("planner state URL sharing", () => {
     expect(decodePlannerState("", state)).toEqual(state);
   });
 
+  it.each([
+    ["duplicate ids", [7, 7]],
+    ["zero", [0]],
+    ["negative ids", [-1]],
+    ["decimal ids", [1.5]],
+    ["string ids", ["7"]],
+    ["ids over 175", [176]],
+  ])("rejects %s as a malformed complete state", (_label, selectedEventIds) => {
+    const invalidValue = new URLSearchParams({
+      plan: JSON.stringify({ ...state, selectedEventIds }),
+    }).toString();
+
+    expect(decodePlannerState(invalidValue, DEFAULT_PLANNER_STATE)).toEqual(
+      DEFAULT_PLANNER_STATE,
+    );
+  });
+
   it("returns a clone of fallback state instead of shared mutable data", () => {
     const decoded = decodePlannerState("", DEFAULT_PLANNER_STATE);
     decoded.dates.push("2026-07-17");
+    decoded.selectedEventIds.push(1);
 
     expect(DEFAULT_PLANNER_STATE.dates).toEqual([]);
+    expect(DEFAULT_PLANNER_STATE.selectedEventIds).toEqual([]);
   });
 });
 
@@ -86,6 +106,19 @@ describe("planner state persistence", () => {
     const storage = memoryStorage({ [PLANNER_STORAGE_KEY]: "{bad-json" });
 
     expect(loadPlannerState(storage, state)).toEqual(state);
+  });
+
+  it("falls back when persisted selected event ids are invalid", () => {
+    const storage = memoryStorage({
+      [PLANNER_STORAGE_KEY]: JSON.stringify({
+        ...state,
+        selectedEventIds: [42, 42],
+      }),
+    });
+
+    expect(loadPlannerState(storage, DEFAULT_PLANNER_STATE)).toEqual(
+      DEFAULT_PLANNER_STATE,
+    );
   });
 
   it("guards browser storage access when window is unavailable", () => {

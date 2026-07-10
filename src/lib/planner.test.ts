@@ -59,6 +59,7 @@ function makeState(overrides: Partial<PlannerState> = {}): PlannerState {
     identity: null,
     goals: [],
     pace: "balanced",
+    selectedEventIds: [],
     ...overrides,
   };
 }
