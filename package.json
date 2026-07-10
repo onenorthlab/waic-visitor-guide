@@ -1,0 +1,39 @@
+{
+  "name": "waic-visitor-guide",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "pnpm typecheck && vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "data:check": "vitest run src/lib/events.test.ts",
+    "e2e": "playwright --version",
+    "deploy": "pnpm build && wrangler deploy"
+  },
+  "packageManager": "pnpm@11.9.0",
+  "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
+    "motion": "^12.42.2",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "jsdom": "^29.1.1",
+    "playwright": "^1.61.1",
+    "tailwindcss": "^4.3.2",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.4",
+    "vitest": "^4.1.10",
+    "wrangler": "^4.109.0"
+  }
+}
