@@ -883,6 +883,18 @@ a {
   font-size: 12px;
 }
 
+.route-update-status {
+  min-height: 18px;
+  margin: 2px 0 8px;
+  color: var(--green-text);
+  font-size: 12px;
+}
+
+.route-update-status:empty {
+  min-height: 0;
+  margin: 0;
+}
+
 .planner-dates {
   display: grid;
   gap: 10px;
