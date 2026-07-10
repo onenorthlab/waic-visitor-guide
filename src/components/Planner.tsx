@@ -9,7 +9,7 @@ import {
   X,
 } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "motion/react";
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
 import { displayText } from "../lib/display";
 import { createRouteIcs } from "../lib/ics";
@@ -78,6 +78,8 @@ const copy = {
     excludeRecommendation: "移除并重算",
     excludeRecommendationLabel: (title: string) =>
       `从推荐路线移除并重算：${title}`,
+    routeRecalculated: (title: string) =>
+      `已移除「${title}」，路线已重新计算。`,
   },
   en: {
     title: "Build your visit route in 30 seconds",
@@ -115,6 +117,8 @@ const copy = {
     excludeRecommendation: "Remove and recalculate",
     excludeRecommendationLabel: (title: string) =>
       `Remove and recalculate recommendation: ${title}`,
+    routeRecalculated: (title: string) =>
+      `Removed “${title}” and recalculated the route.`,
   },
 } as const;
 
@@ -157,11 +161,13 @@ function uniqueEvents(events: readonly WaicEvent[]): WaicEvent[] {
 
 interface AttentionBudgetProps {
   result: PlannerResult;
+  hasSelectedGoals: boolean;
   language?: Language;
 }
 
 export function AttentionBudget({
   result,
+  hasSelectedGoals,
   language = "zh",
 }: AttentionBudgetProps) {
   const metrics =
@@ -169,7 +175,12 @@ export function AttentionBudget({
       ? [
           ["活动场数", `${result.metrics.eventCount} 场`],
           ["有效内容小时", formatHours(result.metrics.contentMinutes, language)],
-          ["目标赛道覆盖", `${Math.round(result.metrics.goalCoverage * 100)}%`],
+          [
+            "目标赛道覆盖",
+            hasSelectedGoals
+              ? `${Math.round(result.metrics.goalCoverage * 100)}%`
+              : "未设置",
+          ],
           ["主题数", `${result.metrics.distinctCategories} 类`],
           ["换馆次数", `${result.metrics.venueChanges} 次`],
           ["建议缓冲", `${result.metrics.transitionBufferMinutes} 分钟`],
@@ -177,7 +188,12 @@ export function AttentionBudget({
       : [
           ["Events", String(result.metrics.eventCount)],
           ["Content hours", formatHours(result.metrics.contentMinutes, language)],
-          ["Goal-track coverage", `${Math.round(result.metrics.goalCoverage * 100)}%`],
+          [
+            "Goal-track coverage",
+            hasSelectedGoals
+              ? `${Math.round(result.metrics.goalCoverage * 100)}%`
+              : "Not set",
+          ],
           ["Topics", String(result.metrics.distinctCategories)],
           ["Venue changes", String(result.metrics.venueChanges)],
           ["Suggested buffer", `${result.metrics.transitionBufferMinutes} min`],
@@ -256,8 +272,8 @@ export function RouteTimeline({
                   <p className="route-buffer">
                     <Clock aria-hidden="true" weight="bold" />
                     {language === "zh"
-                      ? `换馆提示：建议缓冲 ${item.bufferFromPreviousMinutes} 分钟`
-                      : `Venue note: allow a suggested ${item.bufferFromPreviousMinutes}-minute buffer`}
+                      ? `衔接提示：建议缓冲 ${item.bufferFromPreviousMinutes} 分钟`
+                      : `Schedule note: allow a suggested ${item.bufferFromPreviousMinutes}-minute buffer`}
                   </p>
                 ) : null}
                 {!fixedEventIds.has(item.event.id) && onExclude ? (
@@ -390,6 +406,22 @@ interface PlannerProps {
   language?: Language;
 }
 
+function initialPlannerComputation(
+  events: readonly WaicEvent[],
+  state: PlannerState,
+  generated: boolean,
+): { result: PlannerResult | null; error: string } {
+  if (!generated) return { result: null, error: "" };
+  try {
+    return { result: planRoute(events, state), error: "" };
+  } catch (routeError) {
+    return {
+      result: null,
+      error: routeError instanceof Error ? routeError.message : String(routeError),
+    };
+  }
+}
+
 export function Planner({
   events,
   state,
@@ -399,11 +431,18 @@ export function Planner({
   language = "zh",
 }: PlannerProps) {
   const content = copy[language];
-  const [result, setResult] = useState<PlannerResult | null>(null);
+  const [initialComputation] = useState(() =>
+    initialPlannerComputation(events, state, routeGenerated === true),
+  );
+  const [result, setResult] = useState<PlannerResult | null>(
+    initialComputation.result,
+  );
   const [internalRouteGenerated, setInternalRouteGenerated] = useState(false);
   const hasGenerated = routeGenerated ?? internalRouteGenerated;
   const [goalMessage, setGoalMessage] = useState("");
-  const [error, setError] = useState("");
+  const [routeUpdateMessage, setRouteUpdateMessage] = useState("");
+  const [error, setError] = useState(initialComputation.error);
+  const routeSummaryRef = useRef<HTMLParagraphElement>(null);
   const eventById = useMemo(
     () => new Map(events.map((event) => [event.id, event])),
     [events],
@@ -428,6 +467,7 @@ export function Planner({
     if (affectsRoute) {
       setResult(null);
       setRouteGenerated(false);
+      setRouteUpdateMessage("");
       setError("");
     }
   };
@@ -458,6 +498,7 @@ export function Planner({
 
   const generateRoute = () => {
     setRouteGenerated(true);
+    setRouteUpdateMessage("");
     setError("");
     try {
       setResult(planRoute(events, state));
@@ -504,12 +545,16 @@ export function Planner({
   };
 
   const excludeRecommendedEvent = (event: WaicEvent) => {
+    setRouteUpdateMessage(
+      content.routeRecalculated(eventTitle(event, language)),
+    );
     onStateChange({
       ...state,
       excludedEventIds: [
         ...new Set([...state.excludedEventIds, event.id]),
       ],
     });
+    window.setTimeout(() => routeSummaryRef.current?.focus(), 0);
   };
 
   const actionEvents = result?.items.map((item) => item.event) ?? [];
@@ -698,12 +743,20 @@ export function Planner({
         </form>
 
         <div className="planner-output">
-          <p className="control-message" aria-live="polite">
+          <p
+            className="control-message"
+            ref={routeSummaryRef}
+            tabIndex={-1}
+            aria-live="polite"
+          >
             {!error && hasGenerated
               ? result?.items.length
                 ? content.routeSummary(result.items.length)
                 : content.emptySummary
               : ""}
+          </p>
+          <p className="route-update-status" role="status" aria-live="polite">
+            {routeUpdateMessage}
           </p>
           {error ? (
             <div className="planner-error" role="alert">
@@ -746,7 +799,11 @@ export function Planner({
                   </a>
                 </div>
               </aside>
-              <AttentionBudget result={result} language={language} />
+              <AttentionBudget
+                result={result}
+                hasSelectedGoals={state.goals.length > 0}
+                language={language}
+              />
               <RouteTimeline
                 items={result.items}
                 fixedEventIds={fixedEventIds}

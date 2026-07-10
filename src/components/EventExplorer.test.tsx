@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -95,6 +95,23 @@ describe("event explorer", () => {
     await user.selectOptions(screen.getByLabelText("按场馆筛选"), "expo-exhibition");
     expect(screen.getByText("3 场活动符合当前筛选")).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: /查看活动：/u })).toHaveLength(3);
+  });
+
+  it("does not repeat a single-language title as its own translation", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.type(screen.getByLabelText("搜索活动"), "WAICA - Main Track Session 1");
+    await user.click(
+      screen.getByRole("button", {
+        name: "查看活动：WAICA - Main Track Session 1",
+      }),
+    );
+
+    const dialog = screen.getByRole("dialog", {
+      name: "WAICA - Main Track Session 1",
+    });
+    expect(within(dialog).getAllByText("WAICA - Main Track Session 1")).toHaveLength(1);
   });
 
   it("offers an actionable empty state and clears all filters", async () => {

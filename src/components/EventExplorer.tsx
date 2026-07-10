@@ -268,7 +268,9 @@ export function EventDetailSheet({
         <div className="detail-content">
           <p className="detail-category">{categoryFor(event, language)}</p>
           <h2 id="event-detail-title">{title}</h2>
-          <p className="detail-secondary-title">{secondaryTitle}</p>
+          {secondaryTitle !== title ? (
+            <p className="detail-secondary-title">{secondaryTitle}</p>
+          ) : null}
           <dl className="detail-facts">
             <div>
               <dt>

@@ -160,6 +160,7 @@ describe("30-second planner", () => {
     expect(within(budget).getByText("主题数")).toBeInTheDocument();
     expect(within(budget).getByText("换馆次数")).toBeInTheDocument();
     expect(within(budget).getByText("建议缓冲")).toBeInTheDocument();
+    expect(screen.getByText(/衔接提示：建议缓冲/u)).toBeInTheDocument();
 
     expect(
       screen.getByRole("heading", { level: 3, name: "高相关但未进入路线" }),
@@ -352,7 +353,8 @@ describe("30-second planner", () => {
     window.history.replaceState(null, "", `/${sharedSearch}`);
     render(<App />);
 
-    expect(await screen.findByText(summaryText)).toBeInTheDocument();
+    expect(screen.queryByText("规划结果：0 场可行活动")).not.toBeInTheDocument();
+    expect(screen.getByText(summaryText)).toBeInTheDocument();
     expect(screen.getByText("路线已生成")).toBeInTheDocument();
 
     await user.selectOptions(screen.getByLabelText("你的身份"), "developer");
@@ -454,7 +456,13 @@ describe("30-second planner", () => {
     render(<StatefulPlanner events={events} initialState={state} />);
 
     await user.click(screen.getByRole("button", { name: "生成我的路线" }));
-    expect(screen.getByText("路线包含 2 场活动")).toBeInTheDocument();
+    const routeSummary = screen.getByText("路线包含 2 场活动");
+    expect(routeSummary).toBeInTheDocument();
+    expect(
+      within(screen.getByRole("region", { name: "路线注意力预算" })).getByText(
+        "未设置",
+      ),
+    ).toBeInTheDocument();
     expect(screen.getByText("测试活动1")).toBeInTheDocument();
     expect(screen.getByText("测试活动2")).toBeInTheDocument();
 
@@ -469,6 +477,10 @@ describe("30-second planner", () => {
         JSON.parse(screen.getByLabelText("planner state").textContent ?? "{}"),
       ).toMatchObject({ excludedEventIds: [1] }),
     );
+    expect(
+      screen.getByText("已移除「测试活动1」，路线已重新计算。"),
+    ).toHaveAttribute("role", "status");
+    expect(routeSummary).toHaveFocus();
     expect(screen.queryByText("测试活动1")).not.toBeInTheDocument();
     expect(screen.getByText("测试活动2")).toBeInTheDocument();
     expect(screen.getByText("测试活动3")).toBeInTheDocument();
