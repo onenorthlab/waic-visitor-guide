@@ -135,10 +135,12 @@ describe("event explorer", () => {
     );
     expect(screen.getByText("30 场活动符合当前筛选")).toBeInTheDocument();
     expect(screen.getByLabelText("按日期筛选")).toHaveValue("2026-07-18");
+    await user.click(screen.getByRole("button", { name: "关闭活动轮播" }));
 
     await user.click(screen.getByRole("button", { name: "综合论坛，45 场" }));
     expect(screen.getByText("45 场活动符合当前筛选")).toBeInTheDocument();
     expect(screen.getByLabelText("按类别筛选")).toHaveValue("综合论坛");
+    await user.click(screen.getByRole("button", { name: "关闭活动轮播" }));
 
     await user.click(
       screen.getByRole("button", { name: "世博中心，91 场，示意位置" }),

@@ -1,8 +1,12 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { App } from "../App";
+import rawRows from "../data/waic-raw.json";
+import { buildTimeHeatmap } from "../lib/discovery";
+import { displayText } from "../lib/display";
+import { normalizeEvents } from "../lib/events";
 
 describe("opportunity landscape", () => {
   beforeEach(() => {
@@ -32,7 +36,87 @@ describe("opportunity landscape", () => {
 
   afterEach(() => {
     cleanup();
+    vi.useRealTimers();
     vi.unstubAllGlobals();
+  });
+
+  it("opens the matching activities from heatmap, topic, and venue nodes", async () => {
+    const user = userEvent.setup();
+    const events = normalizeEvents(rawRows);
+    const heatCell = buildTimeHeatmap(events).find(
+      (cell) => cell.date === "2026-07-18" && cell.start === "09:30",
+    );
+    const heatEvent = events.find((event) => event.id === heatCell?.eventIds[0]);
+    const topicEvent = events.find((event) => event.category === "综合论坛");
+    const venueEvent = events.find((event) => event.venue.id === "expo-center");
+    if (!heatEvent || !topicEvent || !venueEvent) {
+      throw new Error("expected fixture events for landscape carousel tests");
+    }
+    render(<App />);
+
+    await user.click(
+      screen.getByRole("button", { name: "7月18日 09:30-10:00，30 场活动" }),
+    );
+    let dialog = screen.getByRole("dialog", {
+      name: "7月18日 09:30-10:00的活动",
+    });
+    expect(within(dialog).getByText("1 / 30")).toBeInTheDocument();
+    expect(within(dialog).getByText(displayText(heatEvent?.title.zh))).toBeInTheDocument();
+    await user.click(within(dialog).getByRole("button", { name: "关闭活动轮播" }));
+
+    await user.click(screen.getByRole("button", { name: "综合论坛，45 场" }));
+    dialog = screen.getByRole("dialog", { name: "综合论坛的活动" });
+    expect(within(dialog).getByText("1 / 45")).toBeInTheDocument();
+    expect(within(dialog).getByText(displayText(topicEvent?.title.zh))).toBeInTheDocument();
+    await user.click(within(dialog).getByRole("button", { name: "关闭活动轮播" }));
+
+    await user.click(
+      screen.getByRole("button", { name: "世博中心，91 场，示意位置" }),
+    );
+    dialog = screen.getByRole("dialog", { name: "世博中心的活动" });
+    expect(within(dialog).getByText("1 / 91")).toBeInTheDocument();
+    expect(within(dialog).getByText(displayText(venueEvent?.title.zh))).toBeInTheDocument();
+  });
+
+  it("does not open empty heatmap windows", () => {
+    render(<App />);
+
+    expect(
+      screen.getByRole("button", { name: "7月17日 09:00-09:30，0 场活动" }),
+    ).toBeDisabled();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("auto-advances the activity loop and lets visitors pause it", () => {
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    );
+    vi.useFakeTimers();
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "综合论坛，45 场" }));
+    const dialog = screen.getByRole("dialog", { name: "综合论坛的活动" });
+
+    expect(within(dialog).getByText("1 / 45")).toBeInTheDocument();
+    act(() => vi.advanceTimersByTime(5_000));
+    expect(within(dialog).getByText("2 / 45")).toBeInTheDocument();
+
+    fireEvent.click(within(dialog).getByRole("button", { name: "暂停自动播放" }));
+    act(() => vi.advanceTimersByTime(10_000));
+    expect(within(dialog).getByText("2 / 45")).toBeInTheDocument();
+
+    fireEvent.click(within(dialog).getByRole("button", { name: "继续自动播放" }));
+    act(() => vi.advanceTimersByTime(5_000));
+    expect(within(dialog).getByText("3 / 45")).toBeInTheDocument();
   });
 
   it("renders four days of semantic half-hour heatmap cells and filters the schedule", async () => {
@@ -67,6 +151,7 @@ describe("opportunity landscape", () => {
     expect(screen.getByText("13 个真实主题类别，共 175 场")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "综合论坛，45 场" }));
     expect(screen.getByText("当前筛选：综合论坛")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "关闭活动轮播" }));
     expect(screen.getByRole("button", { name: "女性与多元发展，1 场" })).toBeInTheDocument();
   });
 
@@ -116,6 +201,7 @@ describe("opportunity landscape", () => {
       screen.getByRole("button", { name: "Comprehensive Forums, 45 events" }),
     );
     expect(screen.getByText("Current filter: Comprehensive Forums")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Close activity carousel" }));
     expect(
       screen.getByRole("button", { name: "Comprehensive Forums, 45 events" }),
     ).toHaveAttribute("aria-pressed", "true");

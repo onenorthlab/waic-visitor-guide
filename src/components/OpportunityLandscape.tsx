@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from "motion/react";
-import { useMemo, type CSSProperties } from "react";
+import { useCallback, useMemo, useRef, useState, type CSSProperties } from "react";
 
 import {
   buildTimeHeatmap,
@@ -17,6 +17,7 @@ import type {
 } from "../lib/types";
 import type { Language } from "./AppShell";
 import type { ExplorerSelection } from "./explorerTypes";
+import { LandscapeEventCarousel } from "./LandscapeEventCarousel";
 
 interface LandscapePartProps {
   onSelect: (selection: ExplorerSelection) => void;
@@ -97,6 +98,7 @@ export function ScheduleHeatmap({
                   <button
                     className={`heat-cell heat-${heatLevel(cell.count, maximum)}`}
                     type="button"
+                    disabled={cell.count === 0}
                     aria-label={accessibleLabel}
                     aria-pressed={activeKey === `${cell.date}-${cell.start}`}
                     key={`${cell.date}-${cell.start}`}
@@ -293,9 +295,48 @@ export function OpportunityLandscape({
   language = "zh",
 }: OpportunityLandscapeProps) {
   const reducedMotion = useReducedMotion();
+  const [carouselSelection, setCarouselSelection] =
+    useState<ExplorerSelection | null>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
   const cells = useMemo(() => buildTimeHeatmap(events), [events]);
   const categories = useMemo(() => summarizeCategories(events), [events]);
   const venues = useMemo(() => summarizeVenues(events), [events]);
+  const carouselEvents = useMemo(() => {
+    if (!carouselSelection) return [];
+    const allowedIds = carouselSelection.eventIds
+      ? new Set(carouselSelection.eventIds)
+      : null;
+    return events.filter((event) => {
+      if (allowedIds && !allowedIds.has(event.id)) return false;
+      if (
+        carouselSelection.categories &&
+        !carouselSelection.categories.includes(event.category)
+      ) return false;
+      if (
+        carouselSelection.venues &&
+        !carouselSelection.venues.includes(event.venue.id)
+      ) return false;
+      if (
+        carouselSelection.dates &&
+        !carouselSelection.dates.includes(event.date)
+      ) return false;
+      return true;
+    });
+  }, [carouselSelection, events]);
+
+  const inspectSelection = useCallback(
+    (selection: ExplorerSelection) => {
+      onSelect(selection);
+      returnFocusRef.current = document.activeElement as HTMLElement | null;
+      setCarouselSelection(selection);
+    },
+    [onSelect],
+  );
+
+  const closeCarousel = useCallback(() => {
+    setCarouselSelection(null);
+    queueMicrotask(() => returnFocusRef.current?.focus());
+  }, []);
   return (
     <motion.section
       className="page-section landscape-section"
@@ -318,24 +359,37 @@ export function OpportunityLandscape({
       </header>
       <ScheduleHeatmap
         cells={cells}
-        onSelect={onSelect}
+        onSelect={inspectSelection}
         activeKey={activeSelection?.key}
         language={language}
       />
       <div className="landscape-secondary-grid">
         <TopicAtlas
           categories={categories}
-          onSelect={onSelect}
+          onSelect={inspectSelection}
           activeKey={activeSelection?.key}
           language={language}
         />
         <VenueConstellation
           venues={venues}
-          onSelect={onSelect}
+          onSelect={inspectSelection}
           activeKey={activeSelection?.key}
           language={language}
         />
       </div>
+      {carouselSelection && carouselEvents.length > 0 ? (
+        <LandscapeEventCarousel
+          key={`${carouselSelection.kind}-${carouselSelection.key}`}
+          events={carouselEvents}
+          label={displayText(
+            language === "zh"
+              ? carouselSelection.label
+              : carouselSelection.labelEn ?? carouselSelection.label,
+          )}
+          language={language}
+          onClose={closeCarousel}
+        />
+      ) : null}
     </motion.section>
   );
 }
