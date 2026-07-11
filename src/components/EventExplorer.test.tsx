@@ -147,7 +147,7 @@ describe("event explorer", () => {
       screen.getByRole("button", { name: "世博中心，91 场，示意位置" }),
     );
     expect(screen.getByText("91 场活动符合当前筛选")).toBeInTheDocument();
-    expect(screen.getByLabelText("按场馆筛选")).toHaveValue("expo-center");
+    expect(screen.getAllByLabelText("按场馆筛选")[0]).toHaveValue("expo-center");
   });
 
   it("opens an accessible bilingual detail sheet, toggles the route, and restores focus", async () => {
