@@ -90,6 +90,8 @@ Supported locales:
 
 Interface controls, navigation, planner guidance, filters, venue guidance, categories, identities, and goals are localized. The schedule source contains only Chinese and English official titles and locations. Chinese uses the Chinese source; all other locales use the English source so unofficial machine-translated forum names are not presented as authoritative. Arabic uses `dir="rtl"`, while numeric times remain left-to-right.
 
+UI dictionaries must be declared for all eight `Locale` values through the typed `defineTranslations` helper. UI components may not call `contentLanguage`; that fallback is reserved exclusively for selecting Chinese or English official source data through `sourceText`. This makes a missing locale a TypeScript error instead of silently rendering English interface copy.
+
 ## Accessibility and motion
 
 - Preserve semantic buttons, labels, focus traps, focus restoration, and `aria-live` announcements.
@@ -97,4 +99,3 @@ Interface controls, navigation, planner guidance, filters, venue guidance, categ
 - Autoplay has an explicit pause control and is disabled when reduced motion is requested.
 - Empty heatmap cells remain disabled.
 - All eight language names are written in their native scripts.
-

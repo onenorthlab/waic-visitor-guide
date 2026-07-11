@@ -13,8 +13,9 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
 import { displayText } from "../lib/display";
 import { createRouteIcs } from "../lib/ics";
-import { contentLanguage, sourceText } from "../lib/i18n";
+import { defineTranslations, sourceText } from "../lib/i18n";
 import { categoryLabel, dateLabel, goalLabel, identityLabel } from "../lib/labels";
+import { PLANNER_AUX_COPY } from "../lib/uiCopy";
 import {
   PLANNER_GOALS,
   PLANNER_IDENTITIES,
@@ -26,16 +27,14 @@ import {
   WAIC_CATEGORIES,
   WAIC_DATES,
   type PlannedEvent,
-  type PlannerReason,
   type PlannerResult,
   type PlannerState,
-  type RejectedCandidate,
   type WaicDate,
   type WaicEvent,
 } from "../lib/types";
 import type { Language } from "./AppShell";
 
-const copy = {
+const copy = defineTranslations({
   zh: {
     title: "30 秒生成你的参访路线",
     intro: "选择身份、目标和可用时间，系统按相关性、冲突与换馆缓冲生成路线。",
@@ -114,26 +113,25 @@ const copy = {
     routeRecalculated: (title: string) =>
       `Removed “${title}” and recalculated the route.`,
   },
-} as const;
-
-const REASON_LABELS_EN: Record<PlannerReason["type"], string> = {
-  interest: "Direct topic interest",
-  identity: "Fits your role",
-  goal: "Goal-related track",
-  diversity: "Adds topic breadth",
-  manual: "Manually kept in this route",
-};
-
-const REJECTION_LABELS_EN: Record<
-  RejectedCandidate["rejection"]["type"],
-  string
-> = {
-  "outside-availability": "Outside your availability",
-  "time-conflict": "Conflicts with a selected event",
-  "venue-buffer": "Not enough venue-change buffer",
-  "daily-limit": "Daily event limit reached",
-  "lower-match": "Replaced by a better-matching combination",
-};
+  ja: {
+    title: "30秒で来場ルートを作成", intro: "役割、目的、参加可能時間を選ぶと、関連性、重複、会場移動を考慮してルートを作成します。", identity: "あなたの役割", identityPlaceholder: "役割を選択", goals: "来場目的、最大2つ", goalLimit: "目的は2つまで選択できます", interests: "関心テーマ", dates: "日付と参加可能時間", invitedNote: "7月17日 13:30-17:00は招待者限定です。参加資格をご確認ください。", pace: "参加ペース", paceLabels: ["1日2件", "1日3件", "1日4件"], generate: "ルートを作成", resultTitle: "ルートを作成しました", resultIntro: "各項目に推薦理由と移動・集中コストを表示します。", emptyBefore: "左側の条件を入力すると、ルート、重複、会場移動コストが表示されます。", noRoute: "実行可能なルートが見つかりません", loosen: "日付、参加可能時間、関心テーマを広げてください。", errorTitle: "ルート計算に失敗しました", errorSource: "出典：WAIC 2026全フォーラム日程。時間帯を確認して再試行してください。", retry: "再計算", manualCount: (n: number) => `手動追加 ${n}件`, manualTitle: "手動で追加したイベント", remove: "削除", rejected: "関連性は高いがルート外のイベント", noRejected: "追加の高関連競合イベントはありません。", routeSummary: (n: number) => `ルートは${n}件です`, emptySummary: "計画結果：実行可能なイベント0件", icsFailure: "ICSの作成に失敗しました。", eligibilityLabel: "入場資格の注意", eligibility: "ルート推薦は入場資格ではありません。各フォーラムへの登録または招待が必要です。", officialRegistration: "WAIC公式登録を開く", excludeRecommendation: "削除して再計算", excludeRecommendationLabel: (title: string) => `推薦から削除して再計算：${title}`, routeRecalculated: (title: string) => `「${title}」を削除し、ルートを再計算しました。`,
+  },
+  ko: {
+    title: "30초 만에 방문 동선 만들기", intro: "역할, 목표, 가능한 시간을 선택하면 관련성, 일정 충돌, 장소 이동을 고려해 동선을 만듭니다.", identity: "나의 역할", identityPlaceholder: "역할 선택", goals: "방문 목표, 최대 2개", goalLimit: "목표는 2개까지 선택할 수 있습니다", interests: "관심 주제", dates: "날짜와 가능한 시간", invitedNote: "7월 17일 13:30-17:00은 초청자만 참여할 수 있습니다.", pace: "방문 속도", paceLabels: ["하루 2개", "하루 3개", "하루 4개"], generate: "동선 만들기", resultTitle: "동선이 준비되었습니다", resultIntro: "각 항목에 추천 이유와 이동·집중 비용을 표시합니다.", emptyBefore: "왼쪽 조건을 입력하면 동선, 충돌, 장소 이동 비용이 표시됩니다.", noRoute: "가능한 동선을 찾지 못했습니다", loosen: "날짜, 가능한 시간 또는 관심 주제를 넓혀 보세요.", errorTitle: "동선 계산 실패", errorSource: "출처: WAIC 2026 전체 포럼 일정. 시간을 확인하고 다시 시도하세요.", retry: "다시 계산", manualCount: (n: number) => `수동 추가 ${n}개`, manualTitle: "수동으로 추가한 행사", remove: "제거", rejected: "관련성이 높지만 동선에서 제외된 행사", noRejected: "추가로 충돌하는 고관련 행사가 없습니다.", routeSummary: (n: number) => `동선에 ${n}개 행사 포함`, emptySummary: "계획 결과: 가능한 행사 없음", icsFailure: "ICS 생성에 실패했습니다.", eligibilityLabel: "입장 자격 안내", eligibility: "동선 추천은 입장 자격이 아닙니다. 각 포럼 등록 또는 초청이 필요합니다.", officialRegistration: "WAIC 공식 등록 열기", excludeRecommendation: "제거 후 재계산", excludeRecommendationLabel: (title: string) => `추천에서 제거 후 재계산: ${title}`, routeRecalculated: (title: string) => `‘${title}’을 제거하고 동선을 다시 계산했습니다.`,
+  },
+  fr: {
+    title: "Créez votre parcours en 30 secondes", intro: "Choisissez votre rôle, vos objectifs et vos disponibilités. Le planificateur équilibre pertinence, conflits et changements de lieu.", identity: "Votre rôle", identityPlaceholder: "Choisir un rôle", goals: "Objectifs, 2 maximum", goalLimit: "Choisissez au maximum 2 objectifs", interests: "Thèmes d’intérêt", dates: "Dates et disponibilités", invitedNote: "Le 17 juillet de 13:30 à 17:00 est réservé aux invités.", pace: "Rythme de visite", paceLabels: ["2 événements par jour", "3 événements par jour", "4 événements par jour"], generate: "Créer mon parcours", resultTitle: "Parcours prêt", resultIntro: "Chaque étape explique sa pertinence et son coût en attention.", emptyBefore: "Renseignez vos préférences pour afficher le parcours, les conflits et les changements de lieu.", noRoute: "Aucun parcours réalisable", loosen: "Élargissez les dates, les horaires ou les thèmes.", errorTitle: "Échec du calcul", errorSource: "Source : programme complet WAIC 2026. Vérifiez les horaires et réessayez.", retry: "Recalculer", manualCount: (n: number) => `${n} ajoutés manuellement`, manualTitle: "Événements ajoutés manuellement", remove: "Retirer", rejected: "Événements pertinents non retenus", noRejected: "Aucun autre conflit à forte pertinence.", routeSummary: (n: number) => `Le parcours comprend ${n} événements`, emptySummary: "Résultat : aucun événement réalisable", icsFailure: "Échec de la création du fichier ICS.", eligibilityLabel: "Rappel d’accès", eligibility: "Une recommandation ne donne pas accès. Chaque forum exige une inscription ou une invitation.", officialRegistration: "Ouvrir l’inscription WAIC", excludeRecommendation: "Retirer et recalculer", excludeRecommendationLabel: (title: string) => `Retirer et recalculer : ${title}`, routeRecalculated: (title: string) => `« ${title} » a été retiré et le parcours recalculé.`,
+  },
+  de: {
+    title: "Besuchsroute in 30 Sekunden erstellen", intro: "Wählen Sie Rolle, Ziele und verfügbare Zeit. Der Planer berücksichtigt Relevanz, Konflikte und Ortswechsel.", identity: "Ihre Rolle", identityPlaceholder: "Rolle wählen", goals: "Besuchsziele, höchstens 2", goalLimit: "Wählen Sie höchstens 2 Ziele", interests: "Interessenthemen", dates: "Daten und Verfügbarkeit", invitedNote: "Der 17. Juli von 13:30-17:00 ist nur für eingeladene Gäste.", pace: "Besuchstempo", paceLabels: ["2 Veranstaltungen pro Tag", "3 Veranstaltungen pro Tag", "4 Veranstaltungen pro Tag"], generate: "Route erstellen", resultTitle: "Route ist bereit", resultIntro: "Jeder Eintrag erklärt Relevanz und Aufmerksamkeitskosten.", emptyBefore: "Füllen Sie die Präferenzen aus, um Route, Konflikte und Ortswechsel zu sehen.", noRoute: "Keine mögliche Route gefunden", loosen: "Erweitern Sie Daten, Zeiten oder Themen.", errorTitle: "Routenberechnung fehlgeschlagen", errorSource: "Quelle: vollständiges WAIC-2026-Programm. Prüfen Sie die Zeiten.", retry: "Neu berechnen", manualCount: (n: number) => `${n} manuell hinzugefügt`, manualTitle: "Manuell hinzugefügte Veranstaltungen", remove: "Entfernen", rejected: "Relevante, nicht aufgenommene Veranstaltungen", noRejected: "Keine weiteren Konflikte mit hoher Relevanz.", routeSummary: (n: number) => `Route enthält ${n} Veranstaltungen`, emptySummary: "Ergebnis: keine mögliche Veranstaltung", icsFailure: "ICS-Erstellung fehlgeschlagen.", eligibilityLabel: "Zugangshinweis", eligibility: "Eine Empfehlung gewährt keinen Zutritt. Foren erfordern Anmeldung oder Einladung.", officialRegistration: "Offizielle WAIC-Anmeldung öffnen", excludeRecommendation: "Entfernen und neu berechnen", excludeRecommendationLabel: (title: string) => `Entfernen und neu berechnen: ${title}`, routeRecalculated: (title: string) => `„${title}“ wurde entfernt und die Route neu berechnet.`,
+  },
+  es: {
+    title: "Crea tu ruta de visita en 30 segundos", intro: "Elige tu perfil, objetivos y tiempo disponible. El planificador equilibra relevancia, conflictos y cambios de recinto.", identity: "Tu perfil", identityPlaceholder: "Selecciona un perfil", goals: "Objetivos, máximo 2", goalLimit: "Elige como máximo 2 objetivos", interests: "Temas de interés", dates: "Fechas y disponibilidad", invitedNote: "El 17 de julio de 13:30 a 17:00 es solo con invitación.", pace: "Ritmo de visita", paceLabels: ["2 actividades al día", "3 actividades al día", "4 actividades al día"], generate: "Crear mi ruta", resultTitle: "Ruta preparada", resultIntro: "Cada paso explica su relevancia y coste de atención.", emptyBefore: "Completa tus preferencias para ver la ruta, conflictos y traslados.", noRoute: "No se encontró una ruta viable", loosen: "Amplía las fechas, horarios o temas.", errorTitle: "Error al calcular la ruta", errorSource: "Fuente: programa completo WAIC 2026. Revisa los horarios.", retry: "Volver a calcular", manualCount: (n: number) => `${n} añadidas manualmente`, manualTitle: "Actividades añadidas manualmente", remove: "Quitar", rejected: "Actividades relevantes no incluidas", noRejected: "No hay más conflictos de alta relevancia.", routeSummary: (n: number) => `La ruta incluye ${n} actividades`, emptySummary: "Resultado: ninguna actividad viable", icsFailure: "No se pudo crear el archivo ICS.", eligibilityLabel: "Recordatorio de acceso", eligibility: "Una recomendación no concede acceso. Cada foro requiere inscripción o invitación.", officialRegistration: "Abrir registro oficial de WAIC", excludeRecommendation: "Quitar y recalcular", excludeRecommendationLabel: (title: string) => `Quitar y recalcular: ${title}`, routeRecalculated: (title: string) => `Se quitó «${title}» y se recalculó la ruta.`,
+  },
+  ar: {
+    title: "أنشئ مسار زيارتك في 30 ثانية", intro: "اختر دورك وأهدافك ووقتك المتاح. يوازن المخطط بين الصلة والتعارض والتنقل بين الأماكن.", identity: "دورك", identityPlaceholder: "اختر دوراً", goals: "أهداف الزيارة، بحد أقصى هدفان", goalLimit: "اختر هدفين كحد أقصى", interests: "الموضوعات المهمة", dates: "التواريخ والأوقات المتاحة", invitedNote: "يوم 17 يوليو من 13:30 إلى 17:00 مخصص للمدعوين فقط.", pace: "وتيرة الزيارة", paceLabels: ["فعاليتان يومياً", "3 فعاليات يومياً", "4 فعاليات يومياً"], generate: "أنشئ مساري", resultTitle: "المسار جاهز", resultIntro: "يوضح كل بند سبب التوصية وتكلفة الانتباه.", emptyBefore: "أكمل تفضيلاتك لعرض المسار والتعارضات وتكلفة التنقل.", noRoute: "لم يتم العثور على مسار ممكن", loosen: "وسّع التواريخ أو الأوقات أو الموضوعات.", errorTitle: "فشل حساب المسار", errorSource: "المصدر: جدول منتديات WAIC 2026 الكامل. تحقق من الأوقات.", retry: "إعادة الحساب", manualCount: (n: number) => `أضيفت ${n} يدوياً`, manualTitle: "فعاليات أضيفت يدوياً", remove: "إزالة", rejected: "فعاليات مهمة لم تدخل المسار", noRejected: "لا توجد تعارضات إضافية عالية الصلة.", routeSummary: (n: number) => `يتضمن المسار ${n} فعالية`, emptySummary: "النتيجة: لا توجد فعاليات ممكنة", icsFailure: "فشل إنشاء ملف ICS.", eligibilityLabel: "تذكير بالدخول", eligibility: "توصية المسار لا تمنح حق الدخول. تتطلب كل جلسة تسجيلاً أو دعوة.", officialRegistration: "فتح تسجيل WAIC الرسمي", excludeRecommendation: "إزالة وإعادة الحساب", excludeRecommendationLabel: (title: string) => `إزالة وإعادة الحساب: ${title}`, routeRecalculated: (title: string) => `تمت إزالة «${title}» وإعادة حساب المسار.`,
+  },
+});
 
 function eventTitle(event: WaicEvent, language: Language): string {
   return displayText(sourceText(event.title, language));
@@ -141,7 +139,7 @@ function eventTitle(event: WaicEvent, language: Language): string {
 
 function formatHours(minutes: number, language: Language): string {
   const hours = Math.round((minutes / 60) * 10) / 10;
-  return language === "zh" ? `${hours} 小时` : `${hours} hr`;
+  return PLANNER_AUX_COPY[language].hour(hours);
 }
 
 function uniqueEvents(events: readonly WaicEvent[]): WaicEvent[] {
@@ -164,37 +162,18 @@ export function AttentionBudget({
   hasSelectedGoals,
   language = "zh",
 }: AttentionBudgetProps) {
-  const metrics =
-    language === "zh"
-      ? [
-          ["活动场数", `${result.metrics.eventCount} 场`],
-          ["有效内容小时", formatHours(result.metrics.contentMinutes, language)],
-          [
-            "目标赛道覆盖",
-            hasSelectedGoals
-              ? `${Math.round(result.metrics.goalCoverage * 100)}%`
-              : "未设置",
-          ],
-          ["主题数", `${result.metrics.distinctCategories} 类`],
-          ["换馆次数", `${result.metrics.venueChanges} 次`],
-          ["建议缓冲", `${result.metrics.transitionBufferMinutes} 分钟`],
-        ]
-      : [
-          ["Events", String(result.metrics.eventCount)],
-          ["Content hours", formatHours(result.metrics.contentMinutes, language)],
-          [
-            "Goal-track coverage",
-            hasSelectedGoals
-              ? `${Math.round(result.metrics.goalCoverage * 100)}%`
-              : "Not set",
-          ],
-          ["Topics", String(result.metrics.distinctCategories)],
-          ["Venue changes", String(result.metrics.venueChanges)],
-          ["Suggested buffer", `${result.metrics.transitionBufferMinutes} min`],
-        ];
+  const aux = PLANNER_AUX_COPY[language];
+  const metrics = [
+    [aux.metricLabels[0], aux.metricValues[0](result.metrics.eventCount)],
+    [aux.metricLabels[1], formatHours(result.metrics.contentMinutes, language)],
+    [aux.metricLabels[2], hasSelectedGoals ? `${Math.round(result.metrics.goalCoverage * 100)}%` : aux.notSet],
+    [aux.metricLabels[3], aux.metricValues[1](result.metrics.distinctCategories)],
+    [aux.metricLabels[4], aux.metricValues[2](result.metrics.venueChanges)],
+    [aux.metricLabels[5], aux.metricValues[3](result.metrics.transitionBufferMinutes)],
+  ];
 
   return (
-    <section className="attention-budget" aria-label={language === "zh" ? "路线注意力预算" : "Route attention budget"}>
+    <section className="attention-budget" aria-label={aux.attention}>
       {metrics.map(([label, value]) => (
         <div className="attention-metric" key={label}>
           <span>{label}</span>
@@ -219,7 +198,8 @@ export function RouteTimeline({
   language = "zh",
 }: RouteTimelineProps) {
   const reducedMotion = useReducedMotion();
-  const content = copy[contentLanguage(language)];
+  const content = copy[language];
+  const aux = PLANNER_AUX_COPY[language];
 
   return (
     <div className="route-timeline">
@@ -251,21 +231,17 @@ export function RouteTimeline({
                   <MapPin aria-hidden="true" weight="fill" />
                   {displayText(sourceText(item.event.location, language))}
                 </p>
-                <div className="route-reasons" aria-label={language === "zh" ? "推荐理由" : "Recommendation reasons"}>
+                <div className="route-reasons" aria-label={aux.reasonsLabel}>
                   {item.reasons.map((reason, reasonIndex) => (
                     <span key={`${reason.type}-${reasonIndex}`}>
-                      {language === "zh"
-                        ? displayText(reason.label)
-                        : REASON_LABELS_EN[reason.type]}
+                      {aux.reasons[reason.type]}
                     </span>
                   ))}
                 </div>
                 {item.bufferFromPreviousMinutes > 0 ? (
                   <p className="route-buffer">
                     <Clock aria-hidden="true" weight="bold" />
-                    {language === "zh"
-                      ? `衔接提示：建议缓冲 ${item.bufferFromPreviousMinutes} 分钟`
-                      : `Schedule note: allow a suggested ${item.bufferFromPreviousMinutes}-minute buffer`}
+                    {aux.buffer(item.bufferFromPreviousMinutes)}
                   </p>
                 ) : null}
                 {!fixedEventIds.has(item.event.id) && onExclude ? (
@@ -302,6 +278,7 @@ export function RouteActions({
   language = "zh",
 }: RouteActionsProps) {
   const [status, setStatus] = useState("");
+  const aux = PLANNER_AUX_COPY[language];
 
   const shareRoute = async () => {
     try {
@@ -311,28 +288,21 @@ export function RouteActions({
       if (typeof navigator.share === "function") {
         await navigator.share({
           title: "WAIC 2026 Visitor Guide",
-          text:
-            language === "zh"
-              ? "这是我的 WAIC 2026 参访路线。"
-              : "Here is my WAIC 2026 visit route.",
+          text: aux.shareText,
           url,
         });
-        setStatus(language === "zh" ? "已打开系统分享" : "Share sheet opened");
+        setStatus(aux.shareOpened);
       } else if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(url);
-        setStatus(language === "zh" ? "链接已复制" : "Link copied");
+        setStatus(aux.copied);
       } else {
-        setStatus(language === "zh" ? "无法复制，请从地址栏分享" : "Copy unavailable. Share from the address bar.");
+        setStatus(aux.copyUnavailable);
       }
     } catch (error) {
       setStatus(
         error instanceof DOMException && error.name === "AbortError"
-          ? language === "zh"
-            ? "已取消分享"
-            : "Sharing cancelled"
-          : language === "zh"
-            ? "分享失败，请重试"
-            : "Sharing failed. Try again.",
+          ? aux.cancelled
+          : aux.shareFailed,
       );
     }
   };
@@ -349,9 +319,9 @@ export function RouteActions({
       anchor.download = "waic-2026-route.ics";
       document.body.append(anchor);
       anchor.click();
-      setStatus(language === "zh" ? "ICS 已生成" : "ICS created");
+      setStatus(aux.icsCreated);
     } catch {
-      setStatus(copy[contentLanguage(language)].icsFailure);
+      setStatus(copy[language].icsFailure);
     } finally {
       anchor?.remove();
       if (url) {
@@ -371,7 +341,7 @@ export function RouteActions({
     <div className="route-actions">
       <button className="button button-secondary" type="button" onClick={shareRoute}>
         <ShareNetwork aria-hidden="true" weight="bold" />
-        {language === "zh" ? "分享路线" : "Share route"}
+        {aux.shareRoute}
       </button>
       <button
         className="button button-secondary"
@@ -380,7 +350,7 @@ export function RouteActions({
         disabled={events.length === 0}
       >
         <DownloadSimple aria-hidden="true" weight="bold" />
-        {language === "zh" ? "下载 ICS" : "Download ICS"}
+        {aux.downloadIcs}
       </button>
       <span className="route-action-status" role="status" aria-live="polite">
         {status}
@@ -422,7 +392,7 @@ export function Planner({
   onRouteGeneratedChange,
   language = "zh",
 }: PlannerProps) {
-  const content = copy[contentLanguage(language)];
+  const content = copy[language];
   const [initialComputation] = useState(() =>
     initialPlannerComputation(events, state, routeGenerated === true),
   );
@@ -645,9 +615,7 @@ export function Planner({
                     <div className="availability-row">
                       <label>
                         <span>
-                          {language === "zh"
-                            ? `${dateLabel(date, language)}开始时间`
-                            : `${dateLabel(date, language)} start time`}
+                          {PLANNER_AUX_COPY[language].startTime(dateLabel(date, language))}
                         </span>
                         <input
                           type="time"
@@ -670,9 +638,7 @@ export function Planner({
                       </label>
                       <label>
                         <span>
-                          {language === "zh"
-                            ? `${dateLabel(date, language)}结束时间`
-                            : `${dateLabel(date, language)} end time`}
+                          {PLANNER_AUX_COPY[language].endTime(dateLabel(date, language))}
                         </span>
                         <input
                           type="time"
@@ -813,9 +779,7 @@ export function Planner({
                           <strong>{eventTitle(candidate.event, language)}</strong>
                         </div>
                         <p>
-                          {language === "zh"
-                            ? displayText(candidate.rejection.label)
-                            : REJECTION_LABELS_EN[candidate.rejection.type]}
+                          {PLANNER_AUX_COPY[language].rejections[candidate.rejection.type]}
                         </p>
                       </article>
                     ))}
@@ -855,7 +819,7 @@ export function Planner({
                   <button
                     className="remove-event-button"
                     type="button"
-                    aria-label={`${language === "zh" ? "从路线移除" : "Remove from route"}：${eventTitle(event, language)}`}
+                    aria-label={`${PLANNER_AUX_COPY[language].removeFromRoute}：${eventTitle(event, language)}`}
                     onClick={() => removeManualEvent(event)}
                   >
                     <X aria-hidden="true" weight="bold" />

@@ -14,6 +14,12 @@ export const LANGUAGES = [
 export type Locale = (typeof LANGUAGES)[number]["code"];
 export type ContentLanguage = "zh" | "en";
 
+export function defineTranslations<T>(
+  translations: Record<Locale, T>,
+): Record<Locale, T> {
+  return translations;
+}
+
 const metadata = Object.fromEntries(
   LANGUAGES.map((language) => [language.code, language]),
 ) as Record<Locale, (typeof LANGUAGES)[number]>;

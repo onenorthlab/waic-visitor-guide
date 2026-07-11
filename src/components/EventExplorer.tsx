@@ -546,7 +546,13 @@ export function EventExplorer({
             <option value="">{content.allVenues}</option>
             {venues.map((item) => (
               <option key={item.venueId} value={item.venueId}>
-                {displayText(language === "zh" ? item.zh : item.en)}
+                {displayText(
+                  language === "zh"
+                    ? item.zh
+                    : language === "en"
+                      ? item.en
+                      : venueLabel(item.venueId, language),
+                )}
               </option>
             ))}
           </select>

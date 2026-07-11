@@ -167,8 +167,12 @@ describe("opportunity landscape", () => {
 
     await user.click(screen.getByRole("button", { name: "选择语言" }));
     await user.click(screen.getByRole("menuitemradio", { name: "日本語" }));
+    expect(
+      screen.getByRole("heading", { name: "機会が集中する場所を見つける" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("See where opportunity concentrates")).not.toBeInTheDocument();
     await user.click(
-      screen.getByRole("button", { name: "産業・製造AI, 32 events" }),
+      screen.getByRole("button", { name: "産業・製造AI, 32件" }),
     );
 
     const dialog = screen.getByRole("dialog", { name: "産業・製造AIのイベント" });

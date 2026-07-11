@@ -176,6 +176,19 @@ describe("application shell", () => {
     ).toBeInTheDocument();
   });
 
+  it("localizes the planner and venue guide in Japanese without English UI fallback", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: "选择语言" }));
+    await user.click(screen.getByRole("menuitemradio", { name: "日本語" }));
+
+    expect(screen.getByRole("heading", { name: "30秒で来場ルートを作成" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "4つの主要会場を賢く移動" })).toBeInTheDocument();
+    expect(screen.queryByText("Build your visit route in 30 seconds")).not.toBeInTheDocument();
+    expect(screen.queryByText("Move between four core venue zones")).not.toBeInTheDocument();
+  });
+
   it("keeps every primary navigation destination keyboard reachable on mobile", () => {
     render(<App />);
 

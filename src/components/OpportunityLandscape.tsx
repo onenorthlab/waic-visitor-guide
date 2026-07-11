@@ -8,6 +8,7 @@ import {
 } from "../lib/discovery";
 import { displayText } from "../lib/display";
 import { CATEGORY_LABELS_EN, DATE_LABELS, categoryLabel, dateLabel, venueLabel } from "../lib/labels";
+import { LANDSCAPE_COPY } from "../lib/uiCopy";
 import type {
   CategorySummary,
   TimeHeatmapCell,
@@ -34,10 +35,6 @@ function heatLevel(count: number, maximum: number): number {
   return Math.max(1, Math.ceil((count / maximum) * 5));
 }
 
-function englishEventCount(count: number): string {
-  return `${count} ${count === 1 ? "event" : "events"}`;
-}
-
 function localizedSelectionLabel(
   selection: ExplorerSelection,
   language: Language,
@@ -62,6 +59,7 @@ export function ScheduleHeatmap({
   activeKey,
   language = "zh",
 }: ScheduleHeatmapProps) {
+  const content = LANDSCAPE_COPY[language];
   const maximum = Math.max(...cells.map((cell) => cell.count), 0);
   const peak = cells.reduce<TimeHeatmapCell | null>(
     (current, cell) => (!current || cell.count > current.count ? cell : current),
@@ -79,17 +77,11 @@ export function ScheduleHeatmap({
     <section className="data-panel heatmap-panel" aria-labelledby="heatmap-title">
       <div className="data-panel-heading">
         <div>
-          <h3 id="heatmap-title">{language === "zh" ? "时间热力" : "Time heatmap"}</h3>
-          <p>
-            {language === "zh"
-              ? "四天按半小时查看同时进行的活动数。"
-              : "Concurrent events across four days in half-hour windows."}
-          </p>
+          <h3 id="heatmap-title">{content.heatTitle}</h3>
+          <p>{content.heatIntro}</p>
         </div>
         <strong>
-          {language === "zh"
-            ? `${activeWindowCount} 个活跃时段`
-            : `${activeWindowCount} active half-hour windows`}
+          {content.activeWindows(activeWindowCount)}
         </strong>
       </div>
       <div className="heatmap-days">
@@ -98,9 +90,7 @@ export function ScheduleHeatmap({
             <div className="heatmap-day-heading">
               <h4>{dateLabel(date, language)}</h4>
               <span>
-                {language === "zh"
-                  ? `${Math.max(...dateCells.map((cell) => cell.count))} 场峰值`
-                  : `${Math.max(...dateCells.map((cell) => cell.count))} event peak`}
+                {content.eventPeak(Math.max(...dateCells.map((cell) => cell.count)))}
               </span>
             </div>
             <div className="heatmap-grid">
@@ -108,10 +98,8 @@ export function ScheduleHeatmap({
                 const label = `${dateLabel(cell.date, language)} ${cell.start}-${cell.end}`;
                 const labelZh = `${DATE_LABELS[cell.date].zh} ${cell.start}-${cell.end}`;
                 const labelEn = `${DATE_LABELS[cell.date].en} ${cell.start}-${cell.end}`;
-                const accessibleLabel =
-                  language === "zh"
-                    ? `${label}，${cell.count} 场活动`
-                    : `${label}, ${englishEventCount(cell.count)}`;
+                const separator = language === "zh" ? "，" : ", ";
+                const accessibleLabel = `${label}${separator}${content.events(cell.count)}`;
                 return (
                   <button
                     className={`heat-cell heat-${heatLevel(cell.count, maximum)}`}
@@ -142,12 +130,8 @@ export function ScheduleHeatmap({
       </div>
       <p className="chart-fallback">
         {peak
-          ? language === "zh"
-            ? `文字摘要：${DATE_LABELS[peak.date].zh} ${peak.start}-${peak.end} 为全程峰值，同时进行 ${peak.count} 场活动。颜色越深代表同一时段选择越多，每格仍标注具体场数。`
-            : `Text summary: ${DATE_LABELS[peak.date].en} at ${peak.start}-${peak.end} is the overall peak with ${peak.count} concurrent events. Darker cells mean more choices, and every cell includes its count.`
-          : language === "zh"
-            ? "文字摘要：当前没有可显示的活动时段。"
-            : "Text summary: no event windows are available."}
+          ? content.heatSummary(dateLabel(peak.date, language), peak.start, peak.end, peak.count)
+          : content.noWindows}
       </p>
     </section>
   );
@@ -169,21 +153,16 @@ export function TopicAtlas({
   activeKey,
   language = "zh",
 }: TopicAtlasProps) {
+  const content = LANDSCAPE_COPY[language];
   return (
     <section className="data-panel topic-panel" aria-labelledby="topic-title">
       <div className="data-panel-heading">
         <div>
-          <h3 id="topic-title">{language === "zh" ? "主题星群" : "Topic atlas"}</h3>
-          <p>
-            {language === "zh"
-              ? "面积随真实活动数量变化，点击即可聚焦主题。"
-              : "Area follows real event counts. Select a topic to focus."}
-          </p>
+          <h3 id="topic-title">{content.topicTitle}</h3>
+          <p>{content.topicIntro}</p>
         </div>
         <strong>
-          {language === "zh"
-            ? "13 个真实主题类别，共 175 场"
-            : "13 real topic categories, 175 events"}
+          {content.topicStats}
         </strong>
       </div>
       <div className="topic-atlas">
@@ -191,11 +170,7 @@ export function TopicAtlas({
           <button
             className={`topic-node ${topicClass(item)} topic-tone-${index % 4}`}
             type="button"
-            aria-label={
-              language === "zh"
-                ? `${displayText(item.category)}，${item.count} 场`
-                : `${categoryLabel(item.category, language)}, ${englishEventCount(item.count)}`
-            }
+            aria-label={`${categoryLabel(item.category, language)}${language === "zh" ? "，" : ", "}${language === "zh" ? `${item.count} 场` : content.events(item.count)}`}
             aria-pressed={activeKey === item.category}
             key={item.category}
             onClick={() =>
@@ -209,20 +184,14 @@ export function TopicAtlas({
             }
           >
             <span>
-              {displayText(
-                language === "zh"
-                  ? item.category
-                  : categoryLabel(item.category, language),
-              )}
+              {displayText(categoryLabel(item.category, language))}
             </span>
             <strong>{item.count}</strong>
           </button>
         ))}
       </div>
       <p className="chart-fallback">
-        {language === "zh"
-          ? "文字摘要：综合论坛 45 场，大模型与AI基础 35 场，产业与工业智能化 32 场，算力与AI芯片 22 场，其余 9 类共 41 场。"
-          : "Text summary: Comprehensive Forums 45, Foundation Models & AI 35, Industrial AI 32, Compute & AI Chips 22, and the remaining nine topics 41."}
+        {content.topicSummary}
       </p>
     </section>
   );
@@ -238,23 +207,16 @@ export function VenueConstellation({
   activeKey,
   language = "zh",
 }: VenueConstellationProps) {
+  const content = LANDSCAPE_COPY[language];
   return (
     <section className="data-panel venue-panel" aria-labelledby="constellation-title">
       <div className="data-panel-heading">
         <div>
-          <h3 id="constellation-title">
-            {language === "zh" ? "场馆星座" : "Venue constellation"}
-          </h3>
-          <p>
-            {language === "zh"
-              ? "位置为场馆类别关系示意，不代表精确地图坐标。"
-              : "Positions show venue-category relationships, not precise map coordinates."}
-          </p>
+          <h3 id="constellation-title">{content.venueTitle}</h3>
+          <p>{content.venueIntro}</p>
         </div>
         <strong>
-          {language === "zh"
-            ? "7 类场馆，共 175 场"
-            : "7 venue categories, 175 events"}
+          {content.venueStats}
         </strong>
       </div>
       <div className="venue-constellation">
@@ -264,11 +226,7 @@ export function VenueConstellation({
             <button
               className={`venue-node venue-node-${index + 1}`}
               type="button"
-              aria-label={
-                language === "zh"
-                  ? `${displayText(item.zh)}，${item.count} 场，示意位置`
-                  : `${displayText(item.en)}, ${englishEventCount(item.count)}, schematic position`
-              }
+              aria-label={`${language === "en" ? item.en : venueLabel(item.venueId, language)}${language === "zh" ? "，" : ", "}${language === "zh" ? `${item.count} 场` : content.events(item.count)}${language === "zh" ? "，" : ", "}${content.schematic}`}
               aria-pressed={activeKey === item.venueId}
               key={item.venueId}
               style={{ "--venue-size": `${size}px` } as CSSProperties}
@@ -283,7 +241,7 @@ export function VenueConstellation({
               }
             >
               <span>
-                {displayText(language === "zh" ? item.zh : item.en)}
+                {displayText(language === "en" ? item.en : venueLabel(item.venueId, language))}
               </span>
               <strong>{item.count}</strong>
             </button>
@@ -291,9 +249,7 @@ export function VenueConstellation({
         })}
       </div>
       <p className="chart-fallback">
-        {language === "zh"
-          ? "文字摘要：世博中心 91 场，世博展览馆 28 场，西岸国际会展中心 25 场，酒店、张江与其他场馆共 31 场。"
-          : "Text summary: Expo Center 91, Expo Exhibition and Convention Center 28, West Bund 25, and hotels, Zhangjiang, and other venues 31."}
+        {content.venueSummary}
       </p>
     </section>
   );
@@ -312,6 +268,7 @@ export function OpportunityLandscape({
   activeSelection,
   language = "zh",
 }: OpportunityLandscapeProps) {
+  const content = LANDSCAPE_COPY[language];
   const reducedMotion = useReducedMotion();
   const [carouselSelection, setCarouselSelection] =
     useState<ExplorerSelection | null>(null);
@@ -366,14 +323,8 @@ export function OpportunityLandscape({
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
     >
       <header className="section-heading">
-        <h2 id="landscape-title">
-          {language === "zh" ? "先看哪里机会最密集" : "See where opportunity concentrates"}
-        </h2>
-        <p>
-          {language === "zh"
-            ? "从时间、主题、场馆三个维度先缩小选择，再进入完整日程。"
-            : "Narrow the program by time, topic, and venue before reviewing the schedule."}
-        </p>
+        <h2 id="landscape-title">{content.heading}</h2>
+        <p>{content.intro}</p>
       </header>
       <ScheduleHeatmap
         cells={cells}

@@ -10,6 +10,7 @@ import { VenueGuide } from "./components/VenueGuide";
 import type { ExplorerSelection } from "./components/explorerTypes";
 import { displayText } from "./lib/display";
 import { normalizeEvents } from "./lib/events";
+import { categoryLabel, dateLabel, venueLabel } from "./lib/labels";
 import {
   DEFAULT_PLANNER_STATE,
   decodePlannerState,
@@ -18,6 +19,20 @@ import {
   savePlannerState,
 } from "./lib/share";
 import type { PlannerState } from "./lib/types";
+import { APP_STATUS_COPY } from "./lib/uiCopy";
+
+function explorerSelectionLabel(
+  selection: ExplorerSelection,
+  language: Parameters<typeof categoryLabel>[1],
+): string {
+  if (selection.categories?.[0]) return categoryLabel(selection.categories[0], language);
+  if (selection.venues?.[0]) return venueLabel(selection.venues[0], language);
+  if (selection.dates?.[0]) {
+    const range = (selection.labelEn ?? selection.label).split(" ").at(-1) ?? "";
+    return `${dateLabel(selection.dates[0], language)} ${range}`.trim();
+  }
+  return language === "zh" ? selection.label : selection.labelEn ?? selection.label;
+}
 
 function initialPlannerState(): PlannerState {
   if (typeof window === "undefined") return DEFAULT_PLANNER_STATE;
@@ -58,7 +73,7 @@ function VisitorGuideApp() {
   return (
     <AppShell>
       {(language) => (
-        <>
+        <>{/* UI copy is selected by exact locale; only source event text may fall back to English. */}
           <OpportunityLandscape
             events={events}
             onSelect={setSelection}
@@ -75,12 +90,10 @@ function VisitorGuideApp() {
           />
           <p className="landscape-filter-status" aria-live="polite">
             {selection
-              ? language === "zh"
-                ? `当前筛选：${displayText(selection.label)}`
-                : `Current filter: ${displayText(selection.labelEn ?? selection.label)}`
-              : language === "zh"
-                ? "选择任一全景节点，下方日程将同步筛选。"
-                : "Select any landscape node to filter the schedule below."}
+              ? APP_STATUS_COPY[language].current(
+                  displayText(explorerSelectionLabel(selection, language)),
+                )
+              : APP_STATUS_COPY[language].prompt}
           </p>
           <EventExplorer
             events={events}
