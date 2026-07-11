@@ -1,18 +1,39 @@
 import {
   ArrowDownRight,
+  CaretDown,
   Moon,
   Sun,
   Translate,
 } from "@phosphor-icons/react";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { displayText } from "../lib/display";
+import {
+  LANGUAGES,
+  contentLanguage,
+  isLocale,
+  languageDirection,
+  languageHtmlTag,
+  type Locale,
+} from "../lib/i18n";
 
 export type Language = "zh" | "en";
 type Theme = "light" | "dark";
 type ThemePreference = Theme | "system";
 
 const THEME_STORAGE_KEY = "waic-visitor-guide:theme";
+const LANGUAGE_STORAGE_KEY = "waic-visitor-guide:language";
+
+const languagePickerCopy: Record<Locale, { choose: string; menu: string }> = {
+  zh: { choose: "选择语言", menu: "语言" },
+  en: { choose: "Choose language", menu: "Languages" },
+  ja: { choose: "言語を選択", menu: "言語" },
+  ko: { choose: "언어 선택", menu: "언어" },
+  fr: { choose: "Choisir la langue", menu: "Langues" },
+  de: { choose: "Sprache wählen", menu: "Sprachen" },
+  es: { choose: "Elegir idioma", menu: "Idiomas" },
+  ar: { choose: "اختر اللغة", menu: "اللغات" },
+};
 
 const copy = {
   zh: {
@@ -97,12 +118,16 @@ function currentSystemTheme(): Theme {
 }
 
 interface HeaderProps {
-  language: Language;
-  onLanguageChange: (language: Language) => void;
+  locale: Locale;
+  onLanguageChange: (locale: Locale) => void;
 }
 
-export function Header({ language, onLanguageChange }: HeaderProps) {
+export function Header({ locale, onLanguageChange }: HeaderProps) {
+  const language = contentLanguage(locale);
   const content = copy[language];
+  const pickerCopy = languagePickerCopy[locale];
+  const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
+  const languageButtonRef = useRef<HTMLButtonElement>(null);
   const [themePreference, setThemePreference] =
     useState<ThemePreference>(savedThemePreference);
   const [systemTheme, setSystemTheme] = useState<Theme>(currentSystemTheme);
@@ -133,6 +158,17 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
     return () => media.removeEventListener("change", onChange);
   }, [themePreference]);
 
+  useEffect(() => {
+    if (!languageMenuOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setLanguageMenuOpen(false);
+      languageButtonRef.current?.focus();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [languageMenuOpen]);
+
   return (
     <header className="site-header">
       <nav className="site-nav" aria-label={displayText(content.navLabel)}>
@@ -148,15 +184,44 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
           ))}
         </div>
         <div className="nav-actions">
-          <button
-            className="icon-button language-toggle"
-            type="button"
-            aria-label={displayText(content.switchLanguage)}
-            onClick={() => onLanguageChange(language === "zh" ? "en" : "zh")}
-          >
-            <Translate aria-hidden="true" weight="bold" />
-            <span>{language === "zh" ? "中 / EN" : "EN / 中"}</span>
-          </button>
+          <div className="language-menu-wrap">
+            <button
+              className="icon-button language-toggle"
+              type="button"
+              ref={languageButtonRef}
+              aria-label={pickerCopy.choose}
+              aria-haspopup="menu"
+              aria-expanded={languageMenuOpen}
+              onClick={() => setLanguageMenuOpen((open) => !open)}
+            >
+              <Translate aria-hidden="true" weight="bold" />
+              <span>{LANGUAGES.find((item) => item.code === locale)?.nativeLabel}</span>
+              <CaretDown aria-hidden="true" weight="bold" />
+            </button>
+            {languageMenuOpen ? (
+              <div className="language-menu" role="menu" aria-label={pickerCopy.menu}>
+                {LANGUAGES.map((item) => (
+                  <button
+                    type="button"
+                    role="menuitemradio"
+                    aria-checked={item.code === locale}
+                    key={item.code}
+                    lang={item.htmlTag}
+                    dir={item.direction}
+                    aria-label={item.nativeLabel}
+                    onClick={() => {
+                      onLanguageChange(item.code);
+                      setLanguageMenuOpen(false);
+                      queueMicrotask(() => languageButtonRef.current?.focus());
+                    }}
+                  >
+                    <span>{item.nativeLabel}</span>
+                    <small aria-hidden="true">{item.code.toUpperCase()}</small>
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
           <button
             className="icon-button"
             type="button"
@@ -247,15 +312,30 @@ interface AppShellProps {
 }
 
 export function AppShell({ children }: AppShellProps) {
-  const [language, setLanguage] = useState<Language>("zh");
+  const [locale, setLocale] = useState<Locale>(() => {
+    if (typeof window === "undefined") return "zh";
+    try {
+      const saved = window.localStorage?.getItem(LANGUAGE_STORAGE_KEY);
+      return isLocale(saved) ? saved : "zh";
+    } catch {
+      return "zh";
+    }
+  });
+  const language = contentLanguage(locale);
 
   useEffect(() => {
-    document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
-  }, [language]);
+    document.documentElement.lang = languageHtmlTag(locale);
+    document.documentElement.dir = languageDirection(locale);
+    try {
+      window.localStorage?.setItem(LANGUAGE_STORAGE_KEY, locale);
+    } catch {
+      // Language selection remains usable when storage is unavailable.
+    }
+  }, [locale]);
 
   return (
     <div className="app-shell">
-      <Header language={language} onLanguageChange={setLanguage} />
+      <Header locale={locale} onLanguageChange={setLocale} />
       <main>
         <Hero language={language} />
         {typeof children === "function" ? children(language) : children}

@@ -122,7 +122,8 @@ describe("application shell", () => {
     await user.click(screen.getByRole("button", { name: "切换浅色主题" }));
     expect(document.documentElement).toHaveAttribute("data-theme", "light");
 
-    await user.click(screen.getByRole("button", { name: "Switch to English" }));
+    await user.click(screen.getByRole("button", { name: "选择语言" }));
+    await user.click(screen.getByRole("menuitemradio", { name: "English" }));
     expect(document.documentElement).toHaveAttribute("lang", "en");
     expect(
       screen.getByRole("heading", {
@@ -139,6 +140,27 @@ describe("application shell", () => {
     expect(screen.getByText("Data updated: 2026-07-10")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "WAIC official website" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Switch to dark theme" })).toBeInTheDocument();
+  });
+
+  it("offers eight languages, persists the choice, and applies Arabic RTL", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: "选择语言" }));
+    const menu = screen.getByRole("menu", { name: "语言" });
+    expect(menu).toBeInTheDocument();
+    expect(screen.getAllByRole("menuitemradio")).toHaveLength(8);
+
+    await user.click(screen.getByRole("menuitemradio", { name: "日本語" }));
+    expect(document.documentElement).toHaveAttribute("lang", "ja");
+    expect(document.documentElement).toHaveAttribute("dir", "ltr");
+    expect(window.localStorage.getItem("waic-visitor-guide:language")).toBe("ja");
+
+    await user.click(screen.getByRole("button", { name: "言語を選択" }));
+    await user.click(screen.getByRole("menuitemradio", { name: "العربية" }));
+    expect(document.documentElement).toHaveAttribute("lang", "ar");
+    expect(document.documentElement).toHaveAttribute("dir", "rtl");
+    expect(window.localStorage.getItem("waic-visitor-guide:language")).toBe("ar");
   });
 
   it("keeps every primary navigation destination keyboard reachable on mobile", () => {
