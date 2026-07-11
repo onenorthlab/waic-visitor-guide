@@ -39,6 +39,7 @@ const copy = {
   zh: {
     navLabel: "主导航",
     brand: "WAIC 2026 访客指南",
+    guideLabel: "访客指南",
     independent: "独立访客规划工具",
     nav: [
       ["总览", "#overview"],
@@ -70,6 +71,7 @@ const copy = {
   en: {
     navLabel: "Primary navigation",
     brand: "WAIC 2026 Visitor Guide",
+    guideLabel: "VISITOR GUIDE",
     independent: "Independent visitor planning tool",
     nav: [
       ["Overview", "#overview"],
@@ -98,6 +100,48 @@ const copy = {
     footerUpdated: "Data updated: 2026-07-10",
     footerOfficial: "WAIC official website",
   },
+  ja: {
+    navLabel: "メインナビゲーション", brand: "WAIC 2026 ビジターガイド", guideLabel: "ビジターガイド", independent: "独立した来場プランニングツール",
+    nav: [["概要", "#overview"], ["全体像", "#landscape"], ["ルート作成", "#planner"], ["全日程", "#schedule"], ["会場ガイド", "#venues"]],
+    heading: "175のフォーラムから、最高の一日を組み立てよう", subcopy: "目的、時間、会場に合わせて、重複と移動の少ないWAICプランを作成します。", primary: "ルートを作成", secondary: "全体像を見る", terrainAlt: "WAIC 2026 イベント密度マップ", switchLanguage: "言語を切り替え", themeToLight: "ライトテーマに切り替え", themeToDark: "ダークテーマに切り替え", insightsLabel: "データインサイト",
+    insights: [["129/175", "ピークの2日間", "7月18日と19日にイベントが集中"], ["112/175", "主要3分野", "総合、基盤モデル、産業AI"], ["91/175", "世博センター", "フォーラムの中心会場"]],
+    footerTrust: "WaytoAGIによる独立した来場プランニングツールです。時間と入場規則はWAIC公式サイトとHi WAIC APPの最新情報をご確認ください。", footerSource: "出典：上海WAIC全フォーラム日程", footerUpdated: "データ更新：2026-07-10", footerOfficial: "WAIC公式サイト",
+  },
+  ko: {
+    navLabel: "주요 탐색", brand: "WAIC 2026 방문자 가이드", guideLabel: "방문자 가이드", independent: "독립 방문 계획 도구",
+    nav: [["개요", "#overview"], ["전체 보기", "#landscape"], ["동선 설계", "#planner"], ["전체 일정", "#schedule"], ["장소 안내", "#venues"]],
+    heading: "175개 포럼으로 나만의 고효율 동선을 만드세요", subcopy: "목표, 시간, 장소에 맞춰 일정 충돌과 이동을 줄인 WAIC 계획을 세우세요.", primary: "동선 만들기", secondary: "전체 보기", terrainAlt: "WAIC 2026 행사 밀도 지도", switchLanguage: "언어 전환", themeToLight: "라이트 테마로 전환", themeToDark: "다크 테마로 전환", insightsLabel: "데이터 인사이트",
+    insights: [["129/175", "가장 붐비는 이틀", "7월 18~19일에 행사가 집중됩니다"], ["112/175", "3대 트랙", "종합, 파운데이션 모델, 산업 AI"], ["91/175", "엑스포 센터", "포럼 프로그램의 중심 장소"]],
+    footerTrust: "WaytoAGI가 만든 독립 방문 계획 도구입니다. 행사 시간과 입장 규정은 WAIC 공식 웹사이트와 Hi WAIC APP의 최신 공지를 확인하세요.", footerSource: "출처: 상하이 WAIC 전체 포럼 일정", footerUpdated: "데이터 업데이트: 2026-07-10", footerOfficial: "WAIC 공식 웹사이트",
+  },
+  fr: {
+    navLabel: "Navigation principale", brand: "Guide visiteur WAIC 2026", guideLabel: "GUIDE VISITEUR", independent: "Outil indépendant de préparation de visite",
+    nav: [["Aperçu", "#overview"], ["Panorama", "#landscape"], ["Itinéraire", "#planner"], ["Programme", "#schedule"], ["Lieux", "#venues"]],
+    heading: "Transformez 175 forums en un parcours à fort impact", subcopy: "Créez un programme WAIC sans conflit selon vos objectifs, vos horaires et les lieux.", primary: "Créer mon parcours", secondary: "Voir le panorama", terrainAlt: "Carte de densité des événements WAIC 2026", switchLanguage: "Changer de langue", themeToLight: "Activer le thème clair", themeToDark: "Activer le thème sombre", insightsLabel: "Repères clés",
+    insights: [["129/175", "Deux jours de pointe", "Les 18 et 19 juillet concentrent le programme"], ["112/175", "Trois thèmes majeurs", "Général, modèles fondamentaux, IA industrielle"], ["91/175", "Centre Expo", "Le principal pôle des forums"]],
+    footerTrust: "Outil indépendant créé par WaytoAGI. Consultez le site WAIC et l’application Hi WAIC pour les horaires et conditions d’accès à jour.", footerSource: "Source : programme complet des forums WAIC de Shanghai", footerUpdated: "Données mises à jour : 2026-07-10", footerOfficial: "Site officiel WAIC",
+  },
+  de: {
+    navLabel: "Hauptnavigation", brand: "WAIC 2026 Besucherleitfaden", guideLabel: "BESUCHERLEITFADEN", independent: "Unabhängiges Tool zur Besuchsplanung",
+    nav: [["Überblick", "#overview"], ["Themenlandschaft", "#landscape"], ["Route planen", "#planner"], ["Programm", "#schedule"], ["Orte", "#venues"]],
+    heading: "Machen Sie aus 175 Foren Ihre ergiebigste Route", subcopy: "Erstellen Sie einen konfliktfreien WAIC-Plan nach Zielen, Zeit und Veranstaltungsorten.", primary: "Route planen", secondary: "Landschaft ansehen", terrainAlt: "WAIC 2026 Veranstaltungsdichte", switchLanguage: "Sprache wechseln", themeToLight: "Helles Design aktivieren", themeToDark: "Dunkles Design aktivieren", insightsLabel: "Dateneinblicke",
+    insights: [["129/175", "Zwei Spitzentage", "Am 18. und 19. Juli ist das Programm am dichtesten"], ["112/175", "Drei Hauptthemen", "Übergreifend, Basismodelle, industrielle KI"], ["91/175", "Expo Center", "Das Zentrum des Forenprogramms"]],
+    footerTrust: "Ein unabhängiges Planungstool von WaytoAGI. Aktuelle Zeiten und Zutrittsregeln finden Sie auf der WAIC-Website und in der Hi WAIC APP.", footerSource: "Quelle: vollständiges Shanghai-WAIC-Forenprogramm", footerUpdated: "Datenstand: 2026-07-10", footerOfficial: "Offizielle WAIC-Website",
+  },
+  es: {
+    navLabel: "Navegación principal", brand: "Guía del visitante WAIC 2026", guideLabel: "GUÍA DEL VISITANTE", independent: "Herramienta independiente para planificar la visita",
+    nav: [["Resumen", "#overview"], ["Panorama", "#landscape"], ["Plan de ruta", "#planner"], ["Programa", "#schedule"], ["Recintos", "#venues"]],
+    heading: "Convierte 175 foros en tu ruta de mayor provecho", subcopy: "Crea un plan WAIC sin conflictos según tus objetivos, horarios y recintos.", primary: "Crear mi ruta", secondary: "Ver panorama", terrainAlt: "Mapa de densidad de eventos WAIC 2026", switchLanguage: "Cambiar idioma", themeToLight: "Cambiar al tema claro", themeToDark: "Cambiar al tema oscuro", insightsLabel: "Datos clave",
+    insights: [["129/175", "Dos días punta", "El 18 y 19 de julio concentran el programa"], ["112/175", "Tres áreas principales", "General, modelos fundacionales e IA industrial"], ["91/175", "Centro Expo", "El núcleo principal de los foros"]],
+    footerTrust: "Herramienta independiente de WaytoAGI. Consulta el sitio de WAIC y la aplicación Hi WAIC para conocer horarios y normas de acceso actualizados.", footerSource: "Fuente: programa completo de foros WAIC de Shanghái", footerUpdated: "Datos actualizados: 2026-07-10", footerOfficial: "Sitio oficial de WAIC",
+  },
+  ar: {
+    navLabel: "التنقل الرئيسي", brand: "دليل زائر WAIC 2026", guideLabel: "دليل الزائر", independent: "أداة مستقلة لتخطيط الزيارة",
+    nav: [["نظرة عامة", "#overview"], ["المشهد", "#landscape"], ["خطط مسارك", "#planner"], ["الجدول", "#schedule"], ["دليل الأماكن", "#venues"]],
+    heading: "حوّل 175 منتدى إلى مسارك الأكثر فائدة", subcopy: "أنشئ خطة WAIC بلا تعارض وفق أهدافك ووقتك والأماكن التي تختارها.", primary: "أنشئ مساري", secondary: "استعرض المشهد", terrainAlt: "خريطة كثافة فعاليات WAIC 2026", switchLanguage: "تغيير اللغة", themeToLight: "التبديل إلى المظهر الفاتح", themeToDark: "التبديل إلى المظهر الداكن", insightsLabel: "رؤى البيانات",
+    insights: [["129/175", "أكثر يومين ازدحاماً", "يتركز البرنامج في 18 و19 يوليو"], ["112/175", "ثلاثة مسارات رئيسية", "العام والنماذج الأساسية والذكاء الصناعي"], ["91/175", "مركز إكسبو", "المحور الرئيسي للمنتديات"]],
+    footerTrust: "أداة مستقلة من WaytoAGI. راجع موقع WAIC وتطبيق Hi WAIC لأحدث المواعيد وقواعد الدخول.", footerSource: "المصدر: الجدول الكامل لمنتديات WAIC في شنغهاي", footerUpdated: "تحديث البيانات: 2026-07-10", footerOfficial: "الموقع الرسمي لـ WAIC",
+  },
 } as const;
 
 function savedThemePreference(): ThemePreference {
@@ -123,8 +167,7 @@ interface HeaderProps {
 }
 
 export function Header({ locale, onLanguageChange }: HeaderProps) {
-  const language = contentLanguage(locale);
-  const content = copy[language];
+  const content = copy[locale];
   const pickerCopy = languagePickerCopy[locale];
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
   const languageButtonRef = useRef<HTMLButtonElement>(null);
@@ -174,7 +217,7 @@ export function Header({ locale, onLanguageChange }: HeaderProps) {
       <nav className="site-nav" aria-label={displayText(content.navLabel)}>
         <a className="wordmark" href="#overview" aria-label={displayText(content.brand)}>
           <span>WAIC 2026</span>
-          <small>{language === "zh" ? "访客指南" : "VISITOR GUIDE"}</small>
+          <small>{content.guideLabel}</small>
         </a>
         <div className="nav-links mobile-scroll-nav">
           {content.nav.map(([label, href]) => (
@@ -244,7 +287,7 @@ export function Header({ locale, onLanguageChange }: HeaderProps) {
   );
 }
 
-export function Hero({ language }: { language: Language }) {
+export function Hero({ language }: { language: Locale }) {
   const content = copy[language];
 
   return (
@@ -290,7 +333,7 @@ export function Hero({ language }: { language: Language }) {
   );
 }
 
-export function Footer({ language }: { language: Language }) {
+export function Footer({ language }: { language: Locale }) {
   const content = copy[language];
 
   return (
@@ -337,10 +380,10 @@ export function AppShell({ children }: AppShellProps) {
     <div className="app-shell">
       <Header locale={locale} onLanguageChange={setLocale} />
       <main>
-        <Hero language={language} />
+        <Hero language={locale} />
         {typeof children === "function" ? children(language) : children}
       </main>
-      <Footer language={language} />
+      <Footer language={locale} />
     </div>
   );
 }

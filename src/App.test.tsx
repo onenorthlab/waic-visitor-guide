@@ -155,12 +155,25 @@ describe("application shell", () => {
     expect(document.documentElement).toHaveAttribute("lang", "ja");
     expect(document.documentElement).toHaveAttribute("dir", "ltr");
     expect(window.localStorage.getItem("waic-visitor-guide:language")).toBe("ja");
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: "175のフォーラムから、最高の一日を組み立てよう",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "ルートを作成" })).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "言語を選択" }));
     await user.click(screen.getByRole("menuitemradio", { name: "العربية" }));
     expect(document.documentElement).toHaveAttribute("lang", "ar");
     expect(document.documentElement).toHaveAttribute("dir", "rtl");
     expect(window.localStorage.getItem("waic-visitor-guide:language")).toBe("ar");
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: "حوّل 175 منتدى إلى مسارك الأكثر فائدة",
+      }),
+    ).toBeInTheDocument();
   });
 
   it("keeps every primary navigation destination keyboard reachable on mobile", () => {
