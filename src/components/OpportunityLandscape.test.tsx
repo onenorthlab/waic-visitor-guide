@@ -119,6 +119,44 @@ describe("opportunity landscape", () => {
     expect(within(dialog).getByText("3 / 45")).toBeInTheDocument();
   });
 
+  it("cross-filters carousel activities by day, venue, and topic", async () => {
+    const user = userEvent.setup();
+    const events = normalizeEvents(rawRows);
+    const industrialEvents = events.filter(
+      (event) => event.category === "产业与工业智能化",
+    );
+    const chosen = industrialEvents[0];
+    if (!chosen) throw new Error("expected industrial fixture events");
+    const expectedCount = industrialEvents.filter(
+      (event) =>
+        event.date === chosen.date && event.venue.id === chosen.venue.id,
+    ).length;
+    render(<App />);
+
+    await user.click(
+      screen.getByRole("button", { name: `产业与工业智能化，${industrialEvents.length} 场` }),
+    );
+    const dialog = screen.getByRole("dialog", {
+      name: "产业与工业智能化的活动",
+    });
+
+    expect(within(dialog).getByRole("combobox", { name: "按日期筛选" })).toBeInTheDocument();
+    expect(within(dialog).getByRole("combobox", { name: "按场馆筛选" })).toBeInTheDocument();
+    expect(within(dialog).getByRole("combobox", { name: "按主题筛选" })).toBeInTheDocument();
+
+    await user.selectOptions(
+      within(dialog).getByRole("combobox", { name: "按日期筛选" }),
+      chosen.date,
+    );
+    await user.selectOptions(
+      within(dialog).getByRole("combobox", { name: "按场馆筛选" }),
+      chosen.venue.id,
+    );
+
+    expect(within(dialog).getByText(`筛选结果：${expectedCount} 场活动`)).toBeInTheDocument();
+    expect(within(dialog).getByText(`1 / ${expectedCount}`)).toBeInTheDocument();
+  });
+
   it("renders four days of semantic half-hour heatmap cells and filters the schedule", async () => {
     const user = userEvent.setup();
     render(<App />);
@@ -174,7 +212,8 @@ describe("opportunity landscape", () => {
     const user = userEvent.setup();
     const { container } = render(<App />);
 
-    await user.click(screen.getByRole("button", { name: "Switch to English" }));
+    await user.click(screen.getByRole("button", { name: "选择语言" }));
+    await user.click(screen.getByRole("menuitemradio", { name: "English" }));
     expect(screen.getByText(/active half-hour windows/u)).toBeInTheDocument();
     expect(screen.getByText("13 real topic categories, 175 events")).toBeInTheDocument();
     expect(screen.getByText("7 venue categories, 175 events")).toBeInTheDocument();

@@ -805,6 +805,52 @@ a {
   margin: 0;
 }
 
+.landscape-carousel-filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  align-items: end;
+  gap: 12px;
+  padding: 18px 30px;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface), var(--canvas) 28%);
+}
+
+.landscape-carousel-filters label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 760;
+}
+
+.landscape-carousel-filters select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0 34px 0 12px;
+  color: var(--ink);
+  background: var(--surface);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.landscape-carousel-filter-result {
+  align-self: center;
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 760;
+  white-space: nowrap;
+}
+
+.landscape-carousel-empty {
+  align-self: center;
+  justify-self: center;
+  color: var(--muted);
+}
+
 .landscape-carousel-stage {
   display: grid;
   min-height: 390px;
@@ -924,6 +970,12 @@ a {
 .landscape-carousel-pager button:hover {
   border-color: var(--accent);
   transform: translateY(-1px);
+}
+
+.landscape-carousel-pager button:disabled {
+  cursor: default;
+  opacity: 0.38;
+  transform: none;
 }
 
 .landscape-carousel-pager svg {
@@ -2607,6 +2659,15 @@ a {
 
   .landscape-carousel-heading {
     padding: 22px 18px 18px;
+  }
+
+  .landscape-carousel-filters {
+    grid-template-columns: 1fr 1fr;
+    padding: 16px 18px;
+  }
+
+  .landscape-carousel-filter-result {
+    grid-column: 1 / -1;
   }
 
   .landscape-carousel-stage {
