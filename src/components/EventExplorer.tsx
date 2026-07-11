@@ -20,7 +20,8 @@ import {
 
 import { filterEvents, summarizeVenues } from "../lib/discovery";
 import { displayText } from "../lib/display";
-import { CATEGORY_LABELS_EN, DATE_LABELS } from "../lib/labels";
+import { sourceText } from "../lib/i18n";
+import { categoryLabel, dateLabel, venueLabel } from "../lib/labels";
 import { DEFAULT_AVAILABILITY } from "../lib/plannerDefaults";
 import {
   WAIC_CATEGORIES,
@@ -95,16 +96,32 @@ const copy = {
     official: "Official registration",
     amap: "Search in Amap",
   },
+  ja: {
+    title: "175件のイベントを詳しく絞り込む", intro: "中国語・英語のタイトルを検索し、日付、テーマ、会場を組み合わせて絞り込めます。", search: "イベントを検索", searchPlaceholder: "フォーラム、場所、英語キーワードを検索", date: "日付で絞り込む", category: "テーマで絞り込む", venue: "会場で絞り込む", allDates: "すべての日付", allCategories: "すべてのテーマ", allVenues: "すべての会場", resultCount: (count: number) => `${count}件が条件に一致`, pagination: (shown: number, total: number) => `${shown}/${total}件を表示`, view: "詳細を見る", more: "さらに表示", empty: "一致するイベントはありません", emptyHelp: "別のキーワードを試すか、絞り込みを解除してください。", clear: "絞り込みを解除", close: "詳細を閉じる", time: "時間", location: "詳細場所", venueLabel: "会場", categoryLabel: "テーマ", add: "ルートに追加", remove: "ルートから削除", official: "公式登録ページ", amap: "高徳地図で検索",
+  },
+  ko: {
+    title: "175개 행사를 정밀하게 필터링", intro: "중국어·영어 제목을 검색하고 날짜, 주제, 장소 필터를 조합하세요.", search: "행사 검색", searchPlaceholder: "포럼, 장소 또는 영어 키워드 검색", date: "날짜로 필터", category: "주제로 필터", venue: "장소로 필터", allDates: "모든 날짜", allCategories: "모든 주제", allVenues: "모든 장소", resultCount: (count: number) => `${count}개 행사가 조건에 맞습니다`, pagination: (shown: number, total: number) => `${shown}/${total}개 표시`, view: "행사 보기", more: "더 보기", empty: "일치하는 행사가 없습니다", emptyHelp: "다른 검색어를 입력하거나 필터를 지우세요.", clear: "필터 지우기", close: "행사 상세 닫기", time: "시간", location: "상세 위치", venueLabel: "장소", categoryLabel: "주제", add: "동선에 추가", remove: "동선에서 제거", official: "공식 등록", amap: "Amap에서 검색",
+  },
+  fr: {
+    title: "Filtrer précisément les 175 événements", intro: "Recherchez les titres chinois ou anglais et combinez date, thème et lieu.", search: "Rechercher", searchPlaceholder: "Forum, lieu ou mot-clé anglais", date: "Filtrer par date", category: "Filtrer par thème", venue: "Filtrer par lieu", allDates: "Toutes les dates", allCategories: "Tous les thèmes", allVenues: "Tous les lieux", resultCount: (count: number) => `${count} événement${count > 1 ? "s" : ""} correspondant${count > 1 ? "s" : ""}`, pagination: (shown: number, total: number) => `${shown}/${total} affichés`, view: "Voir l’événement", more: "Afficher plus", empty: "Aucun événement correspondant", emptyHelp: "Essayez un autre mot-clé ou effacez les filtres.", clear: "Effacer les filtres", close: "Fermer les détails", time: "Horaire", location: "Emplacement exact", venueLabel: "Lieu", categoryLabel: "Thème", add: "Ajouter au parcours", remove: "Retirer du parcours", official: "Inscription officielle", amap: "Rechercher dans Amap",
+  },
+  de: {
+    title: "Alle 175 Veranstaltungen präzise filtern", intro: "Durchsuchen Sie chinesische oder englische Titel und kombinieren Sie Datum, Thema und Ort.", search: "Veranstaltungen suchen", searchPlaceholder: "Forum, Ort oder englisches Stichwort", date: "Nach Datum filtern", category: "Nach Thema filtern", venue: "Nach Ort filtern", allDates: "Alle Daten", allCategories: "Alle Themen", allVenues: "Alle Orte", resultCount: (count: number) => `${count} passende Veranstaltungen`, pagination: (shown: number, total: number) => `${shown}/${total} angezeigt`, view: "Veranstaltung ansehen", more: "Mehr anzeigen", empty: "Keine passenden Veranstaltungen", emptyHelp: "Versuchen Sie ein anderes Stichwort oder löschen Sie die Filter.", clear: "Filter löschen", close: "Details schließen", time: "Zeit", location: "Genauer Ort", venueLabel: "Ort", categoryLabel: "Thema", add: "Zur Route hinzufügen", remove: "Aus Route entfernen", official: "Offizielle Registrierung", amap: "In Amap suchen",
+  },
+  es: {
+    title: "Filtra con precisión las 175 actividades", intro: "Busca títulos en chino o inglés y combina fecha, tema y recinto.", search: "Buscar actividades", searchPlaceholder: "Foro, lugar o palabra clave en inglés", date: "Filtrar por fecha", category: "Filtrar por tema", venue: "Filtrar por recinto", allDates: "Todas las fechas", allCategories: "Todos los temas", allVenues: "Todos los recintos", resultCount: (count: number) => `${count} actividades coincidentes`, pagination: (shown: number, total: number) => `${shown}/${total} mostradas`, view: "Ver actividad", more: "Mostrar más", empty: "No hay actividades coincidentes", emptyHelp: "Prueba otra palabra o borra los filtros.", clear: "Borrar filtros", close: "Cerrar detalles", time: "Hora", location: "Ubicación exacta", venueLabel: "Recinto", categoryLabel: "Tema", add: "Añadir a la ruta", remove: "Quitar de la ruta", official: "Registro oficial", amap: "Buscar en Amap",
+  },
+  ar: {
+    title: "صفّ 175 فعالية بدقة", intro: "ابحث في العناوين الصينية أو الإنجليزية واجمع فلاتر التاريخ والموضوع والمكان.", search: "البحث في الفعاليات", searchPlaceholder: "ابحث عن منتدى أو مكان أو كلمة إنجليزية", date: "تصفية حسب التاريخ", category: "تصفية حسب الموضوع", venue: "تصفية حسب المكان", allDates: "كل التواريخ", allCategories: "كل الموضوعات", allVenues: "كل الأماكن", resultCount: (count: number) => `${count} فعالية مطابقة`, pagination: (shown: number, total: number) => `عرض ${shown}/${total}`, view: "عرض الفعالية", more: "عرض المزيد", empty: "لا توجد فعاليات مطابقة", emptyHelp: "جرّب كلمة أخرى أو امسح الفلاتر.", clear: "مسح الفلاتر", close: "إغلاق التفاصيل", time: "الوقت", location: "الموقع الدقيق", venueLabel: "المكان", categoryLabel: "الموضوع", add: "إضافة إلى المسار", remove: "إزالة من المسار", official: "التسجيل الرسمي", amap: "البحث في Amap",
+  },
 } as const;
 
 function titleFor(event: WaicEvent, language: Language): string {
-  return displayText(event.title[language]);
+  return displayText(sourceText(event.title, language));
 }
 
 function categoryFor(event: WaicEvent, language: Language): string {
-  return displayText(
-    language === "zh" ? event.category : CATEGORY_LABELS_EN[event.category],
-  );
+  return displayText(categoryLabel(event.category, language));
 }
 
 const FOCUSABLE_SELECTOR = [
@@ -278,7 +295,7 @@ export function EventDetailSheet({
                 {content.time}
               </dt>
               <dd>
-                {DATE_LABELS[event.date][language]} {event.startTime}-{event.endTime}
+                {dateLabel(event.date, language)} {event.startTime}-{event.endTime}
               </dd>
             </div>
             <div>
@@ -286,11 +303,11 @@ export function EventDetailSheet({
                 <MapPin aria-hidden="true" weight="fill" />
                 {content.location}
               </dt>
-              <dd>{displayText(event.location[language])}</dd>
+              <dd>{displayText(sourceText(event.location, language))}</dd>
             </div>
             <div>
               <dt>{content.venueLabel}</dt>
-              <dd>{displayText(language === "zh" ? event.venue.zh : event.venue.en)}</dd>
+              <dd>{venueLabel(event.venue.id, language)}</dd>
             </div>
             <div>
               <dt>{content.categoryLabel}</dt>
@@ -491,7 +508,7 @@ export function EventExplorer({
             <option value="">{content.allDates}</option>
             {WAIC_DATES.map((item) => (
               <option key={item} value={item}>
-                {DATE_LABELS[item][language]}
+                {dateLabel(item, language)}
               </option>
             ))}
           </select>
@@ -510,7 +527,7 @@ export function EventExplorer({
             {WAIC_CATEGORIES.map((item) => (
               <option key={item} value={item}>
                 {displayText(
-                  language === "zh" ? item : CATEGORY_LABELS_EN[item],
+                  categoryLabel(item, language),
                 )}
               </option>
             ))}
@@ -558,7 +575,7 @@ export function EventExplorer({
         <div className="event-timeline">
           {groupedEvents.map((group) => (
             <section className="event-day-group" key={group.date}>
-              <h3>{DATE_LABELS[group.date][language]}</h3>
+              <h3>{dateLabel(group.date, language)}</h3>
               <div>
                 {group.events.map((event) => (
                   <button
@@ -581,7 +598,7 @@ export function EventExplorer({
                     <span className="event-row-venue">
                       <MapPin aria-hidden="true" weight="fill" />
                       {displayText(
-                        language === "zh" ? event.venue.zh : event.venue.en,
+                        venueLabel(event.venue.id, language),
                       )}
                     </span>
                   </button>

@@ -19,7 +19,8 @@ import {
 import { createPortal } from "react-dom";
 
 import { displayText } from "../lib/display";
-import { CATEGORY_LABELS_EN, DATE_LABELS } from "../lib/labels";
+import { sourceText } from "../lib/i18n";
+import { categoryLabel, dateLabel, venueLabel } from "../lib/labels";
 import type { EventCategory, VenueId, WaicDate, WaicEvent } from "../lib/types";
 import type { Language } from "./AppShell";
 
@@ -72,6 +73,24 @@ const copy = {
     noResults: "No events match these filters",
     result: (count: number) => `${count} matching ${count === 1 ? "event" : "events"}`,
     count: (count: number) => `${count} ${count === 1 ? "event" : "events"}`,
+  },
+  ja: {
+    activities: "のイベント", close: "イベント一覧を閉じる", previous: "前のイベント", next: "次のイベント", pause: "自動再生を一時停止", play: "自動再生を再開", time: "時間", venue: "会場", location: "場所", viewSchedule: "全日程で見る", filterDate: "日付で絞り込む", filterVenue: "会場で絞り込む", filterTopic: "テーマで絞り込む", allDates: "すべての日付", allVenues: "すべての会場", allTopics: "すべてのテーマ", noResults: "条件に一致するイベントはありません", result: (count: number) => `絞り込み結果：${count}件`, count: (count: number) => `全${count}件`,
+  },
+  ko: {
+    activities: " 행사", close: "행사 목록 닫기", previous: "이전 행사", next: "다음 행사", pause: "자동 재생 일시정지", play: "자동 재생 계속", time: "시간", venue: "장소", location: "상세 위치", viewSchedule: "전체 일정에서 보기", filterDate: "날짜로 필터", filterVenue: "장소로 필터", filterTopic: "주제로 필터", allDates: "모든 날짜", allVenues: "모든 장소", allTopics: "모든 주제", noResults: "조건에 맞는 행사가 없습니다", result: (count: number) => `필터 결과: ${count}개 행사`, count: (count: number) => `총 ${count}개 행사`,
+  },
+  fr: {
+    activities: " : événements", close: "Fermer la liste", previous: "Événement précédent", next: "Événement suivant", pause: "Mettre le défilement en pause", play: "Reprendre le défilement", time: "Horaire", venue: "Lieu", location: "Emplacement", viewSchedule: "Voir dans le programme", filterDate: "Filtrer par date", filterVenue: "Filtrer par lieu", filterTopic: "Filtrer par thème", allDates: "Toutes les dates", allVenues: "Tous les lieux", allTopics: "Tous les thèmes", noResults: "Aucun événement ne correspond", result: (count: number) => `${count} événement${count > 1 ? "s" : ""} correspondant${count > 1 ? "s" : ""}`, count: (count: number) => `${count} événement${count > 1 ? "s" : ""}`,
+  },
+  de: {
+    activities: " Veranstaltungen", close: "Veranstaltungsliste schließen", previous: "Vorherige Veranstaltung", next: "Nächste Veranstaltung", pause: "Automatik pausieren", play: "Automatik fortsetzen", time: "Zeit", venue: "Ort", location: "Genauer Ort", viewSchedule: "Im Programm ansehen", filterDate: "Nach Datum filtern", filterVenue: "Nach Ort filtern", filterTopic: "Nach Thema filtern", allDates: "Alle Daten", allVenues: "Alle Orte", allTopics: "Alle Themen", noResults: "Keine passenden Veranstaltungen", result: (count: number) => `${count} passende Veranstaltungen`, count: (count: number) => `${count} Veranstaltungen`,
+  },
+  es: {
+    activities: ": actividades", close: "Cerrar lista de actividades", previous: "Actividad anterior", next: "Actividad siguiente", pause: "Pausar reproducción", play: "Reanudar reproducción", time: "Hora", venue: "Recinto", location: "Ubicación", viewSchedule: "Ver en el programa", filterDate: "Filtrar por fecha", filterVenue: "Filtrar por recinto", filterTopic: "Filtrar por tema", allDates: "Todas las fechas", allVenues: "Todos los recintos", allTopics: "Todos los temas", noResults: "No hay actividades que coincidan", result: (count: number) => `${count} actividades coincidentes`, count: (count: number) => `${count} actividades`,
+  },
+  ar: {
+    activities: " من الفعاليات", close: "إغلاق قائمة الفعاليات", previous: "الفعالية السابقة", next: "الفعالية التالية", pause: "إيقاف العرض التلقائي", play: "متابعة العرض التلقائي", time: "الوقت", venue: "المكان", location: "الموقع", viewSchedule: "عرض في الجدول الكامل", filterDate: "تصفية حسب التاريخ", filterVenue: "تصفية حسب المكان", filterTopic: "تصفية حسب الموضوع", allDates: "كل التواريخ", allVenues: "كل الأماكن", allTopics: "كل الموضوعات", noResults: "لا توجد فعاليات مطابقة", result: (count: number) => `${count} فعالية مطابقة`, count: (count: number) => `${count} فعالية`,
   },
 } as const;
 
@@ -221,15 +240,13 @@ export function LandscapeEventCarousel({
 
   if (events.length === 0) return null;
 
-  const title = activeEvent ? displayText(activeEvent.title[language]) : "";
+  const title = activeEvent ? displayText(sourceText(activeEvent.title, language)) : "";
   const secondaryTitle = activeEvent
     ? displayText(language === "zh" ? activeEvent.title.en : activeEvent.title.zh)
     : "";
   const category = activeEvent
     ? displayText(
-        language === "zh"
-          ? activeEvent.category
-          : CATEGORY_LABELS_EN[activeEvent.category],
+        categoryLabel(activeEvent.category, language),
       )
     : "";
 
@@ -279,7 +296,7 @@ export function LandscapeEventCarousel({
             >
               <option value="">{content.allDates}</option>
               {dateOptions.map((date) => (
-                <option value={date} key={date}>{DATE_LABELS[date][language]}</option>
+                <option value={date} key={date}>{dateLabel(date, language)}</option>
               ))}
             </select>
           </label>
@@ -293,7 +310,7 @@ export function LandscapeEventCarousel({
               <option value="">{content.allVenues}</option>
               {venueOptions.map((venue) => (
                 <option value={venue.id} key={venue.id}>
-                  {displayText(language === "zh" ? venue.zh : venue.en)}
+                  {venueLabel(venue.id, language)}
                 </option>
               ))}
             </select>
@@ -308,7 +325,7 @@ export function LandscapeEventCarousel({
               <option value="">{content.allTopics}</option>
               {categoryOptions.map((item) => (
                 <option value={item} key={item}>
-                  {language === "zh" ? item : CATEGORY_LABELS_EN[item]}
+                  {categoryLabel(item, language)}
                 </option>
               ))}
             </select>
@@ -336,15 +353,15 @@ export function LandscapeEventCarousel({
               <dl className="landscape-event-facts">
                 <div>
                   <dt><Clock aria-hidden="true" weight="bold" />{content.time}</dt>
-                  <dd>{DATE_LABELS[activeEvent.date][language]} {activeEvent.startTime}-{activeEvent.endTime}</dd>
+                  <dd>{dateLabel(activeEvent.date, language)} {activeEvent.startTime}-{activeEvent.endTime}</dd>
                 </div>
                 <div>
                   <dt><MapPin aria-hidden="true" weight="fill" />{content.venue}</dt>
-                  <dd>{displayText(language === "zh" ? activeEvent.venue.zh : activeEvent.venue.en)}</dd>
+                  <dd>{venueLabel(activeEvent.venue.id, language)}</dd>
                 </div>
                 <div>
                   <dt>{content.location}</dt>
-                  <dd>{displayText(activeEvent.location[language])}</dd>
+                  <dd>{displayText(sourceText(activeEvent.location, language))}</dd>
                 </div>
               </dl>
             </motion.article>

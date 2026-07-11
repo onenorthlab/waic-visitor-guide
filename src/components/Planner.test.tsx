@@ -178,7 +178,8 @@ describe("30-second planner", () => {
       within(eligibilityNote).getByRole("link", { name: "前往 WAIC 官方注册" }),
     ).toHaveAttribute("href", "https://www.worldaic.com.cn/register");
 
-    await user.click(screen.getByRole("button", { name: "Switch to English" }));
+    await user.click(screen.getByRole("button", { name: "选择语言" }));
+    await user.click(screen.getByRole("menuitemradio", { name: "English" }));
     const englishNote = screen.getByRole("note", { name: "Admission reminder" });
     expect(
       within(englishNote).getByText(

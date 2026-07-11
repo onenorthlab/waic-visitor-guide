@@ -72,7 +72,8 @@ describe("venue guide", () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: "Switch to English" }));
+    await user.click(screen.getByRole("button", { name: "选择语言" }));
+    await user.click(screen.getByRole("menuitemradio", { name: "English" }));
     expect(
       screen.getByRole("heading", { name: "Move between four core venue zones" }),
     ).toBeInTheDocument();

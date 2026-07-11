@@ -7,7 +7,7 @@ import {
   summarizeVenues,
 } from "../lib/discovery";
 import { displayText } from "../lib/display";
-import { CATEGORY_LABELS_EN, DATE_LABELS } from "../lib/labels";
+import { CATEGORY_LABELS_EN, DATE_LABELS, categoryLabel, dateLabel, venueLabel } from "../lib/labels";
 import type {
   CategorySummary,
   TimeHeatmapCell,
@@ -36,6 +36,24 @@ function heatLevel(count: number, maximum: number): number {
 
 function englishEventCount(count: number): string {
   return `${count} ${count === 1 ? "event" : "events"}`;
+}
+
+function localizedSelectionLabel(
+  selection: ExplorerSelection,
+  language: Language,
+): string {
+  if (selection.kind === "category" && selection.categories?.[0]) {
+    return categoryLabel(selection.categories[0], language);
+  }
+  if (selection.kind === "venue" && selection.venues?.[0]) {
+    return venueLabel(selection.venues[0], language);
+  }
+  if (language === "zh") return selection.label;
+  if (selection.kind === "heatmap" && selection.dates?.[0]) {
+    const timeRange = (selection.labelEn ?? selection.label).split(" ").at(-1);
+    return `${dateLabel(selection.dates[0], language)} ${timeRange ?? ""}`.trim();
+  }
+  return selection.labelEn ?? selection.label;
 }
 
 export function ScheduleHeatmap({
@@ -78,7 +96,7 @@ export function ScheduleHeatmap({
         {[...byDate.entries()].map(([date, dateCells]) => (
           <div className="heatmap-day" key={date}>
             <div className="heatmap-day-heading">
-              <h4>{DATE_LABELS[date][language]}</h4>
+              <h4>{dateLabel(date, language)}</h4>
               <span>
                 {language === "zh"
                   ? `${Math.max(...dateCells.map((cell) => cell.count))} 场峰值`
@@ -87,7 +105,7 @@ export function ScheduleHeatmap({
             </div>
             <div className="heatmap-grid">
               {dateCells.map((cell) => {
-                const label = `${DATE_LABELS[cell.date][language]} ${cell.start}-${cell.end}`;
+                const label = `${dateLabel(cell.date, language)} ${cell.start}-${cell.end}`;
                 const labelZh = `${DATE_LABELS[cell.date].zh} ${cell.start}-${cell.end}`;
                 const labelEn = `${DATE_LABELS[cell.date].en} ${cell.start}-${cell.end}`;
                 const accessibleLabel =
@@ -176,7 +194,7 @@ export function TopicAtlas({
             aria-label={
               language === "zh"
                 ? `${displayText(item.category)}，${item.count} 场`
-                : `${CATEGORY_LABELS_EN[item.category]}, ${englishEventCount(item.count)}`
+                : `${categoryLabel(item.category, language)}, ${englishEventCount(item.count)}`
             }
             aria-pressed={activeKey === item.category}
             key={item.category}
@@ -194,7 +212,7 @@ export function TopicAtlas({
               {displayText(
                 language === "zh"
                   ? item.category
-                  : CATEGORY_LABELS_EN[item.category],
+                  : categoryLabel(item.category, language),
               )}
             </span>
             <strong>{item.count}</strong>
@@ -381,11 +399,7 @@ export function OpportunityLandscape({
         <LandscapeEventCarousel
           key={`${carouselSelection.kind}-${carouselSelection.key}`}
           events={carouselEvents}
-          label={displayText(
-            language === "zh"
-              ? carouselSelection.label
-              : carouselSelection.labelEn ?? carouselSelection.label,
-          )}
+          label={displayText(localizedSelectionLabel(carouselSelection, language))}
           language={language}
           onClose={closeCarousel}
         />

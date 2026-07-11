@@ -8,6 +8,7 @@ import {
 
 import type { Language } from "./AppShell";
 import { displayText } from "../lib/display";
+import { contentLanguage } from "../lib/i18n";
 
 const copy = {
   zh: {
@@ -107,7 +108,7 @@ const copy = {
 } as const;
 
 export function VenueGuide({ language }: { language: Language }) {
-  const content = copy[language];
+  const content = copy[contentLanguage(language)];
 
   return (
     <section

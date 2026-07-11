@@ -73,7 +73,8 @@ describe("event explorer", () => {
     expect(screen.getAllByRole("button", { name: /查看活动：/u })).toHaveLength(48);
     expect(screen.getByText("已显示 48/175 场")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Switch to English" }));
+    await user.click(screen.getByRole("button", { name: "选择语言" }));
+    await user.click(screen.getByRole("menuitemradio", { name: "English" }));
     expect(screen.getByText("Showing 48/175 events")).toBeInTheDocument();
   });
 
@@ -134,7 +135,7 @@ describe("event explorer", () => {
       screen.getByRole("button", { name: "7月18日 09:30-10:00，30 场活动" }),
     );
     expect(screen.getByText("30 场活动符合当前筛选")).toBeInTheDocument();
-    expect(screen.getByLabelText("按日期筛选")).toHaveValue("2026-07-18");
+    expect(screen.getAllByLabelText("按日期筛选")[0]).toHaveValue("2026-07-18");
     await user.click(screen.getByRole("button", { name: "关闭活动轮播" }));
 
     await user.click(screen.getByRole("button", { name: "综合论坛，45 场" }));

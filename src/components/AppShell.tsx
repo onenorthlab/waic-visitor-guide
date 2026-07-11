@@ -10,14 +10,13 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { displayText } from "../lib/display";
 import {
   LANGUAGES,
-  contentLanguage,
   isLocale,
   languageDirection,
   languageHtmlTag,
   type Locale,
 } from "../lib/i18n";
 
-export type Language = "zh" | "en";
+export type Language = Locale;
 type Theme = "light" | "dark";
 type ThemePreference = Theme | "system";
 
@@ -216,8 +215,16 @@ export function Header({ locale, onLanguageChange }: HeaderProps) {
     <header className="site-header">
       <nav className="site-nav" aria-label={displayText(content.navLabel)}>
         <a className="wordmark" href="#overview" aria-label={displayText(content.brand)}>
-          <span>WAIC 2026</span>
-          <small>{content.guideLabel}</small>
+          <img
+            src="https://waic.waytoagi.com/brand/logo.png"
+            alt=""
+            width="32"
+            height="32"
+          />
+          <span className="wordmark-copy">
+            <strong>WAIC 2026</strong>
+            <small>{content.guideLabel}</small>
+          </span>
         </a>
         <div className="nav-links mobile-scroll-nav">
           {content.nav.map(([label, href]) => (
@@ -364,7 +371,6 @@ export function AppShell({ children }: AppShellProps) {
       return "zh";
     }
   });
-  const language = contentLanguage(locale);
 
   useEffect(() => {
     document.documentElement.lang = languageHtmlTag(locale);
@@ -381,7 +387,7 @@ export function AppShell({ children }: AppShellProps) {
       <Header locale={locale} onLanguageChange={setLocale} />
       <main>
         <Hero language={locale} />
-        {typeof children === "function" ? children(language) : children}
+        {typeof children === "function" ? children(locale) : children}
       </main>
       <Footer language={locale} />
     </div>

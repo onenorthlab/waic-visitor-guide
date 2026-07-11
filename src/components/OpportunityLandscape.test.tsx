@@ -157,6 +157,26 @@ describe("opportunity landscape", () => {
     expect(within(dialog).getByText(`1 / ${expectedCount}`)).toBeInTheDocument();
   });
 
+  it("localizes the activity discovery flow while preserving official English source text", async () => {
+    const user = userEvent.setup();
+    const event = normalizeEvents(rawRows).find(
+      (item) => item.category === "产业与工业智能化",
+    );
+    if (!event) throw new Error("expected industrial fixture event");
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: "选择语言" }));
+    await user.click(screen.getByRole("menuitemradio", { name: "日本語" }));
+    await user.click(
+      screen.getByRole("button", { name: "産業・製造AI, 32 events" }),
+    );
+
+    const dialog = screen.getByRole("dialog", { name: "産業・製造AIのイベント" });
+    expect(within(dialog).getByRole("combobox", { name: "日付で絞り込む" })).toBeInTheDocument();
+    expect(within(dialog).getByRole("combobox", { name: "会場で絞り込む" })).toBeInTheDocument();
+    expect(within(dialog).getByText(displayText(event.title.en))).toBeInTheDocument();
+  });
+
   it("renders four days of semantic half-hour heatmap cells and filters the schedule", async () => {
     const user = userEvent.setup();
     render(<App />);

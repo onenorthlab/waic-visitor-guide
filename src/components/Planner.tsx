@@ -13,15 +13,9 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
 import { displayText } from "../lib/display";
 import { createRouteIcs } from "../lib/ics";
+import { contentLanguage, sourceText } from "../lib/i18n";
+import { categoryLabel, dateLabel, goalLabel, identityLabel } from "../lib/labels";
 import {
-  CATEGORY_LABELS_EN,
-  DATE_LABELS,
-  GOAL_LABELS_EN,
-  IDENTITY_LABELS_EN,
-} from "../lib/labels";
-import {
-  GOAL_LABELS,
-  IDENTITY_LABELS,
   PLANNER_GOALS,
   PLANNER_IDENTITIES,
   planRoute,
@@ -142,7 +136,7 @@ const REJECTION_LABELS_EN: Record<
 };
 
 function eventTitle(event: WaicEvent, language: Language): string {
-  return displayText(event.title[language]);
+  return displayText(sourceText(event.title, language));
 }
 
 function formatHours(minutes: number, language: Language): string {
@@ -225,7 +219,7 @@ export function RouteTimeline({
   language = "zh",
 }: RouteTimelineProps) {
   const reducedMotion = useReducedMotion();
-  const content = copy[language];
+  const content = copy[contentLanguage(language)];
 
   return (
     <div className="route-timeline">
@@ -234,7 +228,7 @@ export function RouteTimeline({
         return (
           <div className="route-entry-wrap" key={item.event.id}>
             {showDate ? (
-              <h4 className="route-date">{DATE_LABELS[item.event.date][language]}</h4>
+              <h4 className="route-date">{dateLabel(item.event.date, language)}</h4>
             ) : null}
             <motion.article
               className="route-entry"
@@ -249,15 +243,13 @@ export function RouteTimeline({
               <div className="route-entry-main">
                 <p className="route-category">
                   {displayText(
-                    language === "zh"
-                      ? item.event.category
-                      : CATEGORY_LABELS_EN[item.event.category],
+                    categoryLabel(item.event.category, language),
                   )}
                 </p>
                 <h4>{eventTitle(item.event, language)}</h4>
                 <p className="route-location">
                   <MapPin aria-hidden="true" weight="fill" />
-                  {displayText(item.event.location[language])}
+                  {displayText(sourceText(item.event.location, language))}
                 </p>
                 <div className="route-reasons" aria-label={language === "zh" ? "推荐理由" : "Recommendation reasons"}>
                   {item.reasons.map((reason, reasonIndex) => (
@@ -359,7 +351,7 @@ export function RouteActions({
       anchor.click();
       setStatus(language === "zh" ? "ICS 已生成" : "ICS created");
     } catch {
-      setStatus(copy[language].icsFailure);
+      setStatus(copy[contentLanguage(language)].icsFailure);
     } finally {
       anchor?.remove();
       if (url) {
@@ -430,7 +422,7 @@ export function Planner({
   onRouteGeneratedChange,
   language = "zh",
 }: PlannerProps) {
-  const content = copy[language];
+  const content = copy[contentLanguage(language)];
   const [initialComputation] = useState(() =>
     initialPlannerComputation(events, state, routeGenerated === true),
   );
@@ -582,9 +574,7 @@ export function Planner({
               <option value="">{content.identityPlaceholder}</option>
               {PLANNER_IDENTITIES.map((identity) => (
                 <option key={identity} value={identity}>
-                  {language === "zh"
-                    ? IDENTITY_LABELS[identity]
-                    : IDENTITY_LABELS_EN[identity]}
+                  {identityLabel(identity, language)}
                 </option>
               ))}
             </select>
@@ -601,7 +591,7 @@ export function Planner({
                     onChange={(event) => toggleGoal(goal, event.target.checked)}
                   />
                   <span>
-                    {language === "zh" ? GOAL_LABELS[goal] : GOAL_LABELS_EN[goal]}
+                    {goalLabel(goal, language)}
                   </span>
                 </label>
               ))}
@@ -630,7 +620,7 @@ export function Planner({
                   />
                   <span>
                     {displayText(
-                      language === "zh" ? category : CATEGORY_LABELS_EN[category],
+                      categoryLabel(category, language),
                     )}
                   </span>
                 </label>
@@ -649,15 +639,15 @@ export function Planner({
                       checked={state.dates.includes(date)}
                       onChange={(event) => toggleDate(date, event.target.checked)}
                     />
-                    <span>{DATE_LABELS[date][language]}</span>
+                    <span>{dateLabel(date, language)}</span>
                   </label>
                   {state.dates.includes(date) ? (
                     <div className="availability-row">
                       <label>
                         <span>
                           {language === "zh"
-                            ? `${DATE_LABELS[date].zh}开始时间`
-                            : `${DATE_LABELS[date].en} start time`}
+                            ? `${dateLabel(date, language)}开始时间`
+                            : `${dateLabel(date, language)} start time`}
                         </span>
                         <input
                           type="time"
@@ -681,8 +671,8 @@ export function Planner({
                       <label>
                         <span>
                           {language === "zh"
-                            ? `${DATE_LABELS[date].zh}结束时间`
-                            : `${DATE_LABELS[date].en} end time`}
+                            ? `${dateLabel(date, language)}结束时间`
+                            : `${dateLabel(date, language)} end time`}
                         </span>
                         <input
                           type="time"
@@ -858,7 +848,7 @@ export function Planner({
                 <article key={event.id}>
                   <div>
                     <span>
-                      {DATE_LABELS[event.date][language]} {event.startTime}-{event.endTime}
+                      {dateLabel(event.date, language)} {event.startTime}-{event.endTime}
                     </span>
                     <strong>{eventTitle(event, language)}</strong>
                   </div>

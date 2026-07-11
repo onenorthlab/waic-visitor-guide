@@ -1,26 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #0a1533;
-  --page: #f8f9fa;
-  --canvas: #eff3ff;
-  --surface: #ffffff;
-  --line: #ebe7ff;
-  --accent: #5769ff;
-  --accent-strong: #4051e8;
-  --button-primary-fg: #f8f9ff;
-  --button-primary-bg: #4051e8;
-  --button-primary-hover: #3142c9;
-  --muted: #5d6680;
+  --ink: #171916;
+  --page: #f7f6f1;
+  --canvas: #f1eadb;
+  --surface: #fffefa;
+  --line: #e5e1d8;
+  --accent: #d92d52;
+  --accent-strong: #bd183e;
+  --accent-soft: #f9dce3;
+  --button-primary-fg: #fffefa;
+  --button-primary-bg: #d92d52;
+  --button-primary-hover: #bd183e;
+  --muted: #6f706b;
   --cyan: #168ba1;
   --orange: #d86d32;
   --orange-text: #9c431d;
   --green: #2e8b68;
   --green-text: #226f53;
-  --shadow: 0 22px 70px rgb(42 55 118 / 0.14);
+  --shadow: 0 20px 60px rgb(48 42 30 / 0.1);
   font-family:
-    "SF Pro Display", "SF Pro Text", "PingFang SC", "Microsoft YaHei",
-    system-ui, sans-serif;
+    -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC",
+    "Microsoft YaHei", system-ui, sans-serif;
   color: var(--ink);
   background: var(--page);
   font-synthesis: none;
@@ -28,17 +29,18 @@
 }
 
 :root[data-theme="dark"] {
-  --ink: #eef2ff;
-  --page: #0b1021;
-  --canvas: #141b34;
-  --surface: #111831;
-  --line: #29345d;
-  --accent: #7d8cff;
-  --accent-strong: #95a1ff;
-  --button-primary-fg: #0a1533;
-  --button-primary-bg: #95a1ff;
-  --button-primary-hover: #aeb7ff;
-  --muted: #aeb7d4;
+  --ink: #f7f6f1;
+  --page: #171916;
+  --canvas: #2a2e28;
+  --surface: #20231f;
+  --line: #3a3e37;
+  --accent: #f04a6e;
+  --accent-strong: #ff718d;
+  --accent-soft: #502330;
+  --button-primary-fg: #171916;
+  --button-primary-bg: #f04a6e;
+  --button-primary-hover: #ff718d;
+  --muted: #b6b8b0;
   --cyan: #56c2d6;
   --orange: #ef9b63;
   --orange-text: #ef9b63;
@@ -88,7 +90,7 @@ a {
 .app-shell {
   min-height: 100dvh;
   background:
-    radial-gradient(circle at 86% 9%, rgb(87 105 255 / 0.1), transparent 28rem),
+    radial-gradient(circle at 86% 9%, rgb(217 45 82 / 0.09), transparent 28rem),
     var(--page);
 }
 
@@ -114,11 +116,26 @@ a {
 
 .wordmark {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 9px;
   width: max-content;
   font-weight: 850;
   letter-spacing: -0.035em;
+}
+
+.wordmark img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.wordmark-copy {
+  display: grid;
+  gap: 1px;
+}
+
+.wordmark-copy strong {
+  line-height: 1;
 }
 
 .wordmark small {
@@ -162,7 +179,7 @@ a {
   justify-content: center;
   gap: 7px;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: 10px;
   color: var(--ink);
   background: var(--surface);
   cursor: pointer;
@@ -214,7 +231,7 @@ a {
   margin: 0 0 20px;
   padding: 7px 12px;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: 10px;
   color: var(--accent-strong);
   background: var(--canvas);
   font-size: 12px;
@@ -274,7 +291,7 @@ a {
 .button-primary {
   color: var(--button-primary-fg);
   background: var(--button-primary-bg);
-  box-shadow: 0 12px 28px rgb(64 81 232 / 0.22);
+  box-shadow: 0 12px 28px rgb(189 24 62 / 0.2);
 }
 
 .button-primary:hover {
@@ -297,7 +314,7 @@ a {
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--accent), transparent 72%);
   border-radius: 24px;
-  background: #10183c;
+  background: #26251f;
   box-shadow: var(--shadow);
   transform: rotate(1.5deg);
 }
@@ -753,7 +770,7 @@ a {
   display: grid;
   place-items: center;
   padding: 24px;
-  background: rgb(6 12 31 / 0.64);
+  background: rgb(23 25 22 / 0.68);
   backdrop-filter: blur(12px);
 }
 
@@ -766,9 +783,9 @@ a {
   border-radius: 28px;
   color: var(--ink);
   background:
-    radial-gradient(circle at 88% 12%, color-mix(in srgb, var(--accent), transparent 84%), transparent 20rem),
+    radial-gradient(circle at 88% 12%, var(--accent-soft), transparent 20rem),
     var(--surface);
-  box-shadow: 0 32px 100px rgb(6 12 31 / 0.38);
+  box-shadow: 0 32px 100px rgb(48 42 30 / 0.28);
 }
 
 .landscape-carousel-heading {
