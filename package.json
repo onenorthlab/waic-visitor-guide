@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "data:check": "vitest run src/data/data-integrity.test.ts src/lib/events.test.ts",
-    "deploy": "pnpm build && wrangler deploy"
+    "deploy": "pnpm build && bash scripts/deploy-aliyun.sh",
+    "deploy:workers": "pnpm build && wrangler deploy"
   },
   "packageManager": "pnpm@11.9.0",
   "dependencies": {
