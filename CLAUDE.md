@@ -9,11 +9,11 @@
 
 ## Project Rules
 
-- This is a standalone Cloudflare Workers Static Assets app. Do not reuse or deploy the existing `waic-side-events` Worker, D1 database, R2 bucket, routes, or credentials.
+- This is a standalone static Vite SPA. Production is Aliyun OSS + CDN at https://waic-guide.waytoagi.com (merge to main auto-deploys; see `docs/DEPLOY-ALIYUN.md`). The old Cloudflare Workers entry is deprecated. Do not reuse or deploy the existing `waic-side-events` Worker, D1 database, R2 bucket, routes, or credentials.
 - `CLAUDE.md` is the source of truth. `AGENTS.md` must remain a symlink to `CLAUDE.md`; never edit `AGENTS.md` directly.
 - Keep source data traceable to `source-data/WAIC-2026-full-schedule.xlsx`. Do not invent schedules, speakers, capacity, live status, or travel times.
 - Label the site as an independent visitor guide, not the official WAIC website. Link back to official sources and show the data update date.
-- Keep credentials out of source. Use Cloudflare OAuth or environment secrets when deployment needs authentication.
+- Keep credentials out of source. Deployment uses GitHub Actions secrets (`ALIYUN_ACCESS_KEY_ID`/`ALIYUN_ACCESS_KEY_SECRET`); locally export the same pair as `ALIBABA_CLOUD_ACCESS_KEY_*` env vars.
 - New behavior follows TDD. Run unit tests, typecheck, build, and browser verification before deployment.
 - Chinese is the default UI. Preserve English titles from the source data and provide a language toggle.
 - Visible UI copy must not use em dashes or en dashes.

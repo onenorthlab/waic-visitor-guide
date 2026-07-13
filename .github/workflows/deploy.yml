@@ -1,0 +1,48 @@
+# 发布流水线：merge 到 main 自动发布到 https://waic-guide.waytoagi.com
+# 也可在 Actions 页面手动 Run workflow（workflow_dispatch）。
+# 凭据在仓库 Settings → Secrets：ALIYUN_ACCESS_KEY_ID / ALIYUN_ACCESS_KEY_SECRET
+# 详见 docs/DEPLOY-ALIYUN.md
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm test
+
+      - run: pnpm build
+
+      - name: Install aliyun CLI
+        run: |
+          curl -fsSL https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz | tar -xz
+          sudo install aliyun /usr/local/bin/aliyun
+          aliyun version
+
+      - name: Deploy to OSS + refresh CDN
+        env:
+          ALIBABA_CLOUD_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+          ALIBABA_CLOUD_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
+        run: bash scripts/deploy-aliyun.sh
