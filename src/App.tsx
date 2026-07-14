@@ -80,18 +80,18 @@ function VisitorGuideApp() {
     <AppShell>
       {(language) => (
         <>{/* UI copy is selected by exact locale; only source event text may fall back to English. */}
-          <OpportunityLandscape
-            events={events}
-            onSelect={setSelection}
-            activeSelection={selection}
-            language={language}
-          />
           <Planner
             events={events}
             state={plannerState}
             onStateChange={setPlannerState}
             routeGenerated={routeGenerated}
             onRouteGeneratedChange={setRouteGenerated}
+            language={language}
+          />
+          <OpportunityLandscape
+            events={events}
+            onSelect={setSelection}
+            activeSelection={selection}
             language={language}
           />
           <p className="landscape-filter-status" aria-live="polite">

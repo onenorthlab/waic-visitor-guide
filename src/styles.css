@@ -20,6 +20,7 @@
   --green-text: #226f53;
   --glow: 0 0 4px rgb(217 45 82 / 0.35);
   --overlay-shadow: 0 18px 54px rgb(48 42 30 / 0.18);
+  --select-caret: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%236f706b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   font-family:
     -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC",
     "Microsoft YaHei", system-ui, sans-serif;
@@ -49,6 +50,7 @@
   --green-text: #65c99b;
   --glow: 0 0 4px rgb(240 74 110 / 0.5);
   --overlay-shadow: 0 18px 54px rgb(0 0 0 / 0.4);
+  --select-caret: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%23b6b8b0' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
 * {
@@ -179,6 +181,18 @@ a {
 .nav-links a:hover,
 .footer-meta a:hover {
   color: var(--accent);
+}
+
+.nav-external {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--accent-strong);
+}
+
+.nav-external svg {
+  width: 13px;
+  height: 13px;
 }
 
 .nav-actions {
@@ -407,7 +421,7 @@ a {
   display: grid;
   grid-template-columns: 1.24fr 1fr 0.82fr;
   width: min(100% - 48px, 1400px);
-  margin: 0 auto clamp(56px, 7vw, 96px);
+  margin: 0 auto clamp(48px, 5.5vw, 72px);
   border-block: 1px solid var(--line);
 }
 
@@ -1117,6 +1131,7 @@ a {
 
 .planner-form {
   padding: clamp(22px, 3vw, 34px);
+  border-color: color-mix(in srgb, var(--accent), var(--line) 62%);
   background: var(--canvas);
 }
 
@@ -1151,6 +1166,16 @@ a {
   border-radius: 16px;
   color: var(--ink);
   background: var(--surface);
+  transition: border-color 150ms ease;
+}
+
+.planner-control > select {
+  appearance: none;
+  padding-inline: 14px 38px;
+  background-image: var(--select-caret);
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 12px;
 }
 
 .planner-control > select:hover,
@@ -1158,11 +1183,42 @@ a {
   border-color: var(--accent);
 }
 
-.choice-cloud,
-.pace-control {
+.choice-cloud {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.pace-control {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.pace-control .choice-chip {
+  flex: 1;
+  min-width: 0;
+}
+
+.pace-control .choice-chip span {
+  width: 100%;
+  justify-content: center;
+  padding: 6px 8px;
+  border: 0;
+  background: transparent;
+  text-align: center;
+}
+
+.pace-control .choice-chip:hover span {
+  background: var(--accent-soft);
+}
+
+.pace-control .choice-chip input:checked + span {
+  color: var(--button-primary-fg);
+  background: var(--button-primary-bg);
 }
 
 .choice-chip {
@@ -1184,12 +1240,12 @@ a {
   display: inline-flex;
   min-height: 44px;
   align-items: center;
-  padding: 8px 13px;
+  padding: 8px 14px;
   border: 1px solid color-mix(in srgb, var(--muted), transparent 58%);
   border-radius: 999px;
   color: var(--muted);
   background: var(--surface);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   line-height: 1.25;
   transition:
@@ -1202,6 +1258,7 @@ a {
 .choice-chip:hover span {
   border-color: var(--accent);
   color: var(--ink);
+  background: var(--accent-soft);
 }
 
 .choice-chip input:checked + span {
@@ -1221,7 +1278,7 @@ a {
 }
 
 .interest-cloud .choice-chip span {
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .control-message {
@@ -2504,7 +2561,8 @@ a {
   }
 
   .wordmark small,
-  .language-toggle span {
+  .language-toggle span,
+  .language-toggle svg:last-child {
     display: none;
   }
 
@@ -2550,6 +2608,15 @@ a {
 @media (max-width: 767px) {
   .site-header {
     height: auto;
+  }
+
+  /* Anchor to the viewport so the menu never clips off the narrow screen. */
+  .language-menu {
+    position: fixed;
+    top: 74px;
+    inset-inline: 16px;
+    width: auto;
+    max-width: none;
   }
 
   .site-nav {
