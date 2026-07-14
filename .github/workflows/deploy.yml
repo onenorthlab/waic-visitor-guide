@@ -1,7 +1,8 @@
 # 发布流水线：merge 到 main 自动发布到 https://waic-guide.waytoagi.com
 # 也可在 Actions 页面手动 Run workflow（workflow_dispatch）。
-# 凭据在仓库 Settings → Secrets：ALIYUN_ACCESS_KEY_ID / ALIYUN_ACCESS_KEY_SECRET
-# 详见 docs/DEPLOY-ALIYUN.md
+# 主路径：rsync 到主站 ECS 源站（2026-07-14 起 DNS 直指 121.43.229.39，见 docs/DEPLOY-ALIYUN.md 迁移记录）。
+# 备路径：OSS + CDN 同步保留，用于 DNS 快速回滚（CDN 曾因账户欠费全线停服）。
+# 凭据在仓库 Settings → Secrets：DEPLOY_SSH_KEY / ALIYUN_ACCESS_KEY_ID / ALIYUN_ACCESS_KEY_SECRET
 name: Deploy
 
 on:
@@ -35,13 +36,26 @@ jobs:
 
       - run: pnpm build
 
+      - name: Deploy to ECS origin (primary)
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new" \
+            dist/ root@121.43.229.39:/opt/1panel/1panel/www/sites/waic-guide/index/
+          curl -sf --max-time 15 https://waic-guide.waytoagi.com/ -o /dev/null
+          echo "ECS origin deployed and reachable"
+
       - name: Install aliyun CLI
         run: |
           curl -fsSL https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz | tar -xz
           sudo install aliyun /usr/local/bin/aliyun
           aliyun version
 
-      - name: Deploy to OSS + refresh CDN
+      - name: Sync OSS + refresh CDN (backup path)
         env:
           ALIBABA_CLOUD_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
           ALIBABA_CLOUD_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}

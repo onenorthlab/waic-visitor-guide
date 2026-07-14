@@ -96,3 +96,15 @@
   账号，境内访问质量差），2026-07-13 起废弃、不再更新，仅作历史参考。`wrangler.jsonc`
   与 `pnpm deploy:workers` 保留但不属于正式链路。
 - 迁移决策与验收记录：Multica issue PRO-413。
+
+## 2026-07-14 迁移记录：主路径切换到主站 ECS 源站
+
+背景：阿里云账户欠费导致 CDN 全线停服约 4 小时（详见 Multica PRO-413 事故记录）。为消除 CDN 单点，站点迁移到主站 waic.waytoagi.com 所在 ECS。
+
+当前架构：
+- DNS：`waic-guide.waytoagi.com` A 记录直指 `121.43.229.39`（原 CNAME `waic-guide.waytoagi.com.w.cdngslb.com` 已留档，可随时切回）
+- 服务：ECS 上 1Panel openresty vhost，配置 `/opt/1panel/1panel/www/conf.d/waic-guide.waytoagi.com.conf`，站点根目录 `/opt/1panel/1panel/www/sites/waic-guide/index/`
+- TLS：复用主站的 `*.waytoagi.com` 通配符证书（`/www/sites/waic/ssl/`，随主站续期自动生效）
+- CI：merge 到 main 后 GitHub Actions 先 rsync 到 ECS（secret `DEPLOY_SSH_KEY`），再同步 OSS+CDN 作备份
+
+回滚到 CDN：把 DNS 记录改回 CNAME `waic-guide.waytoagi.com.w.cdngslb.com` 即可（OSS 内容由 CI 持续同步保持最新）。
