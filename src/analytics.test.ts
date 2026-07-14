@@ -8,15 +8,15 @@ const indexHtml = readFileSync(
 );
 
 describe("Google Analytics 接入", () => {
-  it("index.html 异步加载 gtag.js 且指向 G-ZNTB1QCV7S", () => {
+  it("index.html 异步加载 gtag.js 且指向 G-861F9YGB8L", () => {
     expect(indexHtml).toContain(
-      '<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZNTB1QCV7S"></script>',
+      '<script async src="https://www.googletagmanager.com/gtag/js?id=G-861F9YGB8L"></script>',
     );
   });
 
-  it("index.html 内联初始化 dataLayer 并配置 G-ZNTB1QCV7S", () => {
+  it("index.html 内联初始化 dataLayer 并配置 G-861F9YGB8L", () => {
     expect(indexHtml).toContain("window.dataLayer = window.dataLayer || []");
     expect(indexHtml).toContain("gtag('js', new Date())");
-    expect(indexHtml).toContain("gtag('config', 'G-ZNTB1QCV7S')");
+    expect(indexHtml).toContain("gtag('config', 'G-861F9YGB8L')");
   });
 });
