@@ -118,9 +118,19 @@ describe("application shell", () => {
 
     const links = screen.getAllByRole("link", { name: "周边活动" });
     expect(links.length).toBeGreaterThanOrEqual(2);
+
+    const hrefs = links.map((link) => link.getAttribute("href"));
+    expect(hrefs).toContain(
+      "https://waic.waytoagi.com/?utm_source=waic-guide&utm_medium=referral&utm_campaign=waic2026&utm_content=nav",
+    );
+    expect(hrefs).toContain(
+      "https://waic.waytoagi.com/?utm_source=waic-guide&utm_medium=referral&utm_campaign=waic2026&utm_content=footer",
+    );
+
     for (const link of links) {
-      expect(link).toHaveAttribute("href", "https://waic.waytoagi.com/");
       expect(link).toHaveAttribute("target", "_blank");
+      // noopener 保留 Referer；加 noreferrer 会让对方 GA 无法归因本站导流
+      expect(link).toHaveAttribute("rel", "noopener");
     }
   });
 

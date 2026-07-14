@@ -24,6 +24,14 @@ type ThemePreference = Theme | "system";
 const THEME_STORAGE_KEY = "waic-visitor-guide:theme";
 const LANGUAGE_STORAGE_KEY = "waic-visitor-guide:language";
 
+// 回流 Side Events 站的入口。必须用 rel="noopener"（不能加 noreferrer，那会抹掉
+// Referer，导致对方 GA 把访客记成直接访问，无法衡量本站导流）；UTM 里 utm_content
+// 区分入口位置，用于判断导航与页脚哪个更有效。
+const SIDE_EVENTS_BASE =
+  "https://waic.waytoagi.com/?utm_source=waic-guide&utm_medium=referral&utm_campaign=waic2026";
+const SIDE_EVENTS_NAV_URL = `${SIDE_EVENTS_BASE}&utm_content=nav`;
+const SIDE_EVENTS_FOOTER_URL = `${SIDE_EVENTS_BASE}&utm_content=footer`;
+
 const languagePickerCopy: Record<Locale, { choose: string; menu: string }> = {
   zh: { choose: "选择语言", menu: "语言" },
   en: { choose: "Choose language", menu: "Languages" },
@@ -243,9 +251,9 @@ export function Header({ locale, onLanguageChange }: HeaderProps) {
           ))}
           <a
             className="nav-external"
-            href="https://waic.waytoagi.com/"
+            href={SIDE_EVENTS_NAV_URL}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener"
           >
             {displayText(content.sideEvents)}
             <ArrowUpRight aria-hidden="true" weight="bold" />
@@ -366,7 +374,7 @@ export function Footer({ language }: { language: Locale }) {
       <div className="footer-meta">
         <span>{displayText(content.footerSource)}</span>
         <span>{displayText(content.footerUpdated)}</span>
-        <a href="https://waic.waytoagi.com/" target="_blank" rel="noreferrer">
+        <a href={SIDE_EVENTS_FOOTER_URL} target="_blank" rel="noopener">
           {displayText(content.sideEvents)}
         </a>
         <a href="https://www.worldaic.com.cn/" target="_blank" rel="noreferrer">
