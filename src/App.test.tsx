@@ -113,6 +113,40 @@ describe("application shell", () => {
     expect(image).toHaveAttribute("fetchpriority", "high");
   });
 
+  it("links back to the WaytoAGI Side Events site in nav and footer", () => {
+    render(<App />);
+
+    const links = screen.getAllByRole("link", { name: "周边活动" });
+    expect(links.length).toBeGreaterThanOrEqual(2);
+    for (const link of links) {
+      expect(link).toHaveAttribute("href", "https://waic.waytoagi.com/");
+      expect(link).toHaveAttribute("target", "_blank");
+    }
+  });
+
+  it("places the route planner ahead of the landscape section", () => {
+    const { container } = render(<App />);
+
+    const planner = container.querySelector("#planner");
+    const landscape = container.querySelector("#landscape");
+    expect(planner).not.toBeNull();
+    expect(landscape).not.toBeNull();
+    expect(
+      planner!.compareDocumentPosition(landscape!) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
+  it("keeps menu rows aligned while preserving RTL text inside the Arabic item", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: "选择语言" }));
+    const arabicItem = screen.getByRole("menuitemradio", { name: "العربية" });
+    expect(arabicItem).not.toHaveAttribute("dir");
+    expect(arabicItem.querySelector("span")).toHaveAttribute("dir", "rtl");
+  });
+
   it("keeps the URL clean while the planner state is default", () => {
     render(<App />);
 
