@@ -9,7 +9,7 @@
 
 ## Project Rules
 
-- This is a standalone static Vite SPA. Production is Aliyun OSS + CDN at https://waic-guide.waytoagi.com (merge to main auto-deploys; see `docs/DEPLOY-ALIYUN.md`). The old Cloudflare Workers entry is deprecated. Do not reuse or deploy the existing `waic-side-events` Worker, D1 database, R2 bucket, routes, or credentials.
+- This is a standalone static Vite SPA. Production is served from the main-site ECS origin (121.43.229.39, 1Panel openresty vhost, DNS A record since 2026-07-14) at https://waic-guide.waytoagi.com; merge to main auto-deploys via rsync, with Aliyun OSS + CDN kept in sync as the DNS rollback path (see `docs/DEPLOY-ALIYUN.md`). The old Cloudflare Workers entry is deprecated. Do not reuse or deploy the existing `waic-side-events` Worker, D1 database, R2 bucket, routes, or credentials.
 - `CLAUDE.md` is the source of truth. `AGENTS.md` must remain a symlink to `CLAUDE.md`; never edit `AGENTS.md` directly.
 - Keep source data traceable to `source-data/WAIC-2026-full-schedule.xlsx`. Do not invent schedules, speakers, capacity, live status, or travel times.
 - Label the site as an independent visitor guide, not the official WAIC website. Link back to official sources and show the data update date.
