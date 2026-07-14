@@ -27,17 +27,19 @@ Do not use purple as the primary brand color. Blue and cyan may appear only as s
 ### Typography
 
 - Use the same pragmatic multilingual system stack as Side Events: `-apple-system`, `BlinkMacSystemFont`, `PingFang SC`, `Noto Sans SC`, `Microsoft YaHei`, `system-ui`, `sans-serif`.
-- Display headings use weight `850` to `900`, tight tracking, and compact leading.
+- Hierarchy comes from size and spacing, not boldness (Side Events `docs/DESIGN.md` alignment): display headings at 40px and above use weight `300`, other headings default `400`, UI emphasis tops out at `500`. No `600+` bold except browser-default emphasis inside body copy.
+- Negative letter spacing applies to Latin words and digits only. CJK text never gets negative tracking.
 - Supporting labels use uppercase or letter spacing only for short English editorial markers.
 - Data values use a monospaced system stack for scanning speed.
 
 ### Shape and depth
 
-- Controls: 8 to 12px radius.
-- Data cards: 18 to 22px radius.
-- Hero and modal surfaces: 28 to 32px radius.
-- Shadows are warm and restrained: `0 20px 60px rgb(48 42 30 / 0.10)`.
+- Buttons, tags, badges, and standalone controls: full capsule (`999px`).
+- Inputs and small containers: 16px radius minimum.
+- Data cards: 24px radius. Hero and modal surfaces: 28 to 32px radius.
+- Elevation is flat: cards separate with a 1px border and whitespace, not shadows. The primary CTA carries the only glow (`--glow`, a 4px brand halo). Overlays (menus, sheets, carousels) keep one soft `--overlay-shadow` for legibility.
 - Borders remain visible so data groups are understandable without relying on color alone.
+- The hero never forces a full-viewport height; the insight spine should be visible within the first desktop screen.
 
 ## Logo and imagery
 

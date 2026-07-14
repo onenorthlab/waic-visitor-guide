@@ -15,6 +15,7 @@ import {
   DEFAULT_PLANNER_STATE,
   decodePlannerState,
   encodePlannerState,
+  isDefaultPlannerState,
   loadPlannerState,
   savePlannerState,
 } from "./lib/share";
@@ -55,9 +56,14 @@ function VisitorGuideApp() {
     savePlannerState(plannerState);
     let nextSearch: string;
     try {
-      const params = new URLSearchParams(encodePlannerState(plannerState));
+      // A default plan is not worth sharing; keep the address bar clean until
+      // the visitor customizes something.
+      const params = isDefaultPlannerState(plannerState)
+        ? new URLSearchParams()
+        : new URLSearchParams(encodePlannerState(plannerState));
       if (routeGenerated) params.set("view", "route");
-      nextSearch = `?${params.toString()}`;
+      const query = params.toString();
+      nextSearch = query ? `?${query}` : "";
     } catch {
       return;
     }

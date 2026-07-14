@@ -179,6 +179,12 @@ function browserStorage(): StorageLike | null {
   }
 }
 
+export function isDefaultPlannerState(state: PlannerState): boolean {
+  const normalized = normalizePlannerState(state);
+  if (!normalized) return false;
+  return JSON.stringify(normalized) === JSON.stringify(DEFAULT_PLANNER_STATE);
+}
+
 export function encodePlannerState(state: PlannerState): string {
   const normalized = normalizePlannerState(state);
   if (!normalized) throw new Error("planner state is invalid");
