@@ -7,6 +7,7 @@ import {
   PLANNER_STORAGE_KEY,
   decodePlannerState,
   encodePlannerState,
+  isDefaultPlannerState,
   loadPlannerState,
   savePlannerState,
 } from "./share";
@@ -109,6 +110,44 @@ describe("planner state URL sharing", () => {
 
     expect(DEFAULT_PLANNER_STATE.dates).toEqual([]);
     expect(DEFAULT_PLANNER_STATE.selectedEventIds).toEqual([]);
+  });
+});
+
+describe("default planner state detection", () => {
+  it("recognizes the default state and structural clones of it", () => {
+    expect(isDefaultPlannerState(DEFAULT_PLANNER_STATE)).toBe(true);
+    expect(
+      isDefaultPlannerState({
+        dates: [],
+        availability: {},
+        interests: [],
+        identity: null,
+        goals: [],
+        pace: "balanced",
+        selectedEventIds: [],
+        excludedEventIds: [],
+      }),
+    ).toBe(true);
+  });
+
+  it("treats any customized field as non-default", () => {
+    expect(isDefaultPlannerState({ ...DEFAULT_PLANNER_STATE, dates: ["2026-07-17"] })).toBe(false);
+    expect(isDefaultPlannerState({ ...DEFAULT_PLANNER_STATE, pace: "intensive" })).toBe(false);
+    expect(
+      isDefaultPlannerState({ ...DEFAULT_PLANNER_STATE, selectedEventIds: [42] }),
+    ).toBe(false);
+    expect(
+      isDefaultPlannerState({ ...DEFAULT_PLANNER_STATE, identity: "developer" }),
+    ).toBe(false);
+  });
+
+  it("treats invalid states as non-default", () => {
+    expect(
+      isDefaultPlannerState({
+        ...DEFAULT_PLANNER_STATE,
+        pace: "sprint",
+      } as unknown as PlannerState),
+    ).toBe(false);
   });
 });
 

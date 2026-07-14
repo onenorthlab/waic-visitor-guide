@@ -23,3 +23,9 @@
 - Optimize for fast decisions on mobile: what is worth attending, whether it conflicts, and whether a venue change is realistic.
 - Expose recommendation reasons and route costs. Do not present an opaque universal activity ranking.
 - Animations must explain hierarchy, state, or data relationships and must honor reduced-motion preferences.
+
+## UI 基准
+
+- 基准 URL：https://waic-guide.waytoagi.com （线上正式版，merge 到 main 自动更新）
+- 视觉规范：本仓库 `DESIGN.md`，其排版/几何/elevation 与主站 `events-platform/docs/DESIGN.md` 对齐（轻字重、胶囊几何、平面化、CJK 不加负字距）。
+- UI 改动交付前跑 ui-acceptance skill：桌面/移动/暗色三截图 + 与线上基准 diff + 行为断言，产物存 `.ui-acceptance/<日期>/`（已 gitignore）。

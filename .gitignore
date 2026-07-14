@@ -8,3 +8,4 @@ output/
 .dev.vars
 .DS_Store
 .worktrees/
+.ui-acceptance/

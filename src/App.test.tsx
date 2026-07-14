@@ -113,6 +113,57 @@ describe("application shell", () => {
     expect(image).toHaveAttribute("fetchpriority", "high");
   });
 
+  it("keeps the URL clean while the planner state is default", () => {
+    render(<App />);
+
+    expect(window.location.search).toBe("");
+  });
+
+  it("strips a default plan parameter arriving in a shared URL", () => {
+    window.history.replaceState(
+      null,
+      "",
+      `/?plan=${encodeURIComponent(
+        JSON.stringify({
+          dates: [],
+          availability: {},
+          interests: [],
+          identity: null,
+          goals: [],
+          pace: "balanced",
+          selectedEventIds: [],
+          excludedEventIds: [],
+        }),
+      )}`,
+    );
+
+    render(<App />);
+
+    expect(window.location.search).toBe("");
+  });
+
+  it("reflects a customized planner state in the URL for sharing", () => {
+    window.localStorage.setItem(
+      "waic-visitor-guide:planner-state:v1",
+      JSON.stringify({
+        dates: ["2026-07-18"],
+        availability: {},
+        interests: [],
+        identity: null,
+        goals: [],
+        pace: "balanced",
+        selectedEventIds: [],
+        excludedEventIds: [],
+      }),
+    );
+
+    render(<App />);
+
+    const plan = new URLSearchParams(window.location.search).get("plan");
+    expect(plan).not.toBeNull();
+    expect(JSON.parse(plan ?? "{}").dates).toEqual(["2026-07-18"]);
+  });
+
   it("uses the system theme, supports a manual whole-page toggle, and switches language", async () => {
     mockColorScheme(true);
     const user = userEvent.setup();

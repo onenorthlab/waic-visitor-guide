@@ -18,7 +18,8 @@
   --orange-text: #9c431d;
   --green: #2e8b68;
   --green-text: #226f53;
-  --shadow: 0 20px 60px rgb(48 42 30 / 0.1);
+  --glow: 0 0 4px rgb(217 45 82 / 0.35);
+  --overlay-shadow: 0 18px 54px rgb(48 42 30 / 0.18);
   font-family:
     -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC",
     "Microsoft YaHei", system-ui, sans-serif;
@@ -46,7 +47,8 @@
   --orange-text: #ef9b63;
   --green: #65c99b;
   --green-text: #65c99b;
-  --shadow: 0 24px 80px rgb(0 0 0 / 0.34);
+  --glow: 0 0 4px rgb(240 74 110 / 0.5);
+  --overlay-shadow: 0 18px 54px rgb(0 0 0 / 0.4);
 }
 
 * {
@@ -70,6 +72,20 @@ button,
 input,
 select {
   font: inherit;
+}
+
+/* Hierarchy comes from size and spacing, not boldness (main-site design system). */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 400;
+}
+
+strong {
+  font-weight: 500;
 }
 
 button,
@@ -119,8 +135,8 @@ a {
   align-items: center;
   gap: 9px;
   width: max-content;
-  font-weight: 850;
-  letter-spacing: -0.035em;
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
 
 .wordmark img {
@@ -141,7 +157,7 @@ a {
 .wordmark small {
   color: var(--muted);
   font-size: 10px;
-  font-weight: 750;
+  font-weight: 500;
   letter-spacing: 0.09em;
 }
 
@@ -152,7 +168,7 @@ a {
   gap: clamp(14px, 2vw, 30px);
   white-space: nowrap;
   font-size: 14px;
-  font-weight: 650;
+  font-weight: 500;
 }
 
 .nav-links a,
@@ -179,7 +195,7 @@ a {
   justify-content: center;
   gap: 7px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 999px;
   color: var(--ink);
   background: var(--surface);
   cursor: pointer;
@@ -207,7 +223,7 @@ a {
 .language-toggle {
   padding-inline: 14px;
   font-size: 12px;
-  font-weight: 750;
+  font-weight: 500;
 }
 
 .language-menu-wrap {
@@ -228,7 +244,7 @@ a {
   border: 1px solid var(--line);
   border-radius: 16px;
   background: var(--surface);
-  box-shadow: 0 18px 54px rgb(48 42 30 / 0.18);
+  box-shadow: var(--overlay-shadow);
 }
 
 .language-menu button {
@@ -240,7 +256,7 @@ a {
   gap: 10px;
   padding: 0 12px;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: 999px;
   color: var(--ink);
   background: transparent;
   text-align: start;
@@ -270,10 +286,9 @@ a {
   grid-template-columns: minmax(0, 0.88fr) minmax(480px, 1.12fr);
   align-items: center;
   width: min(100% - 48px, 1400px);
-  min-height: calc(100dvh - 72px);
   margin-inline: auto;
   gap: clamp(42px, 6vw, 96px);
-  padding-block: clamp(48px, 7vh, 82px);
+  padding-block: clamp(32px, 4.5vh, 56px);
 }
 
 .hero-copy {
@@ -286,22 +301,21 @@ a {
   margin: 0 0 20px;
   padding: 7px 12px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 999px;
   color: var(--accent-strong);
   background: var(--canvas);
   font-size: 12px;
-  font-weight: 750;
+  font-weight: 500;
   letter-spacing: 0.06em;
 }
 
 .hero h1 {
-  max-width: 9.6em;
+  max-width: 11em;
   margin: 0;
   color: var(--ink);
-  font-size: clamp(44px, 5.25vw, 76px);
-  font-weight: 900;
-  letter-spacing: -0.065em;
-  line-height: 1.02;
+  font-size: clamp(40px, 4.2vw, 56px);
+  font-weight: 300;
+  line-height: 1.1;
   text-wrap: balance;
 }
 
@@ -330,7 +344,7 @@ a {
   border: 1px solid transparent;
   border-radius: 999px;
   font-size: 15px;
-  font-weight: 760;
+  font-weight: 500;
   white-space: nowrap;
   transition:
     transform 160ms ease,
@@ -346,7 +360,7 @@ a {
 .button-primary {
   color: var(--button-primary-fg);
   background: var(--button-primary-bg);
-  box-shadow: 0 12px 28px rgb(189 24 62 / 0.2);
+  box-shadow: var(--glow);
 }
 
 .button-primary:hover {
@@ -370,8 +384,6 @@ a {
   border: 1px solid color-mix(in srgb, var(--accent), transparent 72%);
   border-radius: 24px;
   background: #26251f;
-  box-shadow: var(--shadow);
-  transform: rotate(1.5deg);
 }
 
 .hero-visual::after {
@@ -395,7 +407,7 @@ a {
   display: grid;
   grid-template-columns: 1.24fr 1fr 0.82fr;
   width: min(100% - 48px, 1400px);
-  margin: 0 auto clamp(80px, 9vw, 132px);
+  margin: 0 auto clamp(56px, 7vw, 96px);
   border-block: 1px solid var(--line);
 }
 
@@ -416,7 +428,7 @@ a {
   color: var(--accent-strong);
   font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
   font-size: clamp(26px, 3vw, 42px);
-  letter-spacing: -0.06em;
+  letter-spacing: -0.02em;
 }
 
 .insight h2,
@@ -462,7 +474,7 @@ a {
 
 .footer-meta a {
   color: var(--accent-strong);
-  font-weight: 720;
+  font-weight: 500;
 }
 
 .page-section {
@@ -478,10 +490,9 @@ a {
 
 .section-heading h2 {
   margin: 0;
-  font-size: clamp(36px, 5vw, 68px);
-  font-weight: 880;
-  letter-spacing: -0.055em;
-  line-height: 1.05;
+  font-size: clamp(30px, 3.2vw, 40px);
+  font-weight: 300;
+  line-height: 1.1;
 }
 
 .section-heading p {
@@ -514,7 +525,6 @@ a {
 
 .data-panel-heading h3 {
   font-size: clamp(22px, 2.4vw, 32px);
-  letter-spacing: -0.035em;
 }
 
 .data-panel-heading p {
@@ -541,7 +551,7 @@ a {
 .heatmap-day {
   padding: 18px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 16px;
   background: var(--surface);
 }
 
@@ -577,7 +587,7 @@ a {
   gap: 2px;
   padding: 4px;
   border: 1px solid color-mix(in srgb, var(--accent), transparent 78%);
-  border-radius: 10px;
+  border-radius: 16px;
   color: var(--ink);
   background: var(--canvas);
   cursor: pointer;
@@ -678,7 +688,7 @@ a {
   gap: 12px;
   padding: 15px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 16px;
   color: var(--ink);
   background: var(--surface);
   text-align: left;
@@ -698,7 +708,7 @@ a {
 
 .topic-node span {
   font-size: 12px;
-  font-weight: 720;
+  font-weight: 500;
   line-height: 1.35;
 }
 
@@ -780,7 +790,7 @@ a {
 
 .venue-node span {
   font-size: 11px;
-  font-weight: 720;
+  font-weight: 500;
   line-height: 1.3;
 }
 
@@ -840,7 +850,7 @@ a {
   background:
     radial-gradient(circle at 88% 12%, var(--accent-soft), transparent 20rem),
     var(--surface);
-  box-shadow: 0 32px 100px rgb(48 42 30 / 0.28);
+  box-shadow: var(--overlay-shadow);
 }
 
 .landscape-carousel-heading {
@@ -861,7 +871,7 @@ a {
   color: var(--accent-strong);
   font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
   font-size: 11px;
-  font-weight: 760;
+  font-weight: 500;
 }
 
 .landscape-carousel-heading h2 {
@@ -869,7 +879,6 @@ a {
   margin-top: 5px;
   font-size: clamp(21px, 2.5vw, 30px);
   line-height: 1.12;
-  letter-spacing: -0.04em;
 }
 
 .landscape-carousel .detail-close {
@@ -895,27 +904,27 @@ a {
   min-width: 0;
   color: var(--muted);
   font-size: 10px;
-  font-weight: 760;
+  font-weight: 500;
 }
 
 .landscape-carousel-filters select {
   width: 100%;
   min-height: 38px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 16px;
   padding: 0 34px 0 12px;
   color: var(--ink);
   background: var(--surface);
   font: inherit;
   font-size: 12px;
-  font-weight: 650;
+  font-weight: 500;
 }
 
 .landscape-carousel-filter-result {
   align-self: center;
   color: var(--accent-strong);
   font-size: 12px;
-  font-weight: 760;
+  font-weight: 500;
   white-space: nowrap;
 }
 
@@ -944,7 +953,7 @@ a {
   gap: 18px;
   color: var(--accent-strong);
   font-size: 12px;
-  font-weight: 780;
+  font-weight: 500;
 }
 
 .landscape-carousel-position {
@@ -959,7 +968,6 @@ a {
   max-width: 24ch;
   margin: 12px 0 0;
   font-size: clamp(28px, 3.6vw, 42px);
-  letter-spacing: -0.045em;
   line-height: 1.08;
 }
 
@@ -999,7 +1007,7 @@ a {
   gap: 6px;
   color: var(--muted);
   font-size: 10px;
-  font-weight: 760;
+  font-weight: 500;
 }
 
 .landscape-event-facts dt svg {
@@ -1131,7 +1139,7 @@ a {
   margin: 0 0 10px;
   color: var(--ink);
   font-size: 13px;
-  font-weight: 780;
+  font-weight: 500;
 }
 
 .planner-control > select,
@@ -1140,7 +1148,7 @@ a {
   min-height: 46px;
   padding: 0 13px;
   border: 1px solid color-mix(in srgb, var(--muted), transparent 54%);
-  border-radius: 14px;
+  border-radius: 16px;
   color: var(--ink);
   background: var(--surface);
 }
@@ -1182,7 +1190,7 @@ a {
   color: var(--muted);
   background: var(--surface);
   font-size: 12px;
-  font-weight: 680;
+  font-weight: 500;
   line-height: 1.25;
   transition:
     transform 150ms ease,
@@ -1327,7 +1335,7 @@ a {
   gap: 8px;
   color: var(--green-text);
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 500;
 }
 
 .result-confirmation svg {
@@ -1369,7 +1377,7 @@ a {
   margin: 0 0 24px;
   padding: 14px 16px;
   border: 1px solid color-mix(in srgb, var(--orange), transparent 70%);
-  border-radius: 14px;
+  border-radius: 16px;
   background: color-mix(in srgb, var(--surface), var(--orange) 6%);
   font-size: 12px;
   line-height: 1.55;
@@ -1390,7 +1398,7 @@ a {
   display: inline-block;
   margin-top: 5px;
   color: var(--accent-strong);
-  font-weight: 760;
+  font-weight: 500;
 }
 
 .attention-budget {
@@ -1426,7 +1434,7 @@ a {
   color: var(--accent-strong);
   font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
   font-size: clamp(15px, 1.5vw, 21px);
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
 }
 
 .route-timeline {
@@ -1469,7 +1477,7 @@ a {
   gap: 2px;
   padding: 6px 4px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 16px;
   background: var(--surface);
   text-align: center;
 }
@@ -1503,7 +1511,7 @@ a {
 .route-category {
   color: var(--accent-strong);
   font-size: 10px;
-  font-weight: 760;
+  font-weight: 500;
 }
 
 .route-location,
@@ -1542,7 +1550,7 @@ a {
   color: var(--green-text);
   background: color-mix(in srgb, var(--green), transparent 90%);
   font-size: 10px;
-  font-weight: 680;
+  font-weight: 500;
 }
 
 .route-exclude-button {
@@ -1553,11 +1561,11 @@ a {
   margin-top: 12px;
   padding: 0 10px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 16px;
   color: var(--muted);
   background: var(--surface);
   font-size: 11px;
-  font-weight: 720;
+  font-weight: 500;
   cursor: pointer;
 }
 
@@ -1691,7 +1699,7 @@ a {
   border: 0;
   color: var(--accent-strong);
   background: transparent;
-  font-weight: 760;
+  font-weight: 500;
   cursor: pointer;
 }
 
@@ -1716,7 +1724,7 @@ a {
   gap: 6px;
   padding: 0 10px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 16px;
   color: var(--muted);
   background: var(--surface);
   font-size: 11px;
@@ -1760,7 +1768,7 @@ a {
 .explorer-filters > label > span {
   color: var(--ink);
   font-size: 12px;
-  font-weight: 760;
+  font-weight: 500;
 }
 
 .explorer-filters select,
@@ -1768,7 +1776,7 @@ a {
   min-width: 0;
   min-height: 46px;
   border: 1px solid color-mix(in srgb, var(--muted), transparent 54%);
-  border-radius: 14px;
+  border-radius: 16px;
   color: var(--ink);
   background: var(--surface);
 }
@@ -1851,7 +1859,6 @@ a {
   margin: 0;
   color: var(--accent-strong);
   font-size: 17px;
-  letter-spacing: -0.025em;
 }
 
 .event-day-group > div {
@@ -1922,7 +1929,7 @@ a {
 .event-row-main > small {
   color: var(--accent-strong);
   font-size: 10px;
-  font-weight: 760;
+  font-weight: 500;
 }
 
 .event-row-main > strong {
@@ -2009,7 +2016,7 @@ a {
   border-radius: 24px;
   color: var(--ink);
   background: var(--surface);
-  box-shadow: 0 -22px 80px rgb(6 12 31 / 0.24);
+  box-shadow: var(--overlay-shadow);
 }
 
 .detail-close {
@@ -2047,14 +2054,13 @@ a {
   margin: 0;
   color: var(--accent-strong);
   font-size: 12px;
-  font-weight: 780;
+  font-weight: 500;
 }
 
 .detail-content h2 {
   max-width: 23ch;
   margin: 14px 0 0;
   font-size: clamp(30px, 4vw, 50px);
-  letter-spacing: -0.045em;
   line-height: 1.08;
 }
 
@@ -2096,7 +2102,7 @@ a {
   gap: 6px;
   color: var(--muted);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .detail-facts dt svg {
@@ -2137,7 +2143,6 @@ a {
   border: 1px solid var(--line);
   border-radius: 24px;
   background: var(--surface);
-  box-shadow: var(--shadow);
 }
 
 .error-boundary-page section > svg {
@@ -2154,7 +2159,6 @@ a {
 
 .error-boundary-page h1 {
   font-size: clamp(34px, 6vw, 58px);
-  letter-spacing: -0.055em;
   line-height: 1.05;
 }
 
@@ -2187,7 +2191,7 @@ a {
   margin: 0 0 18px !important;
   color: var(--accent-strong) !important;
   font-size: 12px !important;
-  font-weight: 780;
+  font-weight: 500;
   letter-spacing: 0.07em;
   text-transform: uppercase;
 }
@@ -2216,8 +2220,8 @@ a {
   color: var(--accent-strong);
   font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
   font-size: clamp(84px, 11vw, 156px);
-  font-weight: 820;
-  letter-spacing: -0.12em;
+  font-weight: 300;
+  letter-spacing: -0.04em;
   line-height: 0.8;
 }
 
@@ -2225,7 +2229,7 @@ a {
   max-width: 16ch;
   color: var(--muted);
   font-size: 11px;
-  font-weight: 760;
+  font-weight: 500;
   line-height: 1.45;
 }
 
@@ -2251,7 +2255,7 @@ a {
   color: var(--accent-strong);
   font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
   font-size: 12px;
-  font-weight: 760;
+  font-weight: 500;
 }
 
 .venue-position-list strong,
@@ -2262,7 +2266,6 @@ a {
 
 .venue-position-list strong {
   font-size: clamp(18px, 2vw, 27px);
-  letter-spacing: -0.025em;
   line-height: 1.25;
 }
 
@@ -2319,7 +2322,6 @@ a {
 .access-panel h3,
 .ticket-panel h3 {
   font-size: clamp(20px, 2.2vw, 28px);
-  letter-spacing: -0.035em;
 }
 
 .shuttle-panel header p {
@@ -2589,14 +2591,13 @@ a {
   .hero {
     grid-template-columns: minmax(0, 1fr);
     width: min(100% - 32px, 100%);
-    min-height: calc(100dvh - 110px);
-    gap: 32px;
-    padding-block: 38px 46px;
+    gap: 28px;
+    padding-block: 24px 36px;
   }
 
   .hero h1 {
-    max-width: 10em;
-    font-size: clamp(38px, 11.2vw, 48px);
+    max-width: 11em;
+    font-size: clamp(32px, 9vw, 40px);
   }
 
   .hero-subcopy {
@@ -2609,7 +2610,7 @@ a {
   }
 
   .hero-visual {
-    border-radius: 20px;
+    border-radius: 24px;
     transform: none;
   }
 
@@ -2654,12 +2655,12 @@ a {
   }
 
   .section-heading h2 {
-    font-size: clamp(34px, 10vw, 46px);
+    font-size: clamp(26px, 7.5vw, 32px);
   }
 
   .data-panel {
     padding: 18px;
-    border-radius: 20px;
+    border-radius: 24px;
   }
 
   .data-panel-heading {
@@ -2783,7 +2784,7 @@ a {
   .planner-form,
   .planner-output {
     padding: 20px 16px;
-    border-radius: 20px;
+    border-radius: 24px;
   }
 
   .planner-date {
@@ -2849,7 +2850,7 @@ a {
   .explorer-filters {
     grid-template-columns: 1fr;
     padding: 16px;
-    border-radius: 20px;
+    border-radius: 24px;
   }
 
   .explorer-search {
@@ -2936,7 +2937,7 @@ a {
   .shuttle-panel,
   .access-panel,
   .ticket-panel {
-    border-radius: 20px;
+    border-radius: 24px;
   }
 }
 
